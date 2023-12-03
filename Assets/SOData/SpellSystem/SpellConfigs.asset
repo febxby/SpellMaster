@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1160cb5c43cd21f46b6de731ddf657f0, type: 3}
+  m_Name: SpellConfigs
+  m_EditorClassIdentifier: 
+  configs:
+  - {fileID: 11400000, guid: dd9f0111c90742a4fa570786264e3a6a, type: 2}
+  - {fileID: 11400000, guid: c66690bacf581d74f84bdd3e60fdf713, type: 2}
