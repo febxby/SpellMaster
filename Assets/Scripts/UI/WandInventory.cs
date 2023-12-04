@@ -16,9 +16,12 @@ public class WandInventory : MonoBehaviour
     }
     public void Init(List<Wand> wands)
     {
+        UpdateUI(wands);
+    }
+    public void UpdateUI(List<Wand> wands)
+    {
         for (int i = 0; i < wands.Count; i++)
         {
-            // slots[i].wand = wands[i];
             slots[i].Init(wands[i]);
         }
     }

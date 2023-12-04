@@ -9,8 +9,8 @@ using UnityEngine.UI;
 /// </summary>
 public struct SwitchWandPos
 {
-    public int aIndex;
-    public int bIndex;
+    public int target;
+    public int current;
 }
 /// <summary>
 /// 法杖槽
@@ -42,8 +42,17 @@ public class WandSlot : MonoBehaviour, IDragable, IShowable
     public void Init(Wand wand)
     {
         this.wand = wand;
-        image.sprite = wand.spriteRenderer.sprite;
-        image.color = wand.spriteRenderer.color;
+        if (wand != null)
+        {
+            image.sprite = wand.spriteRenderer.sprite;
+            image.color = wand.spriteRenderer.color;
+        }
+        else
+        {
+            image.sprite = null;
+            image.color = Color.clear;
+        }
+
     }
     private void Start()
     {
@@ -102,8 +111,9 @@ public class WandSlot : MonoBehaviour, IDragable, IShowable
                 MEventSystem.Instance.Send<SwitchWandPos>(
                     new SwitchWandPos
                     {
-                        aIndex = temp.transform.parent.GetSiblingIndex(),
-                        bIndex = transform.parent.GetSiblingIndex()
+                        //BUG:只交换了数据，没有交换游戏对象的位置
+                        target = temp.transform.parent.GetSiblingIndex(),
+                        current = transform.parent.GetSiblingIndex()
                     }
                 );
             }
@@ -115,8 +125,8 @@ public class WandSlot : MonoBehaviour, IDragable, IShowable
                 MEventSystem.Instance.Send<SwitchWandPos>(
                     new SwitchWandPos
                     {
-                        aIndex = raycastResults[idx].gameObject.transform.GetSiblingIndex(),
-                        bIndex = transform.parent.GetSiblingIndex()
+                        target = raycastResults[idx].gameObject.transform.GetSiblingIndex(),
+                        current = transform.parent.GetSiblingIndex()
                     }
                 );
             }

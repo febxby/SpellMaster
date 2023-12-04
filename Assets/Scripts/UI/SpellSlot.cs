@@ -5,8 +5,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 public struct SwitchSpellPos
 {
-    public int aIndex;
-    public int bIndex;
+    public int target;
+    public int current;
 }
 public interface ISlot<T>
 {
@@ -39,8 +39,17 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
     public void Init(Spell spell)
     {
         this.spell = spell;
-        image.sprite = spell.sprite;
-        image.color = Color.white;
+        if (spell != null)
+        {
+            image.sprite = spell.sprite;
+            image.color = Color.white;
+        }
+        else
+        {
+            image.sprite = null;
+            image.color = Color.clear;
+        }
+
     }
     private void Start()
     {
@@ -105,8 +114,8 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
                 MEventSystem.Instance.Send<SwitchSpellPos>(
                     new SwitchSpellPos
                     {
-                        aIndex = temp.transform.parent.GetSiblingIndex(),
-                        bIndex = transform.parent.GetSiblingIndex()
+                        target = temp.transform.parent.GetSiblingIndex(),
+                        current = transform.parent.GetSiblingIndex()
                     }
                 );
             }
@@ -118,8 +127,8 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
                 MEventSystem.Instance.Send<SwitchSpellPos>(
                     new SwitchSpellPos
                     {
-                        aIndex = raycastResults[idx].gameObject.transform.GetSiblingIndex(),
-                        bIndex = transform.parent.GetSiblingIndex()
+                        target = raycastResults[idx].gameObject.transform.GetSiblingIndex(),
+                        current = transform.parent.GetSiblingIndex()
                     }
                 );
             }

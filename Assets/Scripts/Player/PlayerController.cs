@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 /// <summary>
 /// 切换使用的法杖
@@ -62,16 +63,22 @@ public class PlayerController : MonoBehaviour
         MEventSystem.Instance.Register<AddWand>(
             e =>
             {
-                if (e.wand != null)
-                {
-                    //TODO:丢弃时，要更换层级
-                    e.wand.gameObject.layer = LayerMask.NameToLayer("Wand");
-                    e.wand.transform.SetParent(transform);
-                    e.wand.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-                    inventoryModel.Add(e.wand);
+                if (e.wand == null) return;
+                AddWandToInventory(e.wand);
+                // if (e.wand != null)
+                // {
+                //     //TODO:丢弃时，要更换层级
+                //     if (currentWand != null)
+                //     {
+                //         currentWand.gameObject.SetActive(false);
+                //     }
+                //     e.wand.gameObject.layer = LayerMask.NameToLayer("Wand");
+                //     e.wand.transform.SetParent(transform);
+                //     e.wand.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+                //     inventoryModel.Add(e.wand);
 
-                    currentWand = e.wand;
-                }
+                //     currentWand = e.wand;
+                // }
             }
         ).UnRegisterWhenGameObjectDestroy(gameObject);
         MEventSystem.Instance.Register<ChangeCastWand>(
@@ -144,7 +151,28 @@ public class PlayerController : MonoBehaviour
         if (!canFly) return;
         rb.velocity = new Vector2(rb.velocity.x, flySPeed);
     }
+    private void AddWandToInventory(Wand wand)
+    {
+        if (wand == null) return;
+        if (!inventoryModel.Add(wand))
+        {
+            //TODO:完善背包满时的提示
+            // pickUpPanel.SetActive(true);
+        }
+        else
+        {
+            MEventSystem.Instance.Send<AddWand>();
+            if (currentWand != null)
+            {
+                currentWand.gameObject.SetActive(false);
+            }
+            wand.gameObject.layer = LayerMask.NameToLayer("Wand");
+            wand.transform.SetParent(transform);
+            wand.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            currentWand = wand;
 
+        }
+    }
     public void PickUp()
     {
         if (pickUpable is null) return;
@@ -152,18 +180,7 @@ public class PlayerController : MonoBehaviour
         {
             if (pickUpable is Wand wand)
             {
-                if (!inventoryModel.Add(wand))
-                {
-                    // pickUpPanel.SetActive(true);
-                }
-                else
-                {
-                    MEventSystem.Instance.Send<AddWand>();
-                    wand.transform.SetParent(transform);
-                    wand.transform.position = transform.position;
-                    wand.gameObject.layer = LayerMask.NameToLayer("Wand");
-                    //inventoryModel.Add(wand);
-                }
+                    AddWandToInventory(wand);
             }
             else if (pickUpable is DropItem item)
             {

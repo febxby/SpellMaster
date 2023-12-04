@@ -38,25 +38,26 @@ public class EditorPanelController : MonoBehaviour
         MEventSystem.Instance.Register<SwitchWandPos>(
             e =>
             {
-                (inventoryModel.wands[e.bIndex], inventoryModel.wands[e.aIndex]) = (inventoryModel.wands[e.aIndex], inventoryModel.wands[e.bIndex]);
+                Debug.Log(e.target + " " + e.current);
+                (inventoryModel.wands[e.current], inventoryModel.wands[e.target]) = (inventoryModel.wands[e.target], inventoryModel.wands[e.current]);
             }
         ).UnRegisterWhenGameObjectDestroy(gameObject);
         MEventSystem.Instance.Register<SwitchSpellPos>(
             e =>
             {
-                (inventoryModel.spells[e.bIndex], inventoryModel.spells[e.aIndex]) = (inventoryModel.spells[e.aIndex], inventoryModel.spells[e.bIndex]);
+                (inventoryModel.spells[e.current], inventoryModel.spells[e.target]) = (inventoryModel.spells[e.target], inventoryModel.spells[e.current]);
             }
         ).UnRegisterWhenGameObjectDestroy(gameObject);
         MEventSystem.Instance.Register<AddWand>(
             e =>
             {
-                wandInventory.Init(inventoryModel.wands);
+                wandInventory.UpdateUI(inventoryModel.wands);
             }
         ).UnRegisterWhenGameObjectDestroy(gameObject);
         MEventSystem.Instance.Register<AddSpell>(
             e =>
             {
-                spellInventory.Init(inventoryModel.spells);
+                spellInventory.UpdateUI(inventoryModel.spells);
             }
         ).UnRegisterWhenGameObjectDestroy(gameObject);
         MEventSystem.Instance.Register<ChangeCastWand>(

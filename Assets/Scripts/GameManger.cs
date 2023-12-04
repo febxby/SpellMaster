@@ -28,13 +28,15 @@ public class GameManger : MonoSingleton<GameManger>
 
         container = IOCContainer.Instance;
         container.Register<InventoryModel>(inventoryModel);
+        //仓库初始化
+        inventoryModel.Init();
+        //加载法术和法杖
         spellHandle = Addressables.LoadAssetsAsync<Spell>("Spell",
         addressable =>
         {
             allSpells.Add(addressable);
         }, true);
         spellHandle.Completed += OnSpellLoadComplete;
-
         wandHandle = Addressables.LoadAssetsAsync<GameObject>("Wand",
         addressable =>
         {
@@ -60,6 +62,34 @@ public class GameManger : MonoSingleton<GameManger>
     {
 
     }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (isSpellLoadComplete && isWandLoadComplete)
+        {
+            isSpellLoadComplete = false;
+            isWandLoadComplete = false;
+            //加载场景
+            demoHandle = SceneManager.LoadSceneAsync("Demo");
+            demoHandle.completed += OnSceneLoadComplete;
+        }
+    }
+    void OnSceneLoadComplete(AsyncOperation handle)
+    {
+        //初始化法杖和法术
+        float num = Random.Range(0f, allSpells.Count);
+        inventoryModel.Add<Spell>(allSpells[(int)num]);
+        num = Random.Range(0f, allWands.Count);
+        Wand wand = Instantiate(allWands[(int)num]).GetComponent<Wand>();
+        MEventSystem.Instance.Send<AddWand>(new AddWand() { wand = wand });
+    }
+    private void OnDestroy()
+    {
+        Addressables.Release(spellHandle);
+        Addressables.Release(wandHandle);
+        inventoryModel.Clear();
+    }
     /// <summary>
     /// 获取法术或者法杖
     /// </summary>
@@ -84,29 +114,5 @@ public class GameManger : MonoSingleton<GameManger>
             return Instantiate(allWands[index]).GetComponent<Wand>() as T;
         }
         return allSpells[index] as T;
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        if (isSpellLoadComplete && isWandLoadComplete)
-        {
-            isSpellLoadComplete = false;
-            isWandLoadComplete = false;
-            demoHandle = SceneManager.LoadSceneAsync("Demo");
-            demoHandle.completed += OnSceneLoadComplete;
-        }
-    }
-    void OnSceneLoadComplete(AsyncOperation handle)
-    {
-        float num = Random.Range(0f, allSpells.Count);
-        inventoryModel.Add<Spell>(allSpells[(int)num]);
-        num = Random.Range(0f, allWands.Count);
-        Wand wand = Instantiate(allWands[(int)num]).GetComponent<Wand>();
-        MEventSystem.Instance.Send<AddWand>(new AddWand() { wand = wand });
-    }
-    private void OnDestroy()
-    {
-        Addressables.Release(spellHandle);
-        Addressables.Release(wandHandle);
     }
 }
