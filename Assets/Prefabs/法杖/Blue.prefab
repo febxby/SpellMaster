@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -8990944135998587123}
   - component: {fileID: 6969123890593357957}
   m_Layer: 11
-  m_Name: Wand 1
+  m_Name: Blue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

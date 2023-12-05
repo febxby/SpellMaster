@@ -270,6 +270,7 @@ public class Wand : MonoBehaviour, IPickUpable
     {
         deck.Add(spellDict[name]);
     }
+    //TODO：扩充法术栏
     public void AddSpell(Spell spell, int index)
     {
         deck[index] = spell;

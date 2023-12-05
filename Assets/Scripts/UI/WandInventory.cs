@@ -8,7 +8,8 @@ using UnityEngine;
 public class WandInventory : MonoBehaviour
 {
     // Start is called before the first frame update
-    [SerializeField] List<WandSlot> slots;
+    public List<WandSlot> slots;
+    public List<WandPanel> wandPanels;
     private void Awake()
     {
         slots = GetComponentsInChildren<WandSlot>(true).ToList();
@@ -16,13 +17,18 @@ public class WandInventory : MonoBehaviour
     }
     public void Init(List<Wand> wands)
     {
-        UpdateUI(wands);
+        for (int i = 0; i < slots.Count; i++)
+        {
+            slots[i].Init(wands[i]);
+            wandPanels[i].Init(wands[i]);
+        }
     }
     public void UpdateUI(List<Wand> wands)
     {
-        for (int i = 0; i < wands.Count; i++)
+        for (int i = 0; i < slots.Count; i++)
         {
-            slots[i].Init(wands[i]);
+            slots[i].UpdateUI(wands[i]);
+            wandPanels[i].UpdateUI(wands[i]);
         }
     }
     public void SelectSlot(int index)

@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class SpellInventory : MonoBehaviour
 {
-    [SerializeField] List<SpellSlot> slots;
+    public List<SpellSlot> slots;
     [SerializeField] GameObject spellSlotPrefab;
     SpellSlot spellSlot;
     // private void Awake()

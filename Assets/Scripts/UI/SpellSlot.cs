@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+/// <summary>
+/// 交换法术UI位置
+/// </summary>
 public struct SwitchSpellPos
 {
     public int target;
     public int current;
+    public Wand wand;
+    public int index;
 }
 public interface ISlot<T>
 {
@@ -21,13 +26,14 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
     public Image image;
     public GameObject infoPrefab;
     public Transform lastParent;
+    public string parentTag;
+    public GameObject infoPanel;
     RectTransform rectTransform;
     Canvas canvas;
     GraphicRaycaster graphicRaycaster;
     List<RaycastResult> raycastResults = new List<RaycastResult>();
-    public GameObject infoPanel;
     bool isDraging = false;
-
+    WandPanel wandPanel;
     void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -35,6 +41,7 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
         graphicRaycaster = canvas.GetComponent<GraphicRaycaster>();
         lastParent = transform.parent;
         image = GetComponent<Image>();
+        parentTag = transform.parent.parent.tag;
     }
     public void Init(Spell spell)
     {
@@ -73,10 +80,12 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
             return;
         }
         lastParent = transform.parent;
+        transform.parent.parent.TryGetComponent<WandPanel>(out wandPanel);
         rectTransform.SetParent(canvas.transform, true);
         rectTransform.SetAsLastSibling();
         isDraging = true;
-        infoPanel?.SetActive(false);
+        if (infoPanel != null)
+            infoPanel.SetActive(false);
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -102,28 +111,55 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
             }
             if (raycastResults[idx].gameObject.CompareTag("SpellSlot"))
             {
+                //TODO：跨区域交换法术
+                if (!raycastResults[idx + 2].gameObject.CompareTag(parentTag))
+                {
+                    Debug.Log(raycastResults[idx + 2].gameObject.name);
+                    raycastResults[idx + 2].gameObject.TryGetComponent<WandPanel>(out WandPanel obj);
+                    wandPanel = obj == null ? wandPanel : obj;
+                }
+                Debug.Log(wandPanel);
                 var temp = raycastResults[idx].gameObject.GetComponent<SpellSlot>();
                 rectTransform.SetParent(temp.lastParent, false);
-                rectTransform.offsetMax = Vector2.zero;
-                rectTransform.offsetMin = Vector2.zero;
+                rectTransform.offsetMax = new Vector2(-10, -10);
+                rectTransform.offsetMin = new Vector2(10, 10);
 
                 temp.rectTransform.SetParent(lastParent, false);
-                temp.rectTransform.offsetMax = Vector2.zero;
-                rectTransform.offsetMin = Vector2.zero;
+                temp.rectTransform.offsetMax = new Vector2(-10, -10);
+                temp.rectTransform.offsetMin = new Vector2(10, 10);
                 temp.lastParent = temp.transform.parent;
-                MEventSystem.Instance.Send<SwitchSpellPos>(
-                    new SwitchSpellPos
-                    {
-                        target = temp.transform.parent.GetSiblingIndex(),
-                        current = transform.parent.GetSiblingIndex()
-                    }
-                );
+                //TODO:法杖之间的交换，法杖要扩充
+                if (parentTag == "WandPanel")
+                {
+                    Debug.Log("法术>仓库");
+                    MEventSystem.Instance.Send<SwitchSpellPos>(
+                                        new SwitchSpellPos
+                                        {
+                                            current = temp.transform.parent.GetSiblingIndex(),
+                                            target = transform.parent.GetSiblingIndex(),
+                                            wand = wandPanel == null ? null : wandPanel.wand
+                                        }
+                                    );
+                }
+                else
+                {
+                    Debug.Log("仓库>法术");
+                    MEventSystem.Instance.Send<SwitchSpellPos>(
+                                        new SwitchSpellPos
+                                        {
+                                            current = transform.parent.GetSiblingIndex(),
+                                            target = temp.transform.parent.GetSiblingIndex(),
+                                            wand = wandPanel == null ? null : wandPanel.wand
+                                        }
+                                    );
+                }
+
             }
             else if (raycastResults[idx].gameObject.CompareTag("SpellParentSlot"))
             {
                 rectTransform.SetParent(raycastResults[idx].gameObject.transform, false);
-                rectTransform.offsetMax = Vector2.zero;
-                rectTransform.offsetMin = Vector2.zero;
+                rectTransform.offsetMax = new Vector2(-10, -10);
+                rectTransform.offsetMin = new Vector2(10, 10);
                 MEventSystem.Instance.Send<SwitchSpellPos>(
                     new SwitchSpellPos
                     {
@@ -135,17 +171,18 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
             else
             {
                 rectTransform.SetParent(lastParent, false);
-                rectTransform.offsetMax = Vector2.zero;
-                rectTransform.offsetMin = Vector2.zero;
+                rectTransform.offsetMax = new Vector2(-10, -10);
+                rectTransform.offsetMin = new Vector2(10, 10);
             }
         }
         else
         {
             rectTransform.SetParent(lastParent, false);
-            rectTransform.offsetMax = Vector2.zero;
-            rectTransform.offsetMin = Vector2.zero;
+            rectTransform.offsetMax = new Vector2(-10, -10);
+            rectTransform.offsetMin = new Vector2(10, 10);
         }
         lastParent = transform.parent;
+        parentTag = transform.parent.parent.tag;
         raycastResults.Clear();
     }
 

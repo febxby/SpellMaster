@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 5324108664748195231}
   - component: {fileID: 1138970362341244989}
   - component: {fileID: 4646031957637054758}
-  - component: {fileID: -5874290358380068732}
-  - component: {fileID: 6212615618300365219}
+  - component: {fileID: 4961335658401583187}
+  - component: {fileID: -1618587393355243355}
   m_Layer: 11
-  m_Name: Wand
+  m_Name: Purple
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -49,8 +49,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spellConfigs: {fileID: 11400000, guid: daf2e9e5dccfa7343b825cb43f0471dc, type: 2}
-  wandName: "1\u53F7"
-  castDelay: 0.33
+  wandName: 1111
+  castDelay: 1
   maxMagic: 0
   magicRestoreRate: 0
   chargeTime: 0.33
@@ -62,8 +62,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   deck:
+  - {fileID: 11400000, guid: dc8bac369fcae2245ae926a1c4eb2440, type: 2}
   - {fileID: 11400000, guid: 722d8b7c77418f7439538aec4fea9e9b, type: 2}
-  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 11400000, guid: 722d8b7c77418f7439538aec4fea9e9b, type: 2}
   spriteRenderer: {fileID: 4646031957637054758}
@@ -110,7 +110,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: 7482667652216324306, guid: 3a32c54ab5ac00041a5d6733260e58b4, type: 3}
-  m_Color: {r: 0.8396226, g: 0.050694145, b: 0.050694145, a: 1}
+  m_Color: {r: 0.6529185, g: 0.050980408, b: 0.8392157, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -120,7 +120,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!50 &-5874290358380068732
+--- !u!50 &4961335658401583187
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -147,7 +147,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
---- !u!61 &6212615618300365219
+--- !u!61 &-1618587393355243355
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

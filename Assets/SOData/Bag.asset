@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6afb86e1dbd108b4e9766cef82e60834, type: 3}
-  m_Name: New Bag
+  m_Name: Bag
   m_EditorClassIdentifier: 
   maxWandCount: 4
-  maxSpellCount: 24
+  maxSpellCount: 21
   wands: []
   spells: []

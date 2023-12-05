@@ -83,14 +83,14 @@ public class Projectile : MonoBehaviour, ICast
                 direction = rb.velocity.normalized;
                 return;
             }
-            if (spell.isTrigger)
-            {
-                for (int i = 0; i < spell.spells.Count; i++)
-                {
-                    Vector2 newPosition = (Vector2)transform.position + Vector2.Reflect(direction, hit.normal) * Time.deltaTime;
-                    spell.spells[i].Cast(newPosition, other.transform.position, Vector2.Reflect(direction, hit.normal), spell.owner);
-                }
-            }
+            // if (spell.isTrigger)
+            // {
+            //     for (int i = 0; i < spell.spells.Count; i++)
+            //     {
+            //         Vector2 newPosition = (Vector2)transform.position + Vector2.Reflect(direction, hit.normal) * Time.deltaTime;
+            //         spell.spells[i].Cast(newPosition, other.transform.position, Vector2.Reflect(direction, hit.normal), spell.owner);
+            //     }
+            // }
             DestroyObject();
 
         }
@@ -103,6 +103,14 @@ public class Projectile : MonoBehaviour, ICast
     }
     private void DestroyObject()
     {
+        if (spell.isTrigger)
+        {
+            for (int i = 0; i < spell.spells.Count; i++)
+            {
+                Vector2 newPosition = (Vector2)transform.position + Vector2.Reflect(direction, hit.normal) * Time.deltaTime;
+                spell.spells[i].Cast(newPosition, transform.position, Vector2.Reflect(direction, hit.normal), spell.owner);
+            }
+        }
         foreach (var cast in spell.casts)
         {
             if (gameObject.TryGetComponent(cast.GetType(), out Component component))

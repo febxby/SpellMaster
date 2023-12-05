@@ -12,6 +12,8 @@ TagManager:
   - SpellParentSlot
   - WandParentSlot
   - SpellSlot
+  - SpellInventory
+  - WandPanel
   layers:
   - Default
   - TransparentFX

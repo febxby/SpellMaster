@@ -54,6 +54,20 @@ public class WandSlot : MonoBehaviour, IDragable, IShowable
         }
 
     }
+    public void UpdateUI(Wand wand)
+    {
+        this.wand = wand;
+        if (wand != null)
+        {
+            image.sprite = wand.spriteRenderer.sprite;
+            image.color = wand.spriteRenderer.color;
+        }
+        else
+        {
+            image.sprite = null;
+            image.color = Color.clear;
+        }
+    }
     private void Start()
     {
         // if (wand != null)
@@ -87,7 +101,8 @@ public class WandSlot : MonoBehaviour, IDragable, IShowable
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        infoPanel?.SetActive(true);
+        if (infoPanel != null)
+            infoPanel.SetActive(true);
         isDraging = false;
         graphicRaycaster.Raycast(eventData, raycastResults);
         if (raycastResults.Count > 0)
@@ -101,12 +116,12 @@ public class WandSlot : MonoBehaviour, IDragable, IShowable
             {
                 var temp = raycastResults[idx].gameObject.GetComponent<WandSlot>();
                 rectTransform.SetParent(temp.lastParent, false);
-                rectTransform.offsetMax = Vector2.zero;
-                rectTransform.offsetMin = Vector2.zero;
+                rectTransform.offsetMax = new Vector2(-10, -10);
+                rectTransform.offsetMin = new Vector2(10, 10);
 
                 temp.rectTransform.SetParent(lastParent, false);
-                temp.rectTransform.offsetMax = Vector2.zero;
-                temp.rectTransform.offsetMin = Vector2.zero;
+                temp.rectTransform.offsetMax = new Vector2(-10, -10);
+                temp.rectTransform.offsetMin = new Vector2(10, 10);
                 temp.lastParent = temp.transform.parent;
                 MEventSystem.Instance.Send<SwitchWandPos>(
                     new SwitchWandPos
@@ -120,8 +135,8 @@ public class WandSlot : MonoBehaviour, IDragable, IShowable
             else if (raycastResults[idx].gameObject.CompareTag("WandParentSlot"))
             {
                 rectTransform.SetParent(raycastResults[idx].gameObject.transform, false);
-                rectTransform.offsetMax = Vector2.zero;
-                rectTransform.offsetMin = Vector2.zero;
+                rectTransform.offsetMax = new Vector2(-10, -10);
+                rectTransform.offsetMin = new Vector2(10, 10);
                 MEventSystem.Instance.Send<SwitchWandPos>(
                     new SwitchWandPos
                     {
@@ -133,9 +148,8 @@ public class WandSlot : MonoBehaviour, IDragable, IShowable
             else
             {
                 rectTransform.SetParent(lastParent, false);
-                rectTransform.offsetMax = Vector2.zero;
-                rectTransform.offsetMin = Vector2.zero;
-
+                rectTransform.offsetMax = new Vector2(-10, -10);
+                rectTransform.offsetMin = new Vector2(10, 10);
                 // rectTransform.SetParent(parentRectTransform, true);
                 // rectTransform.SetSiblingIndex(index);
             }
@@ -143,8 +157,8 @@ public class WandSlot : MonoBehaviour, IDragable, IShowable
         else
         {
             rectTransform.SetParent(lastParent, false);
-            rectTransform.offsetMax = Vector2.zero;
-            rectTransform.offsetMin = Vector2.zero;
+                rectTransform.offsetMax = new Vector2(-10, -10);
+                rectTransform.offsetMin = new Vector2(10, 10);
         }
         lastParent = transform.parent;
         raycastResults.Clear();
@@ -152,6 +166,8 @@ public class WandSlot : MonoBehaviour, IDragable, IShowable
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (isDraging)
+            return;
         MEventSystem.Instance.Send<ChangeCastWand>(
             new ChangeCastWand { index = transform.parent.GetSiblingIndex() }
         );
