@@ -36,28 +36,28 @@ public class EditorPanelController : MonoBehaviour
             {
                 (inventoryModel.wands[e.current], inventoryModel.wands[e.target]) =
                 (inventoryModel.wands[e.target], inventoryModel.wands[e.current]);
-                (wandInventory.slots[e.current], wandInventory.slots[e.target]) =
-                (wandInventory.slots[e.target], wandInventory.slots[e.current]);
+                // (wandInventory.slots[e.current], wandInventory.slots[e.target]) =
+                // (wandInventory.slots[e.target], wandInventory.slots[e.current]);
                 MEventSystem.Instance.Send(new ChangeCastWand { index = e.current });
             }
         ).UnRegisterWhenGameObjectDestroy(gameObject);
         MEventSystem.Instance.Register<SwitchSpellPos>(
             e =>
             {
-                if (e.wand != null)
-                {
-                    Spell temp = e.wand.mDeck[e.current];
-                    e.wand.AddSpell(inventoryModel.spells[e.target], e.current);
-                    Debug.Log(temp.name);
-                    inventoryModel.spells[e.target] = temp;
-                }
-                else
-                {
-                    (inventoryModel.spells[e.current], inventoryModel.spells[e.target]) =
-                    (inventoryModel.spells[e.target], inventoryModel.spells[e.current]);
-                    (spellInventory.slots[e.current], spellInventory.slots[e.target]) =
-                    (spellInventory.slots[e.target], spellInventory.slots[e.current]);
-                }
+                // if (e != null)
+                // // {
+                // //     Spell temp = e.wand.mDeck[e.current];
+                // //     e.wand.AddSpell(inventoryModel.spells[e.target], e.current);
+                // //     inventoryModel.spells[e.target] = temp;
+                // //     //TODO:法术仓库的UI也要更新
+                // }
+                // else
+                // {
+                //     (inventoryModel.spells[e.current], inventoryModel.spells[e.target]) =
+                //     (inventoryModel.spells[e.target], inventoryModel.spells[e.current]);
+                //     (spellInventory.slots[e.current], spellInventory.slots[e.target]) =
+                //     (spellInventory.slots[e.target], spellInventory.slots[e.current]);
+                // }
             }
         ).UnRegisterWhenGameObjectDestroy(gameObject);
 
@@ -72,7 +72,9 @@ public class EditorPanelController : MonoBehaviour
     void Start()
     {
         wandInventory.Init(inventoryModel.wands);
-        spellInventory.Init(inventoryModel.spells);
+        spellInventory.Init(inventoryModel.spells,
+        (index, spell) => inventoryModel.Add<Spell>(spell, index),
+        (index) => inventoryModel.GetSpell(index));
         MEventSystem.Instance.Register<AddWand>(
         e =>
         {
@@ -82,7 +84,9 @@ public class EditorPanelController : MonoBehaviour
         MEventSystem.Instance.Register<AddSpell>(
         e =>
         {
-            spellInventory.UpdateUI(inventoryModel.spells);
+            spellInventory.UpdateUI(inventoryModel.spells,
+            (index, spell) => inventoryModel.Add<Spell>(spell, index),
+            (index) => inventoryModel.GetSpell(index));
         }
         ).UnRegisterWhenGameObjectDestroy(gameObject);
     }

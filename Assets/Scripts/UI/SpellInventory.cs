@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,22 +15,23 @@ public class SpellInventory : MonoBehaviour
     // {
     //     slots = GetComponentsInChildren<SpellSlot>(true).ToList();
     // }
-    public void Init(List<Spell> spells)
+    public void Init(List<Spell> spells, Action<int, Spell> action, Func<int, Spell> func)
     {
         slots = new List<SpellSlot>(spells.Count);
         for (int i = 0; i < spells.Count; i++)
         {
             spellSlot = Instantiate(spellSlotPrefab, transform).GetComponentInChildren<SpellSlot>();
-            spellSlot.Init(spells[i]);
+            spellSlot.Init(spells[i]).SetParentObj(spells).AddDelegate(action, func);
             slots.Add(spellSlot);
         }
         transform.parent.gameObject.SetActive(false);
     }
-    public void UpdateUI(List<Spell> spells)
+    public void UpdateUI(List<Spell> spells, Action<int, Spell> action, Func<int, Spell> func)
     {
+        slots = GetComponentsInChildren<SpellSlot>(true).ToList();
         for (int i = 0; i < spells.Count; i++)
         {
-            slots[i].Init(spells[i]);
+            slots[i].Init(spells[i]).SetParentObj(spells).AddDelegate(action, func);
         }
     }
     void Start()

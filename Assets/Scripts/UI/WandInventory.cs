@@ -19,16 +19,23 @@ public class WandInventory : MonoBehaviour
     {
         for (int i = 0; i < slots.Count; i++)
         {
+            int idx = i;
             slots[i].Init(wands[i]);
-            wandPanels[i].Init(wands[i]);
+            wandPanels[i].Init(wands[i],
+            (index, spell) => wands[idx][index] = spell,
+            (index) => wands[idx][index]);
         }
     }
     public void UpdateUI(List<Wand> wands)
     {
+        slots = GetComponentsInChildren<WandSlot>(true).ToList();
         for (int i = 0; i < slots.Count; i++)
         {
+            int idx = i;
             slots[i].UpdateUI(wands[i]);
-            wandPanels[i].UpdateUI(wands[i]);
+            wandPanels[i].UpdateUI(wands[i],
+            (index, spell) => wands[idx][index] = spell,
+            (index) => wands[idx][index]);
         }
     }
     public void SelectSlot(int index)

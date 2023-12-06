@@ -8,8 +8,8 @@ public class InventoryModel : ScriptableObject
 {
     [SerializeField] private int maxWandCount = 4;
     [SerializeField] private int maxSpellCount = 24;
-    public int wandCount=>maxWandCount;
-    public int spellCount=>maxSpellCount;
+    public int wandCount => maxWandCount;
+    public int spellCount => maxSpellCount;
     public List<Wand> wands;
     public List<Spell> spells;
     PriorityQueue<int> nullSpellIndices;
@@ -35,41 +35,58 @@ public class InventoryModel : ScriptableObject
             nullSpellIndices.Enqueue(i);
         }
     }
+    /// <summary>
+    /// 往最近的一个空位添加
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns>是否有空位</returns>
     public bool Add<T>(T obj)
     {
-        if (obj is Wand wand)
+        var type = typeof(T);
+        if (type == typeof(Wand))
         {
-            return AddWand(wand, -1);
+            return AddWand(obj as Wand, -1);
         }
-        else if (obj is Spell spell)
+        else if (type == typeof(Spell))
         {
-            return AddSpell(spell, -1);
+            return AddSpell(obj as Spell, -1);
         }
         return false;
     }
+    /// <summary>
+    /// 往索引处添加
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="index">索引为-1往最近的空位添加</param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns>是否有空位</returns>
     public bool Add<T>(T obj, int index)
     {
-        if (obj is Wand wand)
+        var type = typeof(T);
+        if (type == typeof(Wand))
         {
-            return AddWand(wand, index);
+            return AddWand(obj as Wand, index);
         }
-        else if (obj is Spell spell)
+        else if (type == typeof(Spell))
         {
-            return AddSpell(spell, index);
+            return AddSpell(obj as Spell, index);
         }
         return false;
     }
-    public void Remove<T>(T obj, int index)
+    public void Remove<T>(int index)
     {
-        if (obj is Wand wand)
+        var type = typeof(T);
+        if (type == typeof(Wand))
         {
-            RemoveWand(wand, index);
+            RemoveWand(index);
         }
-        else if (obj is Spell spell)
+        else if (type == typeof(Spell))
         {
-            RemoveSpell(spell, index);
+            RemoveSpell(index);
         }
     }
+
     public bool AddWand(Wand wand, int index)
     {
         if (index >= maxWandCount || index < -1)
@@ -84,9 +101,12 @@ public class InventoryModel : ScriptableObject
                 return false;
             }
         }
+        if (wand == null)
+            nullSpellIndices.Enqueue(index);
         wands[index] = wand;
         return true;
     }
+
     public bool AddSpell(Spell spell, int index)
     {
         if (index >= maxSpellCount || index < -1)
@@ -101,19 +121,34 @@ public class InventoryModel : ScriptableObject
                 return false;
             }
         }
+        if (spell == null)
+            nullSpellIndices.Enqueue(index);
         spells[index] = spell;
         return true;
     }
-    public void RemoveSpell(Spell spell, int index)
+    public void RemoveSpell(int index)
     {
         nullSpellIndices.Enqueue(index);
         spells[index] = null;
     }
 
-    public void RemoveWand(Wand wand, int index)
+    public void RemoveWand(int index)
     {
         nullWandIndices.Enqueue(index);
         wands[index] = null;
+    }
+    //Get方法，根据索引返回Wand或Spell
+    public Spell GetSpell(int index)
+    {
+        if (index >= maxSpellCount || index < 0)
+            return null;
+        return spells[index];
+    }
+    public Wand GetWand(int index)
+    {
+        if (index >= maxWandCount || index < 0)
+            return null;
+        return wands[index];
     }
 
     public void Clear()

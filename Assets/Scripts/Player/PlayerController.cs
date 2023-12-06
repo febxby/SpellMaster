@@ -84,23 +84,27 @@ public class PlayerController : MonoBehaviour
         MEventSystem.Instance.Register<ChangeCastWand>(
             e =>
             {
-                if (e.index < 0 || e.index >= inventoryModel.wands.Count)
-                {
-                    currentWand = null;
-                    return;
-                }
-                if (currentWand != null && currentWand != inventoryModel.wands[e.index])
-                {
-                    currentWand.gameObject.SetActive(false);
-                }
-                currentWand = inventoryModel.wands[e.index];
-                if (currentWand != null)
-                {
-                    currentWand.gameObject.SetActive(true);
-                }
+                ChangeCastWand(e.index);
 
             }
         ).UnRegisterWhenGameObjectDestroy(gameObject);
+    }
+    public void ChangeCastWand(int index)
+    {
+        if (index < 0 || index >= inventoryModel.wands.Count)
+        {
+            currentWand = null;
+            return;
+        }
+        if (currentWand != null && currentWand != inventoryModel.wands[index])
+        {
+            currentWand.gameObject.SetActive(false);
+        }
+        currentWand = inventoryModel.wands[index];
+        if (currentWand != null)
+        {
+            currentWand.gameObject.SetActive(true);
+        }
     }
     void Start()
     {
@@ -162,14 +166,16 @@ public class PlayerController : MonoBehaviour
         else
         {
             MEventSystem.Instance.Send<AddWand>();
-            if (currentWand != null)
-            {
-                currentWand.gameObject.SetActive(false);
-            }
+            MEventSystem.Instance.Send<ChangeCastWand>(
+                new ChangeCastWand { index = inventoryModel.wands.IndexOf(wand) });
+            // if (currentWand != null)
+            // {
+            //     currentWand.gameObject.SetActive(false);
+            // }
             wand.gameObject.layer = LayerMask.NameToLayer("Wand");
             wand.transform.SetParent(transform);
             wand.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-            currentWand = wand;
+            // currentWand = wand;
 
         }
     }
@@ -180,7 +186,7 @@ public class PlayerController : MonoBehaviour
         {
             if (pickUpable is Wand wand)
             {
-                    AddWandToInventory(wand);
+                AddWandToInventory(wand);
             }
             else if (pickUpable is DropItem item)
             {
@@ -190,7 +196,6 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
-                    //TODO：添加法术
                     MEventSystem.Instance.Send<AddSpell>(new AddSpell { spell = item.spell });
                 }
                 GameObjectPool.Instance.PushObject(item.gameObject);
@@ -221,5 +226,14 @@ public class PlayerController : MonoBehaviour
         if (!other.TryGetComponent<IPickUpable>(out var obj))
             return;
         pickUpable = null;
+    }
+    private void OnGUI()
+    {
+        GUIStyle style = new GUIStyle();
+        style.fontSize = 25;
+        style.normal.textColor = Color.black;
+        GUI.Label(new Rect(10, 10, 200, 20), "Current Spell Index: " + currentWand.CurrentSpellIndex.ToString(), style);
+        if (currentWand.CastSpell != null)
+            GUI.Label(new Rect(10, 30, 200, 20), "Current Charge Time: " + currentWand.CastSpell.name.ToString(), style);
     }
 }

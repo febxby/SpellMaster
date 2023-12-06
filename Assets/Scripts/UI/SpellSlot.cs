@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,8 +11,8 @@ public struct SwitchSpellPos
 {
     public int target;
     public int current;
-    public Wand wand;
-    public int index;
+    public List<Spell> targetList;
+    public List<Spell> currentList;
 }
 public interface ISlot<T>
 {
@@ -34,6 +35,9 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
     List<RaycastResult> raycastResults = new List<RaycastResult>();
     bool isDraging = false;
     WandPanel wandPanel;
+    public List<Spell> ownerList;
+    public Action<int, Spell> SetFunc;
+    public Func<int, Spell> GetFunc;
     void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -43,7 +47,18 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
         image = GetComponent<Image>();
         parentTag = transform.parent.parent.tag;
     }
-    public void Init(Spell spell)
+    public SpellSlot SetParentObj(List<Spell> spells)
+    {
+        ownerList = spells;
+        return this;
+    }
+    public SpellSlot AddDelegate(Action<int, Spell> setFunc, Func<int, Spell> getFunc)
+    {
+        SetFunc = setFunc;
+        GetFunc = getFunc;
+        return this;
+    }
+    public SpellSlot Init(Spell spell)
     {
         this.spell = spell;
         if (spell != null)
@@ -56,6 +71,7 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
             image.sprite = null;
             image.color = Color.clear;
         }
+        return this;
 
     }
     private void Start()
@@ -111,14 +127,6 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
             }
             if (raycastResults[idx].gameObject.CompareTag("SpellSlot"))
             {
-                //TODO：跨区域交换法术
-                if (!raycastResults[idx + 2].gameObject.CompareTag(parentTag))
-                {
-                    Debug.Log(raycastResults[idx + 2].gameObject.name);
-                    raycastResults[idx + 2].gameObject.TryGetComponent<WandPanel>(out WandPanel obj);
-                    wandPanel = obj == null ? wandPanel : obj;
-                }
-                Debug.Log(wandPanel);
                 var temp = raycastResults[idx].gameObject.GetComponent<SpellSlot>();
                 rectTransform.SetParent(temp.lastParent, false);
                 rectTransform.offsetMax = new Vector2(-10, -10);
@@ -128,45 +136,13 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
                 temp.rectTransform.offsetMax = new Vector2(-10, -10);
                 temp.rectTransform.offsetMin = new Vector2(10, 10);
                 temp.lastParent = temp.transform.parent;
-                //TODO:法杖之间的交换，法杖要扩充
-                if (parentTag == "WandPanel")
-                {
-                    Debug.Log("法术>仓库");
-                    MEventSystem.Instance.Send<SwitchSpellPos>(
-                                        new SwitchSpellPos
-                                        {
-                                            current = temp.transform.parent.GetSiblingIndex(),
-                                            target = transform.parent.GetSiblingIndex(),
-                                            wand = wandPanel == null ? null : wandPanel.wand
-                                        }
-                                    );
-                }
-                else
-                {
-                    Debug.Log("仓库>法术");
-                    MEventSystem.Instance.Send<SwitchSpellPos>(
-                                        new SwitchSpellPos
-                                        {
-                                            current = transform.parent.GetSiblingIndex(),
-                                            target = temp.transform.parent.GetSiblingIndex(),
-                                            wand = wandPanel == null ? null : wandPanel.wand
-                                        }
-                                    );
-                }
-
-            }
-            else if (raycastResults[idx].gameObject.CompareTag("SpellParentSlot"))
-            {
-                rectTransform.SetParent(raycastResults[idx].gameObject.transform, false);
-                rectTransform.offsetMax = new Vector2(-10, -10);
-                rectTransform.offsetMin = new Vector2(10, 10);
-                MEventSystem.Instance.Send<SwitchSpellPos>(
-                    new SwitchSpellPos
-                    {
-                        target = raycastResults[idx].gameObject.transform.GetSiblingIndex(),
-                        current = transform.parent.GetSiblingIndex()
-                    }
-                );
+                var tempIndex = temp.transform.parent.GetSiblingIndex();
+                var thisIndex = transform.parent.GetSiblingIndex();
+                var spell = temp.GetFunc(thisIndex);
+                temp.SetFunc(thisIndex, GetFunc(tempIndex));
+                SetFunc(tempIndex, spell);
+                (SetFunc, temp.SetFunc) = (temp.SetFunc, SetFunc);
+                (GetFunc, temp.GetFunc) = (temp.GetFunc, GetFunc);
             }
             else
             {

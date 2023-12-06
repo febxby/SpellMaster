@@ -101,14 +101,18 @@ public class Projectile : MonoBehaviour, ICast
 
         }
     }
-    private void DestroyObject()
+    private void DestroyObject(bool isNatural = false)
     {
         if (spell.isTrigger)
         {
             for (int i = 0; i < spell.spells.Count; i++)
             {
-                Vector2 newPosition = (Vector2)transform.position + Vector2.Reflect(direction, hit.normal) * Time.deltaTime;
-                spell.spells[i].Cast(newPosition, transform.position, Vector2.Reflect(direction, hit.normal), spell.owner);
+                //TODO:这里的位置计算有问题
+                Vector2 newPosition = (Vector2)transform.position + Vector2.Reflect(direction, hit.normal) * 2;
+                if (!isNatural)
+                    spell.spells[i].Cast(newPosition, transform.position, Vector2.Reflect(direction, hit.normal), spell.owner);
+                else
+                    spell.spells[i].Cast(newPosition, transform.position, rb.velocity.normalized, spell.owner);
             }
         }
         foreach (var cast in spell.casts)
@@ -135,11 +139,14 @@ public class Projectile : MonoBehaviour, ICast
     IEnumerator Disable()
     {
         yield return new WaitForSeconds(spell.lifeTime);
-        DestroyObject();
+        DestroyObject(true);
 
     }
 
-
+    void OnDisable()
+    {
+        StopAllCoroutines();
+    }
     // private void OnTriggerEnter(Collider other)
     // {
     //     Debug.Log(other.name);

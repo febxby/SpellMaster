@@ -12,7 +12,6 @@ public class InfoPanelController : MonoBehaviour
     [SerializeField] Canvas canvas;
     [SerializeField] GameObject wandInfoPanelPrefab;
     [SerializeField] GameObject spellInfoPanelPrefab;
-    //TODO:完善属性面板显示
     void Awake()
     {
         MEventSystem.Instance.Register<ShowInfoPanel>(

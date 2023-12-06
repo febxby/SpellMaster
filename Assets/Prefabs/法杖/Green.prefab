@@ -62,9 +62,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   deck:
+  - {fileID: 11400000, guid: 9bbf0b7ca837a6643ad66a91a763e926, type: 2}
+  - {fileID: 11400000, guid: 2140e09dbcac26a47a65d8efcb0caa83, type: 2}
   - {fileID: 11400000, guid: 528b2070a32578d479d2f75397d5d5df, type: 2}
+  - {fileID: 11400000, guid: dd9f0111c90742a4fa570786264e3a6a, type: 2}
   - {fileID: 11400000, guid: 722d8b7c77418f7439538aec4fea9e9b, type: 2}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 722d8b7c77418f7439538aec4fea9e9b, type: 2}
   spriteRenderer: {fileID: 4646031957637054758}
   isCharging: 0
 --- !u!212 &4646031957637054758

@@ -42,6 +42,23 @@ public class Wand : MonoBehaviour, IPickUpable
     public UnityEvent<float> chargeEvent;
 
     [SerializeField] List<Spell> deck;
+    public Spell this[int index]
+    {
+        get { return deck[index]; }
+        set
+        {
+            if (deck[index] != null)
+            {
+                nonNullSpellCount--;
+            }
+            if (value != null)
+            {
+                nonNullSpellCount++;
+            }
+            currentSpellIndex = 0;
+            deck[index] = value;
+        }
+    }
     public List<Spell> mDeck => deck;
     public string mWandName => wandName;
     public int mDrawCount => drawCount;
@@ -53,6 +70,8 @@ public class Wand : MonoBehaviour, IPickUpable
     public int mCapacity => capacity;
 
     public SpriteRenderer spriteRenderer;
+    public int CurrentSpellIndex => currentSpellIndex;
+    public Spell CastSpell => castSpell;
     bool[] hand;
     bool[] discard;
     Modify modify;
@@ -69,6 +88,8 @@ public class Wand : MonoBehaviour, IPickUpable
     Spell castSpell;
     BoxCollider2D boxCollider2D;
     Rigidbody2D rb;
+    int usedSpellCount = 0;
+    int nonNullSpellCount = 0;
     private void Awake()
     {
         boxCollider2D = GetComponent<BoxCollider2D>();
@@ -81,20 +102,24 @@ public class Wand : MonoBehaviour, IPickUpable
         {
             spellDict.Add(spell.spellName, spell);
         }
-        deck ??= new List<Spell>(capacity);
-        // for (int i = 0; i < capacity; i++)
-        // {
-        //     if (i < deck.Count)
-        //         continue;
-        //     deck.Add(spellDict["火球"]);
-        // }
-        // AddSpell("双重施法");
-        // AddSpell("火球");
-        // AddSpell("火球");
-
+        // deck ??= new List<Spell>(capacity);
+        for (int i = 0; i < capacity; i++)
+        {
+            if (i < deck.Count)
+                continue;
+            deck.Add(null);
+        }
         discard = new bool[deck.Count];
         hand = new bool[deck.Count];
         spriteRenderer = GetComponent<SpriteRenderer>();
+        //初始化非空法术
+        for (int i = 0; i < deck.Count; i++)
+        {
+            if (deck[i] != null)
+            {
+                nonNullSpellCount++;
+            }
+        }
     }
     public bool AddSpell(Spell spell)
     {
@@ -132,10 +157,10 @@ public class Wand : MonoBehaviour, IPickUpable
         }
         if (castSpell != null)
         {
+            //修改法术属性
             Modify(castSpell, ref modify);
             castSpell.Cast(castPoint.position, pos, (pos - (Vector2)castPoint.position).normalized, this.tag);
         }
-        //修改法术属性
 
         //每次施法后设置施法延迟
         currentCastDelay += castDelay;
@@ -148,13 +173,30 @@ public class Wand : MonoBehaviour, IPickUpable
             discard[i] = true;
             hand[i] = false;
         }
+        //如果所有法术已使用并且法术未在充能则进行充能
+        EnterCharge();
+
         //重置修正属性
         modify = defaultModify;
         childModify = defaultModify;
         // hand.Add(spell);
         // Debug.Log("Casting");
     }
-
+    public void EnterCharge()
+    {
+        if (usedSpellCount == nonNullSpellCount && !isCharging)
+        {
+            for (int i = 0; i < discard.Length; i++)
+            {
+                discard[i] = false;
+            }
+            currentChargeTime += chargeTime;
+            currentSpellIndex = 0;
+            lastChargeTime = Time.time;
+            isCharging = true;
+            usedSpellCount = 0; // 重置计数器的值
+        }
+    }
     public void PreLoad(Spell spell, ref Modify modify)
     {
 
@@ -171,7 +213,7 @@ public class Wand : MonoBehaviour, IPickUpable
         for (int i = 0; i < spell.drawCount; i++)
         {
             //如果当前索引超过持有法术数量
-            if (currentSpellIndex >= deck.Count)
+            if (usedSpellCount + 1 >= nonNullSpellCount)
             {
                 //判断弃牌区是否有法术
                 if (!IsDiscardHasSpell())
@@ -226,7 +268,7 @@ public class Wand : MonoBehaviour, IPickUpable
         {
             PreLoad(currentSpell, ref modify);
         }
-
+        usedSpellCount++;
         return currentSpell;
     }
     public void Modify(Spell spell, ref Modify modify)
@@ -260,6 +302,16 @@ public class Wand : MonoBehaviour, IPickUpable
                 break;
         }
 
+    }
+    public void CheckNullVal()
+    {
+        for (int i = 0; i < deck.Count; i++)
+        {
+            if (deck[i] == null)
+            {
+                discard[i] = true;
+            }
+        }
     }
     public void ResetList()
     {
@@ -297,7 +349,8 @@ public class Wand : MonoBehaviour, IPickUpable
     {
         for (int i = 0; i < discard.Length; i++)
         {
-            discard[i] = false;
+            if (deck[i] != null)
+                discard[i] = false;
         }
     }
     public void GetChargeStatus()
@@ -348,21 +401,22 @@ public class Wand : MonoBehaviour, IPickUpable
             }
         }
         //如果所有法术已使用并且法术未在充能则进行充能
-        if (Array.TrueForAll(discard, x => x == true) && !isCharging)
-        {
-            for (int i = 0; i < discard.Length; i++)
-            {
-                discard[i] = false;
-            }
-            currentChargeTime += chargeTime;
-            currentSpellIndex = 0;
-            lastChargeTime = Time.time;
-            isCharging = true;
-        }
+        // if (Array.TrueForAll(discard, x => x == true) && !isCharging)
+        // {
+        //     for (int i = 0; i < discard.Length; i++)
+        //     {
+        //         discard[i] = false;
+        //     }
+        //     currentChargeTime += chargeTime;
+        //     currentSpellIndex = 0;
+        //     lastChargeTime = Time.time;
+        //     isCharging = true;
+        // }
     }
 
     public bool CanPickUp(GameObject gameObject)
     {
         return gameObject.CompareTag("Player") || gameObject.CompareTag("Enemy");
     }
+
 }
