@@ -234,7 +234,6 @@ public class Wand : MonoBehaviour, IPickUpable
 
     public Spell Draw(ref Modify modify)
     {
-        // Debug.Log(deck.Count);
         //如果当前索引超过持有法术数量
         if (currentSpellIndex >= deck.Count)
         {

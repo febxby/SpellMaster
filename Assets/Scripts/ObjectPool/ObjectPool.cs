@@ -25,7 +25,6 @@ public class ObjectPool<T> where T : class, new()
             {
                 return new T();
             }
-        Debug.Log("出栈" + typeof(T) + GetType());
         return objectPool.Dequeue();
     }
     public void PushObject(T obj)
@@ -36,7 +35,6 @@ public class ObjectPool<T> where T : class, new()
             return;
         if (objectPool.Contains(obj))
             return;
-        Debug.Log("入栈" + typeof(T) + GetType());
         objectPool.Enqueue(obj);
     }
     public void ResetObject()
