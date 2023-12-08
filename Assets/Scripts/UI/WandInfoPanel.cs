@@ -24,22 +24,22 @@ public class WandInfoPanel : MonoBehaviour
         SetPosition(eventData.position);
         wandSprite.sprite = wand.spriteRenderer.sprite;
         wandSprite.color = wand.spriteRenderer.color;
-        castDelay.text = wand.mCastDelay.ToString();
-        chargeTime.text = wand.mChargeTime.ToString();
-        maxMagic.text = wand.mMaxMagic.ToString();
-        drawCount.text = wand.mDrawCount.ToString();
-        spread.text = wand.mSpread.ToString();
-        capacity.text = wand.mCapacity.ToString();
-        magicRestoreRate.text = wand.mMagicRestoreRate.ToString();
-        wandName.text = wand.mWandName;
-        for (int i = 0; i < wand.mCapacity; i++)
+        castDelay.text = wand.CastDelay.ToString();
+        chargeTime.text = wand.ChargeTime.ToString();
+        maxMagic.text = wand.MaxMagic.ToString();
+        drawCount.text = wand.DrawCount.ToString();
+        spread.text = wand.Spread.ToString();
+        capacity.text = wand.Capacity.ToString();
+        magicRestoreRate.text = wand.MagicRestoreRate.ToString();
+        wandName.text = wand.WandName;
+        for (int i = 0; i < wand.Capacity; i++)
         {
             // var obj = new GameObject("Spell", typeof(RectTransform), typeof(Image));
             GameObject obj = Instantiate(spellSlotPrefab, spells.transform);
-            if (i < wand.mDeck.Count)
-                if (wand.mDeck[i] != null)
+            if (i < wand.Deck.Count)
+                if (wand.Deck[i] != null)
                 {
-                    obj.GetComponentInChildren<SpellSlot>().Init(wand.mDeck[i]);
+                    obj.GetComponentInChildren<SpellSlot>().Init(wand.Deck[i]);
                 }
         }
 

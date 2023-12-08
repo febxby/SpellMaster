@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
+using System;
 using UnityEngine;
 /// <summary>
 /// 切换使用的法杖
@@ -49,6 +46,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float acceleration = 5f;
     [SerializeField] GameObject pickUpPanel;
     [SerializeField] IPickUpable pickUpable;
+    [SerializeField] float pickUpCooldown = 0.5f;
+    float lastPickUpTime = -1f;
     InventoryModel inventoryModel;
     Rigidbody2D rb;
     Vector2 moveDirection;
@@ -182,6 +181,9 @@ public class PlayerController : MonoBehaviour
     public void PickUp()
     {
         if (pickUpable is null) return;
+        if (Time.time < lastPickUpTime + pickUpCooldown)
+            return;
+        lastPickUpTime = Time.time;
         if (pickUpable.CanPickUp(gameObject))
         {
             if (pickUpable is Wand wand)
@@ -192,6 +194,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (!inventoryModel.Add(obj: item.spell))
                 {
+
                     // pickUpPanel.SetActive(true);
                 }
                 else
@@ -235,5 +238,12 @@ public class PlayerController : MonoBehaviour
         GUI.Label(new Rect(10, 10, 200, 20), "Current Spell Index: " + currentWand.CurrentSpellIndex.ToString(), style);
         if (currentWand.CastSpell != null)
             GUI.Label(new Rect(10, 30, 200, 20), "Current Charge Time: " + currentWand.CastSpell.name.ToString(), style);
+        GUI.Label(new Rect(10, 50, 200, 20), "Current UsedSpellCount: " + currentWand.UsedSpellCount.ToString(), style);
+        GUI.Label(new Rect(10, 70, 200, 20), "Current NoNullSpellCount: " + currentWand.NonNullSpellCount.ToString(), style);
+        GUI.Label(new Rect(10, 90, 200, 20), "Divide数量：" + ObjectPoolFactory.Instance.GetPoolCount<Divide>(), style);
+        GUI.Label(new Rect(10, 110, 200, 20), "Formation数量：" + ObjectPoolFactory.Instance.GetPoolCount<Formation>(), style);
+        GUI.Label(new Rect(10, 130, 200, 20), "MultiCast数量：" + ObjectPoolFactory.Instance.GetPoolCount<MultiCast>(), style);
+        GUI.Label(new Rect(10, 150, 200, 20), "Spell数量：" + ObjectPoolFactory.Instance.GetPoolCount<Spell>(), style);
+        GUI.Label(new Rect(10, 170, 200, 20), "DivideModifier数量：" + ObjectPoolFactory.Instance.GetPoolCount<DivideModifier>(), style);
     }
 }

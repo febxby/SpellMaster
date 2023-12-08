@@ -32,14 +32,14 @@ public class WandPanel : MonoBehaviour, IShowable
             spellSlots = GetComponentsInChildren<SpellSlot>(true).ToList();
             return;
         }
-        for (int i = 0; i < wand.mCapacity; i++)
+        for (int i = 0; i < wand.Capacity; i++)
         {
             GameObject obj = Instantiate(spellSlotPrefab, spells.transform);
             // if (i < wand.mDeck.Count)
-            if (wand.mDeck[i] != null)
-                obj.GetComponentInChildren<SpellSlot>().Init(wand.mDeck[i]).SetParentObj(wand.mDeck).AddDelegate(action, func);
+            if (wand.Deck[i] != null)
+                obj.GetComponentInChildren<SpellSlot>().Init(wand.Deck[i]).SetParentObj(wand.Deck).AddDelegate(action, func);
             else
-                obj.GetComponentInChildren<SpellSlot>().Init(null).SetParentObj(wand.mDeck).AddDelegate(action, func);
+                obj.GetComponentInChildren<SpellSlot>().Init(null).SetParentObj(wand.Deck).AddDelegate(action, func);
         }
         spellSlots = GetComponentsInChildren<SpellSlot>(true).ToList();
     }
@@ -60,14 +60,14 @@ public class WandPanel : MonoBehaviour, IShowable
         }
 
         if (spellSlots != null)
-            if (spellSlots.Count > wand.mCapacity)
+            if (spellSlots.Count > wand.Capacity)
             {
                 for (int i = 0; i < spellSlots.Count; i++)
                 {
-                    if (i < wand.mCapacity)
+                    if (i < wand.Capacity)
                     {
                         spellSlots[i].gameObject.SetActive(true);
-                        spellSlots[i].Init(wand.mDeck[i]).SetParentObj(wand.mDeck).AddDelegate(action, func);
+                        spellSlots[i].Init(wand.Deck[i]).SetParentObj(wand.Deck).AddDelegate(action, func);
                     }
                     else
                         spellSlots[i].gameObject.SetActive(false);
@@ -75,26 +75,26 @@ public class WandPanel : MonoBehaviour, IShowable
             }
             else
             {
-                for (int i = 0; i < wand.mCapacity; i++)
+                for (int i = 0; i < wand.Capacity; i++)
                 {
                     if (i < spellSlots.Count)
                     {
                         spellSlots[i].gameObject.SetActive(true);
                         // if (i < wand.mDeck.Count)
-                        if (wand.mDeck[i] != null)
-                            spellSlots[i].Init(wand.mDeck[i]).SetParentObj(wand.mDeck).AddDelegate(action, func);
+                        if (wand.Deck[i] != null)
+                            spellSlots[i].Init(wand.Deck[i]).SetParentObj(wand.Deck).AddDelegate(action, func);
                         else
-                            spellSlots[i].Init(null).SetParentObj(wand.mDeck).AddDelegate(action, func);
+                            spellSlots[i].Init(null).SetParentObj(wand.Deck).AddDelegate(action, func);
                     }
                     else
                     {
                         GameObject obj = Instantiate(spellSlotPrefab, spells.transform);
                         //索引小于法杖容量的就进行初始化，大于容量说明法杖后面没有法术了，不用初始化
                         // if (i < wand.mDeck.Count)
-                        if (wand.mDeck[i] != null)
-                            obj.GetComponentInChildren<SpellSlot>().Init(wand.mDeck[i]).SetParentObj(wand.mDeck).AddDelegate(action, func);
+                        if (wand.Deck[i] != null)
+                            obj.GetComponentInChildren<SpellSlot>().Init(wand.Deck[i]).SetParentObj(wand.Deck).AddDelegate(action, func);
                         else
-                            obj.GetComponentInChildren<SpellSlot>().Init(null).SetParentObj(wand.mDeck).AddDelegate(action, func);
+                            obj.GetComponentInChildren<SpellSlot>().Init(null).SetParentObj(wand.Deck).AddDelegate(action, func);
                     }
                 }
             }

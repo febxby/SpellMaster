@@ -56,22 +56,26 @@ public class Wand : MonoBehaviour, IPickUpable
                 nonNullSpellCount++;
             }
             currentSpellIndex = 0;
+            usedSpellCount = 0;
             deck[index] = value;
+            // LoadSpell();
         }
     }
-    public List<Spell> mDeck => deck;
-    public string mWandName => wandName;
-    public int mDrawCount => drawCount;
-    public float mCastDelay => castDelay;
-    public float mMaxMagic => maxMagic;
-    public float mMagicRestoreRate => magicRestoreRate;
-    public float mChargeTime => chargeTime;
-    public float mSpread => spread;
-    public int mCapacity => capacity;
+    public List<Spell> Deck => deck;
+    public string WandName => wandName;
+    public int DrawCount => drawCount;
+    public float CastDelay => castDelay;
+    public float MaxMagic => maxMagic;
+    public float MagicRestoreRate => magicRestoreRate;
+    public float ChargeTime => chargeTime;
+    public float Spread => spread;
+    public int Capacity => capacity;
 
     public SpriteRenderer spriteRenderer;
     public int CurrentSpellIndex => currentSpellIndex;
     public Spell CastSpell => castSpell;
+    public int UsedSpellCount => usedSpellCount;
+    public int NonNullSpellCount => nonNullSpellCount;
     bool[] hand;
     bool[] discard;
     Modify modify;
@@ -90,6 +94,7 @@ public class Wand : MonoBehaviour, IPickUpable
     Rigidbody2D rb;
     int usedSpellCount = 0;
     int nonNullSpellCount = 0;
+    // Queue<Spell> spellQueue = new Queue<Spell>();
     private void Awake()
     {
         boxCollider2D = GetComponent<BoxCollider2D>();
@@ -120,6 +125,7 @@ public class Wand : MonoBehaviour, IPickUpable
                 nonNullSpellCount++;
             }
         }
+        // LoadSpell();
     }
     public bool AddSpell(Spell spell)
     {
@@ -130,6 +136,14 @@ public class Wand : MonoBehaviour, IPickUpable
         deck.Add(spell);
         return true;
     }
+    // void LoadSpell()
+    // {
+    //     while (usedSpellCount + 1 <= nonNullSpellCount)
+    //     {
+    //         castSpell = Draw(ref modify);
+    //         spellQueue.Enqueue(castSpell);
+    //     }
+    // }
     public void Cast(Vector2 pos)
     {
         if (deck.Count == 0)
@@ -139,21 +153,18 @@ public class Wand : MonoBehaviour, IPickUpable
         //如果法术充能未完成且正在充能则返回
         if (isCharging)
         {
-            // Debug.Log("正在充能");
             return;
         }
-        // isCharging = false;
-
         if (Time.time - lastCastTime < currentCastDelay)
         {
             return;
         }
         lastCastTime = Time.time;
         currentCastDelay = 0;
-        // deck[currentSpellIndex].Cast();
         for (int i = 0; i < drawCount; i++)
         {
             castSpell = Draw(ref modify);
+            // castSpell = spellQueue.Dequeue();
         }
         if (castSpell != null)
         {
@@ -175,21 +186,16 @@ public class Wand : MonoBehaviour, IPickUpable
         }
         //如果所有法术已使用并且法术未在充能则进行充能
         EnterCharge();
-
+        // spellQueue.Enqueue(castSpell);
         //重置修正属性
         modify = defaultModify;
         childModify = defaultModify;
-        // hand.Add(spell);
-        // Debug.Log("Casting");
     }
     public void EnterCharge()
     {
-        if (usedSpellCount == nonNullSpellCount && !isCharging)
+        if (usedSpellCount >= nonNullSpellCount && !isCharging)
         {
-            for (int i = 0; i < discard.Length; i++)
-            {
-                discard[i] = false;
-            }
+            ResetDiscard();
             currentChargeTime += chargeTime;
             currentSpellIndex = 0;
             lastChargeTime = Time.time;
@@ -199,9 +205,6 @@ public class Wand : MonoBehaviour, IPickUpable
     }
     public void PreLoad(Spell spell, ref Modify modify)
     {
-
-        // modify.damage *= spell.damage;
-
         modify.damage += spell.damage;
         modify.speed *= (spell.speedModifier == 0 ? 1 : spell.speedModifier);
         modify.spread += spell.spreadModifier;
@@ -213,7 +216,7 @@ public class Wand : MonoBehaviour, IPickUpable
         for (int i = 0; i < spell.drawCount; i++)
         {
             //如果当前索引超过持有法术数量
-            if (usedSpellCount + 1 >= nonNullSpellCount)
+            if (usedSpellCount + 1 > nonNullSpellCount)
             {
                 //判断弃牌区是否有法术
                 if (!IsDiscardHasSpell())
@@ -255,11 +258,12 @@ public class Wand : MonoBehaviour, IPickUpable
             return Draw(ref modify);
         }
         // Spell currentSpell = Instantiate(deck[currentSpellIndex]);
-        Spell currentSpell = ObjectPoolFactory.Instance.Get(Type.GetType(deck[currentSpellIndex].GetType().ToString()));
+        Spell currentSpell = ObjectPoolFactory.Instance.Get(deck[currentSpellIndex].GetType());
         currentSpell.Copy(deck[currentSpellIndex]);
         // Spell currentSpell = ObjectPool<Spell>.Instance.GetObject(deck[currentSpellIndex].GetType());
         // currentSpell.Copy(deck[currentSpellIndex]);
         currentSpellIndex++;
+        usedSpellCount++;
         if (currentSpell.isTrigger)
         {
             PreLoad(currentSpell, ref childModify);
@@ -268,7 +272,7 @@ public class Wand : MonoBehaviour, IPickUpable
         {
             PreLoad(currentSpell, ref modify);
         }
-        usedSpellCount++;
+        ObjectPoolFactory.Instance.Push(currentSpell.GetType(), currentSpell);
         return currentSpell;
     }
     public void Modify(Spell spell, ref Modify modify)
@@ -285,11 +289,7 @@ public class Wand : MonoBehaviour, IPickUpable
                 }
                 spell.damage *= modify.damage;
                 spell.speed *= modify.speed;
-                // UnityEngine.Random.InitState((int)Time.time);
-                // float angle = UnityEngine.Random.Range(-modify.spread, modify.spread);
-                // spell.spread += angle;
-                spell.spread += modify.spread;
-                spell.spread = Mathf.Clamp(spell.spread, 0, float.MaxValue);
+                spell.spread += Math.Clamp(spell.spread + modify.spread, 0, float.MaxValue);
                 spell.gravity += modify.gravity;
                 spell.bounce += modify.bounce;
                 break;

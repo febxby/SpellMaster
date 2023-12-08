@@ -6,6 +6,22 @@ using UnityEngine;
 public class ObjectPoolFactory : Singleton<ObjectPoolFactory>
 {
     private readonly Dictionary<Type, object> objectPool = new();
+    public int GetPoolCount<T>() where T : class, new()
+    {
+        return objectPool.TryGetValue(typeof(T), out object pool) ? (pool as ObjectPool<T>).curCount : 0;
+    }
+    public void Init<T>(int count) where T : class, new()
+    {
+        var pool = GetPool<T>();
+        for (int i = 0; i < count; i++)
+        {
+            if (typeof(T).IsSubclassOf(typeof(ScriptableObject)))
+                pool.PushObject(ScriptableObject.CreateInstance(typeof(T)) as T);
+            else
+                pool.PushObject(new T());
+        }
+
+    }
     /// <summary>
     /// 通过泛型创建对象池
     /// </summary>

@@ -43,6 +43,11 @@ public class GameManger : MonoSingleton<GameManger>
             allWands.Add(addressable);
         }, true);
         wandHandle.Completed += OnWandLoadComplete;
+        ObjectPoolFactory.Instance.Init<Spell>(10);
+        ObjectPoolFactory.Instance.Init<Divide>(10);
+        ObjectPoolFactory.Instance.Init<MultiCast>(10);
+        ObjectPoolFactory.Instance.Init<Formation>(10);
+        ObjectPoolFactory.Instance.Init<DivideModifier>(10);
     }
 
     private void OnSpellLoadComplete(AsyncOperationHandle<IList<Spell>> handle)

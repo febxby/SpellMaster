@@ -4330,8 +4330,8 @@ GameObject:
   - component: {fileID: 2071371712}
   - component: {fileID: 2071371713}
   - component: {fileID: 2071371714}
-  - component: {fileID: 2071371716}
   - component: {fileID: 2071371717}
+  - component: {fileID: 2071371716}
   - component: {fileID: 2071371715}
   - component: {fileID: 2071371718}
   m_Layer: 6
@@ -4607,6 +4607,7 @@ MonoBehaviour:
   flySPeed: 5
   acceleration: 5
   pickUpPanel: {fileID: 0}
+  pickUpCooldown: 0.3
 --- !u!61 &2071371715
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4677,7 +4678,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!114 &2071371717
 MonoBehaviour:

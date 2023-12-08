@@ -60,6 +60,7 @@ public class Projectile : MonoBehaviour, ICast
         spellObj.transform.right = projectile.direction;
         if (spellObj.TryGetComponent<TrailRenderer>(out trail))
         {
+            trail.Clear();
             trail.enabled = true;
         }
         projectile.rb.AddForce(quaternion * direction * spell.speed, ForceMode2D.Impulse);
@@ -108,7 +109,7 @@ public class Projectile : MonoBehaviour, ICast
             for (int i = 0; i < spell.spells.Count; i++)
             {
                 //TODO:这里的位置计算有问题
-                Vector2 newPosition = (Vector2)transform.position + Vector2.Reflect(direction, hit.normal) * 2;
+                Vector2 newPosition = (Vector2)transform.position + Vector2.Reflect(direction, hit.normal) * 0.1f;
                 if (!isNatural)
                     spell.spells[i].Cast(newPosition, transform.position, Vector2.Reflect(direction, hit.normal), spell.owner);
                 else
@@ -123,7 +124,10 @@ public class Projectile : MonoBehaviour, ICast
             }
         }
         if (trail != null)
+        {
+            trail.Clear();
             trail.enabled = false;
+        }
         gameObject.transform.position = Vector3.zero;
         GameObjectPool.Instance.PushObject(gameObject);
     }
