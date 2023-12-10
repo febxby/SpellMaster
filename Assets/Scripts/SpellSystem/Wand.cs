@@ -271,7 +271,7 @@ public class Wand : MonoBehaviour, IPickUpable
         {
             PreLoad(currentSpell, ref modify);
         }
-        ObjectPoolFactory.Instance.Push(currentSpell.GetType(), currentSpell);
+        // ObjectPoolFactory.Instance.Push(currentSpell.GetType(), currentSpell);
         return currentSpell;
     }
     public void Modify(Spell spell, ref Modify modify)
@@ -321,7 +321,6 @@ public class Wand : MonoBehaviour, IPickUpable
     {
         deck.Add(spellDict[name]);
     }
-    //TODO：扩充法术栏
     public void AddSpell(Spell spell, int index)
     {
         deck[index] = spell;

@@ -14,6 +14,7 @@ TagManager:
   - SpellSlot
   - SpellInventory
   - WandPanel
+  - PickUpPanel
   layers:
   - Default
   - TransparentFX
@@ -28,7 +29,7 @@ TagManager:
   - InfoPanel
   - PickUpable
   - Wand
-  - 
+  - BlockMask
   - 
   - 
   - 

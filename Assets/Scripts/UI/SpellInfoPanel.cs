@@ -97,4 +97,8 @@ public class SpellInfoPanel : MonoBehaviour
             SetPosition(Input.mousePosition);
         }
     }
+    private void OnDisable()
+    {
+        GameObjectPool.Instance.PushObject(gameObject);
+    }
 }

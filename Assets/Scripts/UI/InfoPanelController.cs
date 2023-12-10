@@ -30,7 +30,9 @@ public class InfoPanelController : MonoBehaviour
 
             if (wandSlot.infoPanel == null)
             {
-                wandSlot.infoPanel = Instantiate(wandInfoPanelPrefab, canvas.transform);
+                // wandSlot.infoPanel = Instantiate(wandInfoPanelPrefab, canvas.transform);
+                wandSlot.infoPanel = GameObjectPool.Instance.GetObject(wandInfoPanelPrefab);
+                wandSlot.infoPanel.transform.SetParent(canvas.transform);
                 wandSlot.infoPanel.GetComponent<WandInfoPanel>().Init(wandSlot.wand, eventData);
             }
             else
@@ -46,7 +48,9 @@ public class InfoPanelController : MonoBehaviour
 
             if (spellSlot.infoPanel == null)
             {
-                spellSlot.infoPanel = Instantiate(spellInfoPanelPrefab, canvas.transform);
+                // spellSlot.infoPanel = Instantiate(spellInfoPanelPrefab, canvas.transform);
+                spellSlot.infoPanel = GameObjectPool.Instance.GetObject(spellInfoPanelPrefab);
+                spellSlot.infoPanel.transform.SetParent(canvas.transform);
                 spellSlot.infoPanel.GetComponent<SpellInfoPanel>().Init(spellSlot.spell, eventData);
             }
             else
@@ -62,7 +66,9 @@ public class InfoPanelController : MonoBehaviour
 
             if (wandPanel.infoPanel == null)
             {
-                wandPanel.infoPanel = Instantiate(wandInfoPanelPrefab, canvas.transform);
+                wandPanel.infoPanel = GameObjectPool.Instance.GetObject(wandInfoPanelPrefab);
+                wandPanel.infoPanel.transform.SetParent(canvas.transform);
+                // wandPanel.infoPanel = Instantiate(wandInfoPanelPrefab, canvas.transform);
                 wandPanel.infoPanel.GetComponent<WandInfoPanel>().Init(wandPanel.wand, eventData);
             }
             else

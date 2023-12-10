@@ -7,7 +7,7 @@ public class Divide : ICast
     public void Cast(Vector2 start, Vector2 end, Vector2 direction, Spell spell)
     {
         DivideModifier spell1 = (DivideModifier)spell;
-        if (spell1 is null)
+        if (spell1 == null)
         {
             Debug.LogError("spell is not DivideModifier");
             return;
@@ -17,7 +17,7 @@ public class Divide : ICast
             for (int j = 0; j < spell1.spells.Count; j++)
             {
                 spell1.spells[j].casts = spell1.casts;
-                spell1.spells[j].Cast(start, end, direction,spell.owner);
+                spell1.spells[j].Cast(start, end, direction, spell.owner);
             }
         }
         ObjectPoolFactory.Instance.Push(GetType(), this);

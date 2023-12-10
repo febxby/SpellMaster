@@ -21,7 +21,7 @@ public class SpellInventory : MonoBehaviour
         for (int i = 0; i < spells.Count; i++)
         {
             spellSlot = Instantiate(spellSlotPrefab, transform).GetComponentInChildren<SpellSlot>();
-            spellSlot.Init(spells[i]).SetParentObj(spells).AddDelegate(action, func);
+            spellSlot.Init(spells[i]).AddDelegate(action, func);
             slots.Add(spellSlot);
         }
         transform.parent.gameObject.SetActive(false);
@@ -31,7 +31,7 @@ public class SpellInventory : MonoBehaviour
         slots = GetComponentsInChildren<SpellSlot>(true).ToList();
         for (int i = 0; i < spells.Count; i++)
         {
-            slots[i].Init(spells[i]).SetParentObj(spells).AddDelegate(action, func);
+            slots[i].Init(spells[i]).AddDelegate(action, func);
         }
     }
     void Start()

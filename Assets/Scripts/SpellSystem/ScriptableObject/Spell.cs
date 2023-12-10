@@ -66,7 +66,7 @@ public class Spell : ScriptableObject
     [Header("脚本类型")]
     [PnShowSprite] public GameObject prefab;
     public ScriptType scriptType;
-    public List<ICast> casts = new();
+    public List<ProjectileComponent> casts = new();
     [HideInInspector] public List<Spell> spells;
     private Type mType => Type.GetType(scriptType.ToString());
 
@@ -76,13 +76,13 @@ public class Spell : ScriptableObject
     {
         spellName = name;
     }
-    private void OnValidate()
-    {
-        if (sprite == null)
-            if (prefab)
-                if (prefab.GetComponent<SpriteRenderer>())
-                    sprite = prefab.GetComponent<SpriteRenderer>().sprite;
-    }
+    // private void OnValidate()
+    // {
+    //     if (sprite == null)
+    //         if (prefab)
+    //             if (prefab.GetComponent<SpriteRenderer>())
+    //                 sprite = prefab.GetComponent<SpriteRenderer>().sprite;
+    // }
     /// <summary>
     /// 施法法术
     /// </summary>
@@ -92,6 +92,7 @@ public class Spell : ScriptableObject
     /// <param name="owner">发射者</param>
     public virtual void Cast(Vector2 start, Vector2 end, Vector2 direction, string owner)
     {
+        // Debug.Log(spellName+"-"+casts.Count);
         this.owner = owner;
         if (prefab)
         {

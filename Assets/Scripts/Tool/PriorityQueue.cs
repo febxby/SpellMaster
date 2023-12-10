@@ -11,14 +11,20 @@ public class PriorityQueue<T> where T : IComparable<T>
         get { return heap.Count; }
     }
 
-    // 入队操作
+    /// <summary>
+    /// 入队操作
+    /// </summary>
+    /// <param name="item"></param>
     public void Enqueue(T item)
     {
         heap.Add(item);
         HeapifyUp(); // 上溯操作，维护最小堆性质
     }
 
-    // 出队操作
+    /// <summary>
+    /// 出队操作
+    /// </summary>
+    /// <returns></returns>
     public T Dequeue()
     {
         if (heap.Count == 0)
@@ -38,6 +44,11 @@ public class PriorityQueue<T> where T : IComparable<T>
 
         return result;
     }
+    /// <summary>
+    /// 出队
+    /// </summary>
+    /// <param name="result"></param>
+    /// <returns></returns>
     public bool TryDequeue(out T result)
     {
         if (heap.Count == 0)

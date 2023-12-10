@@ -27,15 +27,14 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
     public Image image;
     public GameObject infoPrefab;
     public Transform lastParent;
-    public string parentTag;
     public GameObject infoPanel;
+    public bool canDrag => SetFunc != null;
     RectTransform rectTransform;
     Canvas canvas;
     GraphicRaycaster graphicRaycaster;
     List<RaycastResult> raycastResults = new List<RaycastResult>();
     bool isDraging = false;
     WandPanel wandPanel;
-    public List<Spell> ownerList;
     public Action<int, Spell> SetFunc;
     public Func<int, Spell> GetFunc;
     void Awake()
@@ -45,12 +44,6 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
         graphicRaycaster = canvas.GetComponent<GraphicRaycaster>();
         lastParent = transform.parent;
         image = GetComponent<Image>();
-        parentTag = transform.parent.parent.tag;
-    }
-    public SpellSlot SetParentObj(List<Spell> spells)
-    {
-        ownerList = spells;
-        return this;
     }
     public SpellSlot AddDelegate(Action<int, Spell> setFunc, Func<int, Spell> getFunc)
     {
@@ -91,6 +84,8 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (!canDrag)
+            return;
         if (spell == null)
         {
             return;
@@ -106,6 +101,8 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (!canDrag)
+            return;
         if (spell == null)
         {
             return;
@@ -115,6 +112,8 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (!canDrag)
+            return;
         infoPanel?.SetActive(true);
         isDraging = false;
         graphicRaycaster.Raycast(eventData, raycastResults);
@@ -129,12 +128,12 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
             {
                 var temp = raycastResults[idx].gameObject.GetComponent<SpellSlot>();
                 rectTransform.SetParent(temp.lastParent, false);
-                rectTransform.offsetMax = new Vector2(-10, -10);
-                rectTransform.offsetMin = new Vector2(10, 10);
+                rectTransform.offsetMax = Vector2.zero;
+                rectTransform.offsetMin = Vector2.zero;
 
                 temp.rectTransform.SetParent(lastParent, false);
-                temp.rectTransform.offsetMax = new Vector2(-10, -10);
-                temp.rectTransform.offsetMin = new Vector2(10, 10);
+                temp.rectTransform.offsetMax = Vector2.zero;
+                temp.rectTransform.offsetMin = Vector2.zero;
                 temp.lastParent = temp.transform.parent;
                 var tempIndex = temp.transform.parent.GetSiblingIndex();
                 var thisIndex = transform.parent.GetSiblingIndex();
@@ -147,24 +146,22 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
             else
             {
                 rectTransform.SetParent(lastParent, false);
-                rectTransform.offsetMax = new Vector2(-10, -10);
-                rectTransform.offsetMin = new Vector2(10, 10);
+                rectTransform.offsetMax = Vector2.zero;
+                rectTransform.offsetMin = Vector2.zero;
             }
         }
         else
         {
             rectTransform.SetParent(lastParent, false);
-            rectTransform.offsetMax = new Vector2(-10, -10);
-            rectTransform.offsetMin = new Vector2(10, 10);
+            rectTransform.offsetMax = Vector2.zero;
+            rectTransform.offsetMin = Vector2.zero;
         }
         lastParent = transform.parent;
-        parentTag = transform.parent.parent.tag;
         raycastResults.Clear();
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        //TODO:切换法术
         // MEventSystem.Instance.Send<ChangeCastWand>(
         //     new ChangeCastWand { index = transform.parent.GetSiblingIndex() + 1 }
         // );
@@ -183,33 +180,25 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
             showable = this,
             eventData = eventData
         });
-        // if (isDraging || spell == null)
-        //     return;
-
-        // if (infoPanel == null)
-        // {
-        //     infoPanel = Instantiate(infoPrefab, canvas.transform);
-        //     infoPanel.GetComponent<SpellInfoPanel>().Init(spell, eventData);
-        // }
-        // else
-        // {
-        //     infoPanel.SetActive(true);
-        //     infoPanel.GetComponent<SpellInfoPanel>().SetPosition(eventData.position);
-        // }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         if (infoPanel != null)
         {
-            infoPanel.SetActive(false);
+            GameObjectPool.Instance.PushObject(infoPanel);
+            infoPanel = null;
+            // infoPanel.SetActive(false);
         }
     }
     private void OnDisable()
     {
         if (infoPanel != null)
         {
-            infoPanel.SetActive(false);
+            GameObjectPool.Instance.PushObject(infoPanel);
+            infoPanel = null;
+            // infoPanel.SetActive(false);
         }
+
     }
 }

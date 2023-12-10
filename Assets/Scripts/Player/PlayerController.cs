@@ -46,8 +46,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float acceleration = 5f;
     [SerializeField] GameObject pickUpPanel;
     [SerializeField] IPickUpable pickUpable;
-    [SerializeField] float pickUpCooldown = 0.5f;
-    float lastPickUpTime = -1f;
+    // [SerializeField] float pickUpCooldown = 0.5f;
+    [SerializeField] bool Test = false;
+    // float lastPickUpTime = -1f;
+    bool isPickingUp;
     InventoryModel inventoryModel;
     Rigidbody2D rb;
     Vector2 moveDirection;
@@ -64,20 +66,6 @@ public class PlayerController : MonoBehaviour
             {
                 if (e.wand == null) return;
                 AddWandToInventory(e.wand);
-                // if (e.wand != null)
-                // {
-                //     //TODO:丢弃时，要更换层级
-                //     if (currentWand != null)
-                //     {
-                //         currentWand.gameObject.SetActive(false);
-                //     }
-                //     e.wand.gameObject.layer = LayerMask.NameToLayer("Wand");
-                //     e.wand.transform.SetParent(transform);
-                //     e.wand.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-                //     inventoryModel.Add(e.wand);
-
-                //     currentWand = e.wand;
-                // }
             }
         ).UnRegisterWhenGameObjectDestroy(gameObject);
         MEventSystem.Instance.Register<ChangeCastWand>(
@@ -159,31 +147,39 @@ public class PlayerController : MonoBehaviour
         if (wand == null) return;
         if (!inventoryModel.Add(wand))
         {
-            //TODO:完善背包满时的提示
-            // pickUpPanel.SetActive(true);
+            Wand temp = wand;
+            pickUpPanel.SetActive(true);
+            pickUpPanel.GetComponent<PickUpPanel>().Init(wand,
+            (e, index) =>
+            {
+                if (e == null) return;
+                inventoryModel.Add(temp, index);
+                MEventSystem.Instance.Send<AddWand>();
+                MEventSystem.Instance.Send<ChangeCastWand>(
+                new ChangeCastWand { index = inventoryModel.wands.IndexOf(temp) });
+                e.gameObject.layer = LayerMask.NameToLayer("PickUpable");
+                e.transform.SetParent(null);
+                e.gameObject.SetActive(true);
+                temp.gameObject.layer = LayerMask.NameToLayer("Wand");
+                temp.transform.SetParent(transform);
+                temp.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+                pickUpPanel.SetActive(false);
+            });
         }
         else
         {
             MEventSystem.Instance.Send<AddWand>();
             MEventSystem.Instance.Send<ChangeCastWand>(
                 new ChangeCastWand { index = inventoryModel.wands.IndexOf(wand) });
-            // if (currentWand != null)
-            // {
-            //     currentWand.gameObject.SetActive(false);
-            // }
             wand.gameObject.layer = LayerMask.NameToLayer("Wand");
             wand.transform.SetParent(transform);
             wand.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-            // currentWand = wand;
-
         }
     }
     public void PickUp()
     {
-        if (pickUpable is null) return;
-        if (Time.time < lastPickUpTime + pickUpCooldown)
-            return;
-        lastPickUpTime = Time.time;
+        if (pickUpable is null || isPickingUp) return;
+        isPickingUp = true;
         if (pickUpable.CanPickUp(gameObject))
         {
             if (pickUpable is Wand wand)
@@ -205,6 +201,8 @@ public class PlayerController : MonoBehaviour
 
             }
         }
+        pickUpable = null;
+        isPickingUp = false;
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -232,18 +230,23 @@ public class PlayerController : MonoBehaviour
     }
     private void OnGUI()
     {
-        GUIStyle style = new GUIStyle();
-        style.fontSize = 25;
-        style.normal.textColor = Color.black;
-        GUI.Label(new Rect(10, 10, 200, 20), "Current Spell Index: " + currentWand.CurrentSpellIndex.ToString(), style);
-        if (currentWand.CastSpell != null)
-            GUI.Label(new Rect(10, 30, 200, 20), "Current Charge Time: " + currentWand.CastSpell.name.ToString(), style);
-        GUI.Label(new Rect(10, 50, 200, 20), "Current UsedSpellCount: " + currentWand.UsedSpellCount.ToString(), style);
-        GUI.Label(new Rect(10, 70, 200, 20), "Current NoNullSpellCount: " + currentWand.NonNullSpellCount.ToString(), style);
-        GUI.Label(new Rect(10, 90, 200, 20), "Divide数量：" + ObjectPoolFactory.Instance.GetPoolCount<Divide>(), style);
-        GUI.Label(new Rect(10, 110, 200, 20), "Formation数量：" + ObjectPoolFactory.Instance.GetPoolCount<Formation>(), style);
-        GUI.Label(new Rect(10, 130, 200, 20), "MultiCast数量：" + ObjectPoolFactory.Instance.GetPoolCount<MultiCast>(), style);
-        GUI.Label(new Rect(10, 150, 200, 20), "Spell数量：" + ObjectPoolFactory.Instance.GetPoolCount<Spell>(), style);
-        GUI.Label(new Rect(10, 170, 200, 20), "DivideModifier数量：" + ObjectPoolFactory.Instance.GetPoolCount<DivideModifier>(), style);
+        if (Test)
+        {
+
+            GUIStyle style = new GUIStyle();
+            style.fontSize = 25;
+            style.normal.textColor = Color.black;
+            GUI.Label(new Rect(10, 10, 200, 20), "Current Spell Index: " + currentWand.CurrentSpellIndex.ToString(), style);
+            if (currentWand.CastSpell != null)
+                GUI.Label(new Rect(10, 30, 200, 20), "Current Charge Time: " + currentWand.CastSpell.name.ToString(), style);
+            GUI.Label(new Rect(10, 50, 200, 20), "Current UsedSpellCount: " + currentWand.UsedSpellCount.ToString(), style);
+            GUI.Label(new Rect(10, 70, 200, 20), "Current NoNullSpellCount: " + currentWand.NonNullSpellCount.ToString(), style);
+            GUI.Label(new Rect(10, 90, 200, 20), "Divide数量：" + ObjectPoolFactory.Instance.GetPoolCount<Divide>(), style);
+            GUI.Label(new Rect(10, 110, 200, 20), "Formation数量：" + ObjectPoolFactory.Instance.GetPoolCount<Formation>(), style);
+            GUI.Label(new Rect(10, 130, 200, 20), "MultiCast数量：" + ObjectPoolFactory.Instance.GetPoolCount<MultiCast>(), style);
+            GUI.Label(new Rect(10, 150, 200, 20), "Spell数量：" + ObjectPoolFactory.Instance.GetPoolCount<Spell>(), style);
+            GUI.Label(new Rect(10, 170, 200, 20), "DivideModifier数量：" + ObjectPoolFactory.Instance.GetPoolCount<DivideModifier>(), style);
+        }
+
     }
 }

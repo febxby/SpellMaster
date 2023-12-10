@@ -32,17 +32,18 @@ public class Projectile : MonoBehaviour, ICast
         if (rb == null)
             rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = this.spell.gravity;
-
-        foreach (var cast in spell.casts)
-        {
-            if (gameObject.transform.TryGetComponent(cast.GetType(), out Component component))
+        Debug.Log(spell.casts.Count);
+        if (spell.casts.Count > 0)
+            foreach (var cast in spell.casts)
             {
-                (component as Behaviour).enabled = true;
-                continue;
+                if (gameObject.transform.TryGetComponent(cast.GetType(), out Component component))
+                {
+                    (component as Behaviour).enabled = true;
+                    continue;
+                }
+                component = gameObject.AddComponent(cast.GetType());
+                JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(cast), component);
             }
-            component = gameObject.AddComponent(cast.GetType());
-            JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(cast), component);
-        }
 
         StartCoroutine(Disable());
         return this;
@@ -108,7 +109,6 @@ public class Projectile : MonoBehaviour, ICast
         {
             for (int i = 0; i < spell.spells.Count; i++)
             {
-                //TODO:这里的位置计算有问题
                 Vector2 newPosition = (Vector2)transform.position + Vector2.Reflect(direction, hit.normal) * 0.1f;
                 if (!isNatural)
                     spell.spells[i].Cast(newPosition, transform.position, Vector2.Reflect(direction, hit.normal), spell.owner);
@@ -116,13 +116,19 @@ public class Projectile : MonoBehaviour, ICast
                     spell.spells[i].Cast(newPosition, transform.position, rb.velocity.normalized, spell.owner);
             }
         }
-        foreach (var cast in spell.casts)
+        Debug.Log(spell.casts.Count);
+        if (spell.casts.Count > 0)
         {
-            if (gameObject.TryGetComponent(cast.GetType(), out Component component))
+            foreach (var cast in spell.casts)
             {
-                (component as Behaviour).enabled = false;
+                if (gameObject.TryGetComponent(cast.GetType(), out Component component))
+                {
+                    (component as Behaviour).enabled = false;
+                }
             }
+            // spell.casts.Clear();
         }
+
         if (trail != null)
         {
             trail.Clear();

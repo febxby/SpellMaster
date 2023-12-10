@@ -45,7 +45,7 @@ public class WandSlot : MonoBehaviour, IDragable, IShowable
         if (wand != null)
         {
             image.sprite = wand.spriteRenderer.sprite;
-            image.color = wand.spriteRenderer.color;
+            image.color = Color.white;
         }
         else
         {
@@ -60,7 +60,7 @@ public class WandSlot : MonoBehaviour, IDragable, IShowable
         if (wand != null)
         {
             image.sprite = wand.spriteRenderer.sprite;
-            image.color = wand.spriteRenderer.color;
+            image.color = Color.white;
         }
         else
         {
@@ -116,17 +116,16 @@ public class WandSlot : MonoBehaviour, IDragable, IShowable
             {
                 var temp = raycastResults[idx].gameObject.GetComponent<WandSlot>();
                 rectTransform.SetParent(temp.lastParent, false);
-                rectTransform.offsetMax = new Vector2(-10, -10);
-                rectTransform.offsetMin = new Vector2(10, 10);
+                rectTransform.offsetMax = Vector2.zero;
+                rectTransform.offsetMin = Vector2.zero;
 
                 temp.rectTransform.SetParent(lastParent, false);
-                temp.rectTransform.offsetMax = new Vector2(-10, -10);
-                temp.rectTransform.offsetMin = new Vector2(10, 10);
+                temp.rectTransform.offsetMax = Vector2.zero;
+                temp.rectTransform.offsetMin = Vector2.zero;
                 temp.lastParent = temp.transform.parent;
                 MEventSystem.Instance.Send<SwitchWandPos>(
                     new SwitchWandPos
                     {
-                        //BUG:只交换了数据，没有交换游戏对象的位置
                         target = temp.transform.parent.GetSiblingIndex(),
                         current = transform.parent.GetSiblingIndex()
                     }
@@ -135,8 +134,8 @@ public class WandSlot : MonoBehaviour, IDragable, IShowable
             else if (raycastResults[idx].gameObject.CompareTag("WandParentSlot"))
             {
                 rectTransform.SetParent(raycastResults[idx].gameObject.transform, false);
-                rectTransform.offsetMax = new Vector2(-10, -10);
-                rectTransform.offsetMin = new Vector2(10, 10);
+                rectTransform.offsetMax = Vector2.zero;
+                rectTransform.offsetMin = Vector2.zero;
                 MEventSystem.Instance.Send<SwitchWandPos>(
                     new SwitchWandPos
                     {
@@ -148,8 +147,8 @@ public class WandSlot : MonoBehaviour, IDragable, IShowable
             else
             {
                 rectTransform.SetParent(lastParent, false);
-                rectTransform.offsetMax = new Vector2(-10, -10);
-                rectTransform.offsetMin = new Vector2(10, 10);
+                rectTransform.offsetMax = Vector2.zero;
+                rectTransform.offsetMin = Vector2.zero;
                 // rectTransform.SetParent(parentRectTransform, true);
                 // rectTransform.SetSiblingIndex(index);
             }
@@ -157,8 +156,8 @@ public class WandSlot : MonoBehaviour, IDragable, IShowable
         else
         {
             rectTransform.SetParent(lastParent, false);
-                rectTransform.offsetMax = new Vector2(-10, -10);
-                rectTransform.offsetMin = new Vector2(10, 10);
+            rectTransform.offsetMax = Vector2.zero;
+            rectTransform.offsetMin = Vector2.zero;
         }
         lastParent = transform.parent;
         raycastResults.Clear();
@@ -186,33 +185,24 @@ public class WandSlot : MonoBehaviour, IDragable, IShowable
             showable = this,
             eventData = eventData
         });
-
-        // if (infoPanel != null)
-        // {
-        //     infoPanel.SetActive(true);
-        //     infoPanel.GetComponent<WandInfoPanel>().SetPosition(eventData.position);
-
-        //     return;
-        // }
-        // if (wand != null)
-        // {
-        //     infoPanel = Instantiate(infoPrefab, canvas.transform);
-        //     infoPanel.GetComponent<WandInfoPanel>().Init(wand, eventData);
-        // }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         if (infoPanel != null)
         {
-            infoPanel.SetActive(false);
+            // infoPanel.SetActive(false);
+            GameObjectPool.Instance.PushObject(infoPanel);
+            infoPanel = null;
         }
     }
     private void OnDisable()
     {
         if (infoPanel != null)
         {
-            infoPanel.SetActive(false);
+            // infoPanel.SetActive(false);
+            GameObjectPool.Instance.PushObject(infoPanel);
+            infoPanel = null;
         }
     }
 

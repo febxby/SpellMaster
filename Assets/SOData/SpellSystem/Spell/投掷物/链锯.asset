@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spellName: "\u94FE\u952F"
   info: 
-  sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  sprite: {fileID: 927128429, guid: 4c5dc235f71f0e045b4e661562fd5e61, type: 3}
   spellType: 0
   magicCost: 1
   burstRadius: 0
@@ -26,6 +26,8 @@ MonoBehaviour:
   bounce: 0
   drawCount: 0
   isTrigger: 0
+  canHurtSelf: 0
+  owner: 
   castDelay: -99
   chargeTime: -0.17
   speedModifier: 1

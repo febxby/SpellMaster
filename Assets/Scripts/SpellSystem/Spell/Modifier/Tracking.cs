@@ -4,7 +4,12 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
-public class Tracking : MonoBehaviour, ICast
+[Serializable]
+public class ProjectileComponent : MonoBehaviour
+{
+
+}
+public class Tracking : ProjectileComponent, ICast
 {
     // public enum TrackingType
     // {
@@ -23,7 +28,7 @@ public class Tracking : MonoBehaviour, ICast
         {
             spell.spells[i].casts.Add(this);
             // spell.spells[i].castDict.Add(typeof(Tracking), this);
-            spell.spells[i].Cast(start, end, direction,spell.owner);
+            spell.spells[i].Cast(start, end, direction, spell.owner);
         }
     }
 

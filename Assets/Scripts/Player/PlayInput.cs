@@ -142,10 +142,12 @@ public class PlayInput : MonoBehaviour, GameControls.IPlayActions
     {
         OnFlyEvent?.Invoke(context.ReadValueAsButton());
     }
-
+    public bool isPickUp = false;
     public void OnPickUp(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Started)
+        {
             OnPickUpEvent?.Invoke();
+        }
     }
 }

@@ -105,7 +105,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""id"": ""3ba8b239-6af7-4daf-b401-cf6bb8c469be"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """",
+                    ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
                 }
             ],

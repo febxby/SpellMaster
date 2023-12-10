@@ -36,30 +36,30 @@ public class EditorPanelController : MonoBehaviour
             {
                 (inventoryModel.wands[e.current], inventoryModel.wands[e.target]) =
                 (inventoryModel.wands[e.target], inventoryModel.wands[e.current]);
-                // (wandInventory.slots[e.current], wandInventory.slots[e.target]) =
-                // (wandInventory.slots[e.target], wandInventory.slots[e.current]);
+                (wandInventory.slots[e.current], wandInventory.slots[e.target]) =
+                (wandInventory.slots[e.target], wandInventory.slots[e.current]);
                 MEventSystem.Instance.Send(new ChangeCastWand { index = e.current });
+                wandInventory.UpdateUI(inventoryModel.wands);
             }
         ).UnRegisterWhenGameObjectDestroy(gameObject);
-        MEventSystem.Instance.Register<SwitchSpellPos>(
-            e =>
-            {
-                // if (e != null)
-                // // {
-                // //     Spell temp = e.wand.mDeck[e.current];
-                // //     e.wand.AddSpell(inventoryModel.spells[e.target], e.current);
-                // //     inventoryModel.spells[e.target] = temp;
-                // //     //TODO:法术仓库的UI也要更新
-                // }
-                // else
-                // {
-                //     (inventoryModel.spells[e.current], inventoryModel.spells[e.target]) =
-                //     (inventoryModel.spells[e.target], inventoryModel.spells[e.current]);
-                //     (spellInventory.slots[e.current], spellInventory.slots[e.target]) =
-                //     (spellInventory.slots[e.target], spellInventory.slots[e.current]);
-                // }
-            }
-        ).UnRegisterWhenGameObjectDestroy(gameObject);
+        // MEventSystem.Instance.Register<SwitchSpellPos>(
+        //     e =>
+        //     {
+        //         // if (e != null)
+        //         // // {
+        //         // //     Spell temp = e.wand.mDeck[e.current];
+        //         // //     e.wand.AddSpell(inventoryModel.spells[e.target], e.current);
+        //         // //     inventoryModel.spells[e.target] = temp;
+        //         // }
+        //         // else
+        //         // {
+        //         //     (inventoryModel.spells[e.current], inventoryModel.spells[e.target]) =
+        //         //     (inventoryModel.spells[e.target], inventoryModel.spells[e.current]);
+        //         //     (spellInventory.slots[e.current], spellInventory.slots[e.target]) =
+        //         //     (spellInventory.slots[e.target], spellInventory.slots[e.current]);
+        //         // }
+        //     }
+        // ).UnRegisterWhenGameObjectDestroy(gameObject);
 
         MEventSystem.Instance.Register<ChangeCastWand>(
             e =>

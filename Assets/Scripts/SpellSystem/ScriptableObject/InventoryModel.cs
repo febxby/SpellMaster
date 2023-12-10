@@ -12,6 +12,7 @@ public class InventoryModel : ScriptableObject
     public int spellCount => maxSpellCount;
     public List<Wand> wands;
     public List<Spell> spells;
+    //存放空位索引的数组
     PriorityQueue<int> nullSpellIndices;
     PriorityQueue<int> nullWandIndices;
     // private void OnEnable()

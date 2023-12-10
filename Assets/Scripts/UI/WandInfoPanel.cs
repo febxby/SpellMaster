@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
+using System.Linq;
 public interface IInfoPanel { }
 public class WandInfoPanel : MonoBehaviour
 {
@@ -18,12 +20,19 @@ public class WandInfoPanel : MonoBehaviour
     [SerializeField] GameObject spells;
     [SerializeField] GameObject spellSlotPrefab;
     [SerializeField] RectTransform rectTransform;
+    List<SpellSlot> spellSlots = new List<SpellSlot>();
+    SpellSlot slot;
+    Vector2 defaultSizeDelta = Vector2.zero;
     public void Init(Wand wand, PointerEventData eventData)
     {
-        //TODO:优化，不用每次都生成，检测是否有子物体，有就直接SetActive(true)
-        SetPosition(eventData.position);
+        if (defaultSizeDelta == Vector2.zero)
+            defaultSizeDelta = rectTransform.sizeDelta;
+        if (wand == null)
+            return;
+        if (eventData != null)
+            SetPosition(eventData.position);
         wandSprite.sprite = wand.spriteRenderer.sprite;
-        wandSprite.color = wand.spriteRenderer.color;
+        // wandSprite.color = wand.spriteRenderer.color;
         castDelay.text = wand.CastDelay.ToString();
         chargeTime.text = wand.ChargeTime.ToString();
         maxMagic.text = wand.MaxMagic.ToString();
@@ -32,17 +41,43 @@ public class WandInfoPanel : MonoBehaviour
         capacity.text = wand.Capacity.ToString();
         magicRestoreRate.text = wand.MagicRestoreRate.ToString();
         wandName.text = wand.WandName;
-        for (int i = 0; i < wand.Capacity; i++)
+        // for (int i = 0; i < wand.Capacity; i++)
+        // {
+        //     // var obj = new GameObject("Spell", typeof(RectTransform), typeof(Image));
+        //     GameObject obj = Instantiate(spellSlotPrefab, spells.transform);
+        //     if (i < wand.Deck.Count)
+        //         if (wand.Deck[i] != null)
+        //         {
+        //             obj.GetComponentInChildren<SpellSlot>().Init(wand.Deck[i]);
+        //         }
+        // }
+        int maxCount = Math.Max(spellSlots.Count, wand.Capacity);
+        for (int i = 0; i < maxCount; i++)
         {
-            // var obj = new GameObject("Spell", typeof(RectTransform), typeof(Image));
-            GameObject obj = Instantiate(spellSlotPrefab, spells.transform);
-            if (i < wand.Deck.Count)
-                if (wand.Deck[i] != null)
-                {
-                    obj.GetComponentInChildren<SpellSlot>().Init(wand.Deck[i]);
-                }
-        }
+            if (i < spellSlots.Count)
+            {
+                slot = spellSlots[i];
+                slot.transform.parent.gameObject.SetActive(i < wand.Capacity);
+            }
+            else
+            {
+                GameObject obj = Instantiate(spellSlotPrefab, spells.transform);
+                slot = obj.GetComponentInChildren<SpellSlot>();
+            }
 
+            if (i < wand.Capacity)
+            {
+                slot.Init(wand.Deck[i]);
+            }
+            else if (i < spellSlots.Count)
+            {
+                slot.Init(null);
+            }
+        }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(spells.GetComponent<RectTransform>());
+        rectTransform.sizeDelta = defaultSizeDelta + new Vector2(0, spells.GetComponent<RectTransform>().rect.height);
+
+        spellSlots = spells.GetComponentsInChildren<SpellSlot>().ToList();
     }
     public void SetPosition(Vector3 pos)
     {
