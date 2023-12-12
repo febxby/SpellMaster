@@ -9,12 +9,12 @@ using UnityEngine.UI;
 public struct Modify
 {
     public float castDelay;
-    public float damage;
+    public int damage;
     public float speed;
     public float spread;
     public float gravity;
     public int bounce;
-    public Modify(float castDelay = 0, float damage = 0, float speed = 1, float spread = 0, float gravity = 0, int bounce = 0)
+    public Modify(float castDelay = 0, int damage = 0, float speed = 1, float spread = 0, float gravity = 0, int bounce = 0)
     {
         this.castDelay = castDelay;
         this.damage = damage;
@@ -170,7 +170,7 @@ public class Wand : MonoBehaviour, IPickUpable
         {
             //修改法术属性
             Modify(castSpell, ref modify);
-            castSpell.Cast(castPoint.position, pos, (pos - (Vector2)castPoint.position).normalized, this.tag);
+            castSpell.Cast(castPoint.position, pos, (pos - (Vector2)castPoint.position).normalized, transform.parent.tag);
         }
 
         //每次施法后设置施法延迟

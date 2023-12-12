@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 0fb3dfb02edc1a94a838de0c74f04ee5
   m_currentHash:
     serializedVersion: 2
-    Hash: 0c076a8caad20122a03adc5a5ebc8d3f
+    Hash: 5d9cade18369d8a8368252e9c9628775
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -46,6 +46,7 @@ MonoBehaviour:
   m_GroupAssets:
   - {fileID: 11400000, guid: 3f2cf5827cbdede4ebae8303ff625e8d, type: 2}
   - {fileID: 11400000, guid: 5daa112794297c844b857adf3192a375, type: 2}
+  - {fileID: 11400000, guid: cb4df455957341c4c84a568d86a530e8, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -89,6 +90,7 @@ MonoBehaviour:
     - default
     - Spell
     - Wand
+    - EnemyData
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 47760cf84383d6048b382ee7b406f6a7, type: 2}

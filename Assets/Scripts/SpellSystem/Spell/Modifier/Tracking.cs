@@ -7,7 +7,7 @@ using UnityEngine;
 [Serializable]
 public class ProjectileComponent : MonoBehaviour
 {
-
+    public virtual void Init(Spell spell) { }
 }
 public class Tracking : ProjectileComponent, ICast
 {
@@ -16,6 +16,7 @@ public class Tracking : ProjectileComponent, ICast
     //     Target,
     //     Direction
     // }
+    Spell spell;
     RaycastHit2D[] hits = new RaycastHit2D[1];
     Rigidbody2D rb;
     // public TrackingType trackingType;
@@ -32,17 +33,17 @@ public class Tracking : ProjectileComponent, ICast
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public override void Init(Spell spell)
     {
-
+        this.spell = spell;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         if (hits[0].collider == null)
-            Physics2D.CircleCastNonAlloc(transform.position, trackingRange, Vector2.zero, hits, 0, LayerMask.GetMask("Enemy"));
+            Physics2D.CircleCastNonAlloc(transform.position, trackingRange, Vector2.zero, hits, 0,
+            spell.owner != "Enemy" ? LayerMask.GetMask("Enemy") : LayerMask.GetMask("Player"));
         else
         {
             Vector3 direction = (hits[0].collider.transform.position - transform.position).normalized;

@@ -47,7 +47,7 @@ public class Spell : ScriptableObject
     public SpellType spellType;
     public float magicCost;
     public float burstRadius;
-    public float damage;
+    public int damage;
     public float speed;
     public float spread;
     public float lifeTime;

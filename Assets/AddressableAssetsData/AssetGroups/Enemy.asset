@@ -10,28 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Spell
+  m_Name: Enemy
   m_EditorClassIdentifier: 
-  m_GroupName: Spell
+  m_GroupName: Enemy
   m_Data:
     m_SerializedData: []
-  m_GUID: 0fb3dfb02edc1a94a838de0c74f04ee5
+  m_GUID: 3ff0cc72c8fff49418086cc19d889c53
   m_SerializeEntries:
-  - m_GUID: 04ff07b6f94361042bc1b92109932412
-    m_Address: Assets/SOData/SpellSystem/Spell
+  - m_GUID: d44bfc2d864507643b3f25bc0a401452
+    m_Address: Assets/SOData/Enemy
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Spell
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 081f0104f43adc047b73bae482696f9c
-    m_Address: "Assets/Prefabs/\u6CD5\u6756"
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Wand
+    - EnemyData
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 86e816c329b5c1b42937099787a8a6c4, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: fea653888933491409852d06771c199a, type: 2}
-    - {fileID: 11400000, guid: 91caf13aa407d49408ce7c46b88738c2, type: 2}
+    - {fileID: 11400000, guid: 19d6461534626144380bf871e2b59e59, type: 2}
+    - {fileID: 11400000, guid: 5c454bc0ff6d0ca43aaacdbe4b628377, type: 2}

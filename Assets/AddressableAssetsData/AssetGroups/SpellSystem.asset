@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: SpellSystem
+  m_EditorClassIdentifier: 
+  m_GroupName: SpellSystem
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 0fb3dfb02edc1a94a838de0c74f04ee5
+  m_SerializeEntries:
+  - m_GUID: 04ff07b6f94361042bc1b92109932412
+    m_Address: Assets/SOData/SpellSystem/Spell
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Spell
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 081f0104f43adc047b73bae482696f9c
+    m_Address: "Assets/Prefabs/\u6CD5\u6756"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Wand
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 86e816c329b5c1b42937099787a8a6c4, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: fea653888933491409852d06771c199a, type: 2}
+    - {fileID: 11400000, guid: 91caf13aa407d49408ce7c46b88738c2, type: 2}

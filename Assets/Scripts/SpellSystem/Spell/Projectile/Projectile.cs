@@ -32,17 +32,18 @@ public class Projectile : MonoBehaviour, ICast
         if (rb == null)
             rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = this.spell.gravity;
-        Debug.Log(spell.casts.Count);
         if (spell.casts.Count > 0)
             foreach (var cast in spell.casts)
             {
                 if (gameObject.transform.TryGetComponent(cast.GetType(), out Component component))
                 {
                     (component as Behaviour).enabled = true;
+                    (component as ProjectileComponent).Init(this.spell);
                     continue;
                 }
                 component = gameObject.AddComponent(cast.GetType());
                 JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(cast), component);
+                (component as ProjectileComponent).Init(this.spell);
             }
 
         StartCoroutine(Disable());
@@ -85,22 +86,15 @@ public class Projectile : MonoBehaviour, ICast
                 direction = rb.velocity.normalized;
                 return;
             }
-            // if (spell.isTrigger)
-            // {
-            //     for (int i = 0; i < spell.spells.Count; i++)
-            //     {
-            //         Vector2 newPosition = (Vector2)transform.position + Vector2.Reflect(direction, hit.normal) * Time.deltaTime;
-            //         spell.spells[i].Cast(newPosition, other.transform.position, Vector2.Reflect(direction, hit.normal), spell.owner);
-            //     }
-            // }
             DestroyObject();
-
+            return;
         }
-        if (other.gameObject.CompareTag("Enemy"))
+        other.TryGetComponent<IDamageable>(out IDamageable damageable);
+        if (damageable != null)
         {
+            damageable.TakeDamage(spell.damage);
             DestroyObject();
-
-
+            return;
         }
     }
     private void DestroyObject(bool isNatural = false)
@@ -116,7 +110,6 @@ public class Projectile : MonoBehaviour, ICast
                     spell.spells[i].Cast(newPosition, transform.position, rb.velocity.normalized, spell.owner);
             }
         }
-        Debug.Log(spell.casts.Count);
         if (spell.casts.Count > 0)
         {
             foreach (var cast in spell.casts)
