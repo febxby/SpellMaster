@@ -21,20 +21,19 @@ public class WandPanel : MonoBehaviour, IShowable, IPointerMoveHandler
         this.wand = wand;
         if (wand != null)
         {
-            gameObject.SetActive(true);
+            transform.parent.gameObject.SetActive(true);
             image.sprite = wand.spriteRenderer.sprite;
             image.color = Color.white;
         }
         else
         {
-            gameObject.SetActive(false);
+            transform.parent.gameObject.SetActive(false);
             spellSlots = GetComponentsInChildren<SpellSlot>(true).ToList();
             return;
         }
         for (int i = 0; i < wand.Capacity; i++)
         {
             GameObject obj = Instantiate(spellSlotPrefab, spells.transform);
-            // if (i < wand.mDeck.Count)
             if (wand.Deck[i] != null)
                 obj.GetComponentInChildren<SpellSlot>().Init(wand.Deck[i]).AddDelegate(action, func);
             else
@@ -47,13 +46,13 @@ public class WandPanel : MonoBehaviour, IShowable, IPointerMoveHandler
         this.wand = wand;
         if (wand != null)
         {
-            gameObject.SetActive(true);
+            transform.parent.gameObject.SetActive(true);
             image.sprite = wand.spriteRenderer.sprite;
             image.color = Color.white;
         }
         else
         {
-            gameObject.SetActive(false);
+            transform.parent.gameObject.SetActive(false);
             spellSlots = GetComponentsInChildren<SpellSlot>(true).ToList();
             return;
         }

@@ -67,10 +67,11 @@ public class Spell : ScriptableObject
     [PnShowSprite] public GameObject prefab;
     public ScriptType scriptType;
     public List<ProjectileComponent> casts = new();
+    public List<GameObject> attaches = new();
     [HideInInspector] public List<Spell> spells;
     private Type mType => Type.GetType(scriptType.ToString());
 
-
+    public float LifeTime => lifeTime / 60;
     // public Dictionary<Type,ICast> castDict = new();
     protected virtual void Awake()
     {

@@ -11,6 +11,7 @@ public class Formation : ICast
         for (int i = 0; i < spell.spells.Count; i++)
         {
             spell.spells[i].casts = spell.casts;
+            spell.spells[i].attaches = spell.attaches;
             if (spell.spells.Count == 1)
             {
                 quaternion = Quaternion.AngleAxis(0, Vector3.forward);

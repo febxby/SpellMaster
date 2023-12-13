@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -27,7 +28,13 @@ public class Tracking : ProjectileComponent, ICast
     {
         for (int i = 0; i < spell.spells.Count; i++)
         {
-            spell.spells[i].casts.Add(this);
+            spell.spells[i].casts = spell.casts;
+            //检测spell.spells[i].casts数组是否含有Tracking类型的值
+            if (!spell.spells[i].casts.Exists(x => x.GetType() == GetType()))
+            {
+                spell.spells[i].casts.Add(this);
+            }
+            spell.spells[i].attaches = spell.attaches;
             // spell.spells[i].castDict.Add(typeof(Tracking), this);
             spell.spells[i].Cast(start, end, direction, spell.owner);
         }

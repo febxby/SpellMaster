@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: "\u94FE\u952F"
   m_EditorClassIdentifier: 
   spellName: "\u94FE\u952F"
-  info: 
+  info: "\u51CF\u5C11\u65BD\u6CD5\u5EF6\u8FDF"
   sprite: {fileID: 927128429, guid: 4c5dc235f71f0e045b4e661562fd5e61, type: 3}
   spellType: 0
   magicCost: 1
-  burstRadius: 0
-  damage: 0
+  burstRadius: 3
+  damage: 12
   speed: 1
   spread: 0
-  lifeTime: 0
+  lifeTime: 0.01
   gravity: 0
   bounce: 0
   drawCount: 0
@@ -31,8 +31,10 @@ MonoBehaviour:
   castDelay: -99
   chargeTime: -0.17
   speedModifier: 1
-  spreadModifier: 0
+  spreadModifier: 6
   lifeTimeModifier: 0
-  prefab: {fileID: 7839612574542955016, guid: 216742083b5576e478705c629df0dc2a, type: 3}
+  prefab: {fileID: 7645362088134616454, guid: 4384203716010ad4f998886c0eb6e165, type: 3}
   scriptType: 0
+  casts: []
+  attaches: []
   spells: []

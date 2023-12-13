@@ -24,11 +24,13 @@ public class Projectile : MonoBehaviour, ICast
     TrailRenderer trail;
     int bounce;
     Vector3 lastPos;
+    WaitForSeconds seconds;
     public Projectile Initialized(Spell spell)
     {
         // this.spell = Instantiate(spell);
         this.spell = spell;
         bounce = spell.bounce;
+        seconds = new WaitForSeconds(spell.lifeTime);
         if (rb == null)
             rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = this.spell.gravity;
@@ -92,6 +94,14 @@ public class Projectile : MonoBehaviour, ICast
         other.TryGetComponent<IDamageable>(out IDamageable damageable);
         if (damageable != null)
         {
+            if (spell.attaches.Count > 0)
+                foreach (var cast in spell.attaches)
+                {
+                    var obj = GameObjectPool.Instance.GetObject(cast);
+                    obj.GetComponent<AttachComponent>().Init(spell);
+                    obj.transform.SetParent(other.transform);
+                    obj.transform.localPosition = Vector3.zero;
+                }
             damageable.TakeDamage(spell.damage);
             DestroyObject();
             return;
@@ -141,8 +151,12 @@ public class Projectile : MonoBehaviour, ICast
     }
     IEnumerator Disable()
     {
-        yield return new WaitForSeconds(spell.lifeTime);
-        DestroyObject(true);
+        if (spell.lifeTime > -1f || spell.lifeTime < -1f)
+        {
+            yield return seconds;
+            DestroyObject(true);
+        }
+
 
     }
 

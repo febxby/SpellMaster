@@ -9,6 +9,7 @@ public class MultiCast : ICast
         for (int i = 0; i < spell.spells.Count; i++)
         {
             spell.spells[i].casts = spell.casts;
+            spell.spells[i].attaches=spell.attaches;
             spell.spells[i].Cast(start, end, direction, spell.owner);
         }
         ObjectPoolFactory.Instance.Push(GetType(), this);

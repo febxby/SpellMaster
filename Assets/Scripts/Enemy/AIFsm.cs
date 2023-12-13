@@ -55,6 +55,8 @@ public class AIFsm : RuleFSM<EnemyData, AIFsm>, ICanPlayAnim, IDamageable
     public bool AttackCheck =>
         Physics2D.OverlapBoxNonAlloc(new Vector2(transform.position.x + mFace * Data.AttackCheckOffset.x, transform.position.y + Data.AttackCheckOffset.y),
             Data.AttackCheckBoxSize, 0, collider2Ds, Data.PlayerLayer) > 0;
+    public bool CheckForwardObstacle =>
+        Physics2D.RaycastNonAlloc(mFaceDirGroundCheck.position, mFace * Vector2.right, hits, Data.GroundRayLength, Data.GroundLayer) > 0;
     public bool IsDie => currentHealth <= 0;
     public Transform GetColliderTarget(string tag)
     {
@@ -90,6 +92,8 @@ public class AIFsm : RuleFSM<EnemyData, AIFsm>, ICanPlayAnim, IDamageable
         Gizmos.DrawWireCube(transform.position + Data.ObserveCheckOffset, Data.ObserveCheckBoxSize);
         Gizmos.DrawWireCube(mGroundCheck.position, Data.GroundCheckBoxSize);
         Gizmos.DrawLine(mFaceDirGroundCheck.position, mFaceDirGroundCheck.position + Vector3.down * Data.GroundRayLength);
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(mFaceDirGroundCheck.position, mFaceDirGroundCheck.position + Vector3.right * mFace * Data.GroundRayLength);
     }
     public float XSpeed
     {
@@ -336,7 +340,11 @@ public class PatrolState : AnimState<AIFsm, EnemyData>
         base.Execute(life);
 
         // 如果前方还可以走 继续移动
-        if (Machine.CheckFaceDirIsGround)
+        if (Machine.CheckForwardObstacle)
+        {
+            Machine.Filp();
+        }
+        else if (Machine.CheckFaceDirIsGround)
         {
             Machine.XSpeed = Data.GroundPatrolSpeed * Machine.FaceDir;
         }
@@ -362,12 +370,10 @@ public class AttackState : AnimState<AIFsm, EnemyData>
         switch (life)
         {
             case E_StateLife.Enter:
-                Machine.XSpeed = 0;
                 Vector2 pos = Machine.GetColliderTarget("Player").position;
                 Machine.Cast(pos);
                 break;
             case E_StateLife.Update:
-                Machine.XSpeed = 0;
                 pos = Machine.GetColliderTarget("Player").position;
                 Machine.Cast(pos);
                 break;

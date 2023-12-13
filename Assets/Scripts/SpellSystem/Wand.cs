@@ -28,7 +28,6 @@ public struct Modify
 public class Wand : MonoBehaviour, IPickUpable
 {
     // Start is called before the first frame update
-    [SerializeField] SpellConfigs spellConfigs;
     Dictionary<string, Spell> spellDict;
     [SerializeField] string wandName;
     [SerializeField] float castDelay;
@@ -88,6 +87,7 @@ public class Wand : MonoBehaviour, IPickUpable
     float currentCastDelay;
     float currentChargeTime;
     float currentChargeProgress => Time.time - lastChargeTime;
+    float currentMagic;
     int length;
     Spell castSpell;
     BoxCollider2D boxCollider2D;
@@ -97,16 +97,13 @@ public class Wand : MonoBehaviour, IPickUpable
     // Queue<Spell> spellQueue = new Queue<Spell>();
     private void Awake()
     {
+        currentMagic = maxMagic;
         boxCollider2D = GetComponent<BoxCollider2D>();
         rb = GetComponent<Rigidbody2D>();
         modify = new Modify(castDelay, 1, 1, spread);
         defaultModify = modify;
         childModify = modify;
         spellDict = new Dictionary<string, Spell>();
-        foreach (Spell spell in spellConfigs.configs)
-        {
-            spellDict.Add(spell.spellName, spell);
-        }
         // deck ??= new List<Spell>(capacity);
         for (int i = 0; i < capacity; i++)
         {
@@ -209,7 +206,7 @@ public class Wand : MonoBehaviour, IPickUpable
         modify.speed *= (spell.speedModifier == 0 ? 1 : spell.speedModifier);
         modify.spread += spell.spreadModifier;
         modify.castDelay += spell.castDelay;
-        modify.gravity += spell.gravity;
+        // modify.gravity += spell.gravity;
         modify.bounce += spell.bounce;
         currentCastDelay += spell.castDelay;
         currentChargeTime += spell.chargeTime;
@@ -256,6 +253,13 @@ public class Wand : MonoBehaviour, IPickUpable
             }
             return Draw(ref modify);
         }
+        if (deck[currentSpellIndex].magicCost > currentMagic)
+        {
+            currentSpellIndex++;
+            usedSpellCount++;
+            return Draw(ref modify);
+        }
+        currentMagic -= deck[currentSpellIndex].magicCost;
         // Spell currentSpell = Instantiate(deck[currentSpellIndex]);
         Spell currentSpell = ObjectPoolFactory.Instance.Get(deck[currentSpellIndex].GetType());
         currentSpell.Copy(deck[currentSpellIndex]);
@@ -289,7 +293,7 @@ public class Wand : MonoBehaviour, IPickUpable
                 spell.damage *= modify.damage;
                 spell.speed *= modify.speed;
                 spell.spread += Math.Clamp(spell.spread + modify.spread, 0, float.MaxValue);
-                spell.gravity += modify.gravity;
+                // spell.gravity += modify.gravity;
                 spell.bounce += modify.bounce;
                 break;
             case SpellType.Modifier:
@@ -367,6 +371,12 @@ public class Wand : MonoBehaviour, IPickUpable
     // Update is called once per frame
     void Update()
     {
+        if (currentMagic < maxMagic)
+            currentMagic += magicRestoreRate * Time.deltaTime;
+        else
+        {
+            currentMagic = maxMagic;
+        }
         if (transform.parent != null)
         {
             rb.isKinematic = true;

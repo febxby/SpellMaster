@@ -16,7 +16,7 @@ MonoBehaviour:
   info: 
   sprite: {fileID: -26282663, guid: 4c5dc235f71f0e045b4e661562fd5e61, type: 3}
   spellType: 1
-  magicCost: 0
+  magicCost: 70
   burstRadius: 0
   damage: 0
   speed: 0
@@ -35,4 +35,5 @@ MonoBehaviour:
   lifeTimeModifier: 0
   prefab: {fileID: 2251153288439220244, guid: 67b08ad8dd5014847bf2cf7468aa049b, type: 3}
   scriptType: 0
+  casts: []
   spells: []

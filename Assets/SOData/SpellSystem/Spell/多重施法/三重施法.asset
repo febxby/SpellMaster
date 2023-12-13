@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42656eeeca3c227479f62723c3088673, type: 3}
-  m_Name: "\u4E09\u91CD\u6563\u5C04"
+  m_Name: "\u4E09\u91CD\u65BD\u6CD5"
   m_EditorClassIdentifier: 
-  spellName: "\u4E09\u91CD\u6563\u5C04"
+  spellName: "\u4E09\u91CD\u65BD\u6CD5"
   info: 
-  sprite: {fileID: 1778382318, guid: 4c5dc235f71f0e045b4e661562fd5e61, type: 3}
+  sprite: {fileID: -1078816320, guid: 4c5dc235f71f0e045b4e661562fd5e61, type: 3}
   spellType: 1
-  magicCost: 1
+  magicCost: 2
   burstRadius: 0
   damage: 0
   speed: 0
@@ -31,7 +31,7 @@ MonoBehaviour:
   castDelay: 0
   chargeTime: 0
   speedModifier: 1
-  spreadModifier: 20
+  spreadModifier: 0
   lifeTimeModifier: 0
   prefab: {fileID: 0}
   scriptType: 1

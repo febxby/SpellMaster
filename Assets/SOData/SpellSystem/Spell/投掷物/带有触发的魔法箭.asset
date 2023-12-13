@@ -10,30 +10,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42656eeeca3c227479f62723c3088673, type: 3}
-  m_Name: "\u706B\u82B1\u5F39"
+  m_Name: "\u5E26\u6709\u89E6\u53D1\u7684\u9B54\u6CD5\u7BAD"
   m_EditorClassIdentifier: 
-  spellName: "\u706B\u82B1\u5F39"
+  spellName: "\u5E26\u6709\u89E6\u53D1\u7684\u9B54\u6CD5\u7BAD"
   info: 
-  sprite: {fileID: 1103434556, guid: 4c5dc235f71f0e045b4e661562fd5e61, type: 3}
+  sprite: {fileID: 1551455841, guid: 4c5dc235f71f0e045b4e661562fd5e61, type: 3}
   spellType: 0
-  magicCost: 5
+  magicCost: 35
   burstRadius: 2
-  damage: 3
-  speed: 15
-  spread: 0
+  damage: 10
+  speed: 10
+  spread: 0.6
   lifeTime: 5
-  gravity: 0
+  gravity: 0.5
   bounce: 0
-  drawCount: 0
-  isTrigger: 0
+  drawCount: 1
+  isTrigger: 1
   canHurtSelf: 0
   owner: 
-  castDelay: 0.05
+  castDelay: 0.07
   chargeTime: 0
   speedModifier: 1
-  spreadModifier: -1
+  spreadModifier: 2
   lifeTimeModifier: 0
-  prefab: {fileID: 7645362088134616454, guid: 604abe00d1476ce41a348e3774a12333, type: 3}
+  prefab: {fileID: 7645362088134616454, guid: 75bdb2920d801094e8a1d5f158198fe0, type: 3}
   scriptType: 0
   casts: []
   attaches: []
