@@ -26,6 +26,7 @@ public class GameManger : MonoSingleton<GameManger>
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("PickUpable"));
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Wand"));
 
+
         container = IOCContainer.Instance;
         container.Register<InventoryModel>(inventoryModel);
         //仓库初始化

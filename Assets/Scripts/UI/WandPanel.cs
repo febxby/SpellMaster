@@ -53,9 +53,9 @@ public class WandPanel : MonoBehaviour, IShowable, IPointerMoveHandler
         else
         {
             transform.parent.gameObject.SetActive(false);
-            spellSlots = GetComponentsInChildren<SpellSlot>(true).ToList();
             return;
         }
+        spellSlots = GetComponentsInChildren<SpellSlot>(true).ToList();
         int maxCount = Math.Max(spellSlots.Count, wand.Capacity);
         for (int i = 0; i < maxCount; i++)
         {

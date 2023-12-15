@@ -5,7 +5,6 @@ using System.Linq;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
-[Serializable]
 public class ProjectileComponent : MonoBehaviour
 {
     public virtual void Init(Spell spell) { }

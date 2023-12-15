@@ -126,7 +126,7 @@ public class AIFsm : RuleFSM<EnemyData, AIFsm>, ICanPlayAnim, IDamageable
     void ICanPlayAnim.PlayAnim(int animHash) { }
     public void Cast(Vector2 pos)
     {
-        wand.Cast(pos);
+        wand.Cast(pos, tag);
     }
     public void Drop()
     {

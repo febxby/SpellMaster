@@ -107,6 +107,44 @@ public class Projectile : MonoBehaviour, ICast
             return;
         }
     }
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag(spell.owner) && !spell.canHurtSelf)
+        {
+            return;
+        }
+        if (other.gameObject.CompareTag("Obstacle"))
+        {
+            // var lastPos = (Vector2)transform.position - rb.velocity * Time.deltaTime;
+            // hit = Physics2D.Raycast(lastPos, direction, 10, LayerMask.GetMask("Obstacle"));
+
+            if (bounce > 0)
+            {
+                bounce--;
+                transform.right = Vector2.Reflect(direction, other.GetContact(0).normal);
+                rb.velocity = transform.right * spell.speed;
+                direction = rb.velocity.normalized;
+                return;
+            }
+            DestroyObject();
+            return;
+        }
+        other.gameObject.TryGetComponent<IDamageable>(out IDamageable damageable);
+        if (damageable != null)
+        {
+            if (spell.attaches.Count > 0)
+                foreach (var cast in spell.attaches)
+                {
+                    var obj = GameObjectPool.Instance.GetObject(cast);
+                    obj.GetComponent<AttachComponent>().Init(spell);
+                    obj.transform.SetParent(other.transform);
+                    obj.transform.localPosition = Vector3.zero;
+                }
+            damageable.TakeDamage(spell.damage);
+            DestroyObject();
+            return;
+        }
+    }
     private void DestroyObject(bool isNatural = false)
     {
         if (spell.isTrigger)
@@ -144,6 +182,14 @@ public class Projectile : MonoBehaviour, ICast
     private void OnDrawGizmos()
     {
         Gizmos.DrawRay(hit.point, hit.normal);
+    }
+    private void OnGUI()
+    {
+        GUIStyle style = new()
+        {
+            fontSize = 80
+        };
+        GUI.Label(new Rect(500, 500, 500, 500), rb.velocity.magnitude.ToString(), style);
     }
     private void OnDestroy()
     {

@@ -141,7 +141,7 @@ public class Wand : MonoBehaviour, IPickUpable
     //         spellQueue.Enqueue(castSpell);
     //     }
     // }
-    public void Cast(Vector2 pos)
+    public void Cast(Vector2 pos, string owner)
     {
         if (deck.Count == 0)
         {
@@ -167,7 +167,7 @@ public class Wand : MonoBehaviour, IPickUpable
         {
             //修改法术属性
             Modify(castSpell, ref modify);
-            castSpell.Cast(castPoint.position, pos, (pos - (Vector2)castPoint.position).normalized, transform.parent.tag);
+            castSpell.Cast(castPoint.position, pos, (pos - (Vector2)castPoint.position).normalized, owner);
         }
 
         //每次施法后设置施法延迟
@@ -371,6 +371,7 @@ public class Wand : MonoBehaviour, IPickUpable
     // Update is called once per frame
     void Update()
     {
+
         if (currentMagic < maxMagic)
             currentMagic += magicRestoreRate * Time.deltaTime;
         else
@@ -379,12 +380,15 @@ public class Wand : MonoBehaviour, IPickUpable
         }
         if (transform.parent != null)
         {
+            gameObject.layer = LayerMask.NameToLayer("Wand");
             rb.isKinematic = true;
             rb.velocity = Vector2.zero;
             rb.constraints = RigidbodyConstraints2D.FreezeAll;
+
         }
         else
         {
+            gameObject.layer = LayerMask.NameToLayer("PickUpable");
             rb.isKinematic = false;
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         }

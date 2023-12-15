@@ -40,6 +40,7 @@ public interface IPickUp
 public class PlayerController : MonoBehaviour
 {
     // [SerializeField] List<Wand> wands;
+    [SerializeField] Transform wandParent;
     [SerializeField] Wand currentWand;
     [SerializeField] float speed = 5f;
     [SerializeField] float flySPeed = 5f;
@@ -103,13 +104,16 @@ public class PlayerController : MonoBehaviour
     {
         if (currentWand == null || !currentWand.gameObject.activeSelf)
             return;
-        currentWand.Cast(pos);
+        currentWand.Cast(pos,tag);
 
     }
     // Update is called once per frame
     void Update()
     {
-
+        if (currentWand != null)
+        {
+            currentWand.transform.right = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - (Vector2)currentWand.transform.position;
+        }
     }
     private void FixedUpdate()
     {
@@ -161,7 +165,7 @@ public class PlayerController : MonoBehaviour
                 e.transform.SetParent(null);
                 e.gameObject.SetActive(true);
                 temp.gameObject.layer = LayerMask.NameToLayer("Wand");
-                temp.transform.SetParent(transform);
+                temp.transform.SetParent(wandParent);
                 temp.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
                 pickUpPanel.SetActive(false);
             });
@@ -172,7 +176,7 @@ public class PlayerController : MonoBehaviour
             MEventSystem.Instance.Send<ChangeCastWand>(
                 new ChangeCastWand { index = inventoryModel.wands.IndexOf(wand) });
             wand.gameObject.layer = LayerMask.NameToLayer("Wand");
-            wand.transform.SetParent(transform);
+            wand.transform.SetParent(wandParent);
             wand.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
         }
     }
