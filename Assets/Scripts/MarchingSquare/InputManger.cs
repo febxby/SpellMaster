@@ -8,7 +8,9 @@ public class InputManger : MonoBehaviour
 {
     bool isClicking;
     [Header("Actions")]
-    public static Action<Vector3> OnTouching;
+    public static Action<Vector3, int, float> OnTouching;
+    public float strength;
+    public int radius;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,20 +22,20 @@ public class InputManger : MonoBehaviour
     {
         if (Mouse.current.leftButton.wasPressedThisFrame)
             isClicking = true;
-        else if(isClicking && Mouse.current.leftButton.isPressed)
+        else if (isClicking && Mouse.current.leftButton.isPressed)
         {
             Clicking();
         }
-        else if (Mouse.current.leftButton.wasReleasedThisFrame&&isClicking)
+        else if (Mouse.current.leftButton.wasReleasedThisFrame && isClicking)
             isClicking = false;
     }
 
     private void Clicking()
     {
         RaycastHit hit;
-        Physics.Raycast(Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue()), out hit,50);
+        Physics.Raycast(Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue()), out hit, 50);
         if (hit.collider is null)
             return;
-        OnTouching?.Invoke(hit.point);
+        OnTouching?.Invoke(hit.point, radius, strength);
     }
 }

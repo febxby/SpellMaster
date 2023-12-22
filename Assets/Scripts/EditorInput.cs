@@ -34,6 +34,7 @@ public class EditorInput : MonoBehaviour, GameControls.IEditorActions
     }
     public void EnableEditor()
     {
+        Time.timeScale = 0;
         controls.Editor.Enable();
     }
     public void DisableEditor()

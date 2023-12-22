@@ -96,15 +96,17 @@ public class PlayerController : MonoBehaviour
     }
     void Start()
     {
-
-        currentWand = inventoryModel.wands[0];
+        if (inventoryModel != null)
+            currentWand = inventoryModel.wands[0];
+        else
+            currentWand = wandParent.GetComponentInChildren<Wand>();
 
     }
     public void Cast(Vector2 pos)
     {
         if (currentWand == null || !currentWand.gameObject.activeSelf)
             return;
-        currentWand.Cast(pos,tag);
+        currentWand.Cast(pos, tag);
 
     }
     // Update is called once per frame
@@ -118,19 +120,19 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         Move();
-        Fly();
+        // Fly();
     }
     public void MoveInput(Vector2 direction)
     {
         moveDirection = direction;
-        if (direction.y > 0)
-        {
-            canFly = true;
-        }
-        else
-        {
-            canFly = false;
-        }
+        // if (direction.y > 0)
+        // {
+        //     canFly = true;
+        // }
+        // else
+        // {
+        //     canFly = false;
+        // }
     }
     public void FlyInput(bool value)
     {
@@ -139,7 +141,7 @@ public class PlayerController : MonoBehaviour
     public void Move()
     {
         currentSpeed = Mathf.MoveTowards(currentSpeed, speed, Time.deltaTime * acceleration);
-        rb.velocity = new Vector2(moveDirection.x * currentSpeed, rb.velocity.y);
+        rb.velocity = new Vector2(moveDirection.x * currentSpeed, moveDirection.y * currentSpeed);
     }
     public void Fly()
     {
@@ -232,25 +234,25 @@ public class PlayerController : MonoBehaviour
             return;
         pickUpable = null;
     }
-    private void OnGUI()
-    {
-        if (Test)
-        {
+    // private void OnGUI()
+    // {
+    //     if (Test)
+    //     {
 
-            GUIStyle style = new GUIStyle();
-            style.fontSize = 25;
-            style.normal.textColor = Color.black;
-            GUI.Label(new Rect(10, 10, 200, 20), "Current Spell Index: " + currentWand.CurrentSpellIndex.ToString(), style);
-            if (currentWand.CastSpell != null)
-                GUI.Label(new Rect(10, 30, 200, 20), "Current Charge Time: " + currentWand.CastSpell.name.ToString(), style);
-            GUI.Label(new Rect(10, 50, 200, 20), "Current UsedSpellCount: " + currentWand.UsedSpellCount.ToString(), style);
-            GUI.Label(new Rect(10, 70, 200, 20), "Current NoNullSpellCount: " + currentWand.NonNullSpellCount.ToString(), style);
-            GUI.Label(new Rect(10, 90, 200, 20), "Divide数量：" + ObjectPoolFactory.Instance.GetPoolCount<Divide>(), style);
-            GUI.Label(new Rect(10, 110, 200, 20), "Formation数量：" + ObjectPoolFactory.Instance.GetPoolCount<Formation>(), style);
-            GUI.Label(new Rect(10, 130, 200, 20), "MultiCast数量：" + ObjectPoolFactory.Instance.GetPoolCount<MultiCast>(), style);
-            GUI.Label(new Rect(10, 150, 200, 20), "Spell数量：" + ObjectPoolFactory.Instance.GetPoolCount<Spell>(), style);
-            GUI.Label(new Rect(10, 170, 200, 20), "DivideModifier数量：" + ObjectPoolFactory.Instance.GetPoolCount<DivideModifier>(), style);
-        }
+    //         GUIStyle style = new GUIStyle();
+    //         style.fontSize = 25;
+    //         style.normal.textColor = Color.black;
+    //         GUI.Label(new Rect(10, 10, 200, 20), "Current Spell Index: " + currentWand.CurrentSpellIndex.ToString(), style);
+    //         if (currentWand.CastSpell != null)
+    //             GUI.Label(new Rect(10, 30, 200, 20), "Current Charge Time: " + currentWand.CastSpell.name.ToString(), style);
+    //         GUI.Label(new Rect(10, 50, 200, 20), "Current UsedSpellCount: " + currentWand.UsedSpellCount.ToString(), style);
+    //         GUI.Label(new Rect(10, 70, 200, 20), "Current NoNullSpellCount: " + currentWand.NonNullSpellCount.ToString(), style);
+    //         GUI.Label(new Rect(10, 90, 200, 20), "Divide数量：" + ObjectPoolFactory.Instance.GetPoolCount<Divide>(), style);
+    //         GUI.Label(new Rect(10, 110, 200, 20), "Formation数量：" + ObjectPoolFactory.Instance.GetPoolCount<Formation>(), style);
+    //         GUI.Label(new Rect(10, 130, 200, 20), "MultiCast数量：" + ObjectPoolFactory.Instance.GetPoolCount<MultiCast>(), style);
+    //         GUI.Label(new Rect(10, 150, 200, 20), "Spell数量：" + ObjectPoolFactory.Instance.GetPoolCount<Spell>(), style);
+    //         GUI.Label(new Rect(10, 170, 200, 20), "DivideModifier数量：" + ObjectPoolFactory.Instance.GetPoolCount<DivideModifier>(), style);
+    //     }
 
-    }
+    // }
 }

@@ -48,7 +48,7 @@ public struct Square
         // float topLerp = (isoValue - topLeftValue) / (topRightValue - topLeftValue);
         // topLerp = Mathf.Clamp01(topLerp);
         // topCenter = topLeft + (topRight - topLeft) * topLerp;
-
+        //values[0]右上角，values[1]右下角，values[2]左下角，values[3]左上角
         float topLerp = Mathf.InverseLerp(values[3], values[0], isoValue);
         topLerp = Mathf.Clamp01(topLerp);
         topCenter = topLeft + (topRight - topLeft) * topLerp;

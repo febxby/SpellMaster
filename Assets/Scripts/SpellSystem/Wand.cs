@@ -290,7 +290,7 @@ public class Wand : MonoBehaviour, IPickUpable
                     else
                         Modify(spell.spells[i], ref modify);
                 }
-                spell.damage *= modify.damage;
+                spell.damage += modify.damage;
                 spell.speed *= modify.speed;
                 spell.spread += Math.Clamp(spell.spread + modify.spread, 0, float.MaxValue);
                 // spell.gravity += modify.gravity;
@@ -389,8 +389,8 @@ public class Wand : MonoBehaviour, IPickUpable
         else
         {
             gameObject.layer = LayerMask.NameToLayer("PickUpable");
-            rb.isKinematic = false;
-            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            // rb.isKinematic = false;
+            // rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
         //牌库数量发生变化时重置牌库
         if (deck.Count != length)

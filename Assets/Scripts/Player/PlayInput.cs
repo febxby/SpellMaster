@@ -62,6 +62,7 @@ public class PlayInput : MonoBehaviour, GameControls.IPlayActions
 
     public void EnablePlay()
     {
+        Time.timeScale = 1;
         controls.Play.Enable();
     }
     public void DisablePlay()

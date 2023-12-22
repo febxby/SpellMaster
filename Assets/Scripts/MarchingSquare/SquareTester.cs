@@ -13,8 +13,9 @@ public class SquareTester : MonoBehaviour
         //根据宽高生成多个TerrainGenerator
         for (int y = 0; y < height; y++)
         {
-            for (int x = 0; x < width; x++) {
-                GameObject go = Instantiate(squarePrefab, new Vector3(x*9, y*9, 0), Quaternion.identity);
+            for (int x = 0; x < width; x++)
+            {
+                GameObject go = Instantiate(squarePrefab, new Vector3(x * 19, y * 19, 0), Quaternion.identity);
                 go.transform.parent = transform;
             }
         }

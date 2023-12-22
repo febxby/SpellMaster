@@ -14,6 +14,7 @@ public class MCast : ICast
         throw new System.NotImplementedException();
     }
 }
+[RequireComponent(typeof(Rigidbody2D))]
 public class Projectile : MonoBehaviour, ICast
 {
     public static UnityAction<Vector3, int> OnCollider;
@@ -21,10 +22,10 @@ public class Projectile : MonoBehaviour, ICast
     Vector2 direction;
     RaycastHit2D hit;
     Rigidbody2D rb;
-    TrailRenderer trail;
-    int bounce;
+    protected TrailRenderer trail;
+    protected int bounce;
     Vector3 lastPos;
-    WaitForSeconds seconds;
+    protected WaitForSeconds seconds;
     public Projectile Initialized(Spell spell)
     {
         // this.spell = Instantiate(spell);
@@ -183,14 +184,14 @@ public class Projectile : MonoBehaviour, ICast
     {
         Gizmos.DrawRay(hit.point, hit.normal);
     }
-    private void OnGUI()
-    {
-        GUIStyle style = new()
-        {
-            fontSize = 80
-        };
-        GUI.Label(new Rect(500, 500, 500, 500), rb.velocity.magnitude.ToString(), style);
-    }
+    // private void OnGUI()
+    // {
+    //     GUIStyle style = new()
+    //     {
+    //         fontSize = 80
+    //     };
+    //     GUI.Label(new Rect(500, 500, 500, 500), rb.velocity.magnitude.ToString(), style);
+    // }
     private void OnDestroy()
     {
         StopAllCoroutines();

@@ -4,22 +4,21 @@ using UnityEngine;
 
 public class TestCollider : MonoBehaviour
 {
+    public float strength;
+    public int radius;
+    public Transform pos;
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
-    void Update()
+    private void OnCollisionEnter(Collision other)
     {
-        
+        if (other.transform.parent.TryGetComponent<TerrainGenerator>(out var terrainGenerator))
+            terrainGenerator.TouchingCallback(other.GetContact(0).point, radius, strength);
+
     }
-    private void OnCollisionEnter(Collision other) {
-        Debug.Log("1"+other.gameObject.name);
-    }
-    private void OnTriggerEnter(Collider other) {
-        Debug.Log("2"+other.gameObject.name);
-        
-    }
+
 }

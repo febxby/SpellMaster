@@ -56,7 +56,6 @@ public class PriorityQueue<T> where T : IComparable<T>
             result = default(T);
             return false;
         }
-
         result = heap[0];
         int lastIndex = heap.Count - 1;
         heap[0] = heap[lastIndex];

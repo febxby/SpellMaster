@@ -23,7 +23,8 @@ public class StateName
 // 使用状态机实现平台类AI
 public class AIFsm : RuleFSM<EnemyData, AIFsm>, ICanPlayAnim, IDamageable
 {
-    [SerializeField] int currentHealth;
+    [SerializeField] float maxHealth = 6;
+    float currentHealth;
     [SerializeField] Wand wand;
     private int mFace = 1;
     public int FaceDir => mFace;
@@ -79,7 +80,7 @@ public class AIFsm : RuleFSM<EnemyData, AIFsm>, ICanPlayAnim, IDamageable
         mFaceDirGroundCheck = transform.Find("GroundCurDirCheck");
         mGroundCheck = transform.Find("GroundCheck");
         wand = GetComponentInChildren<Wand>();
-        currentHealth = Data.MaxHealth;
+        currentHealth = maxHealth;
 
     }
     private void OnDrawGizmos()

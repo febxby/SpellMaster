@@ -18,7 +18,9 @@ public class Tracking : ProjectileComponent, ICast
     // }
     Spell spell;
     RaycastHit2D[] hits = new RaycastHit2D[1];
-    Rigidbody2D rb;
+    Rigidbody2D rb2D;
+    Rigidbody rb;
+
     // public TrackingType trackingType;
     // public float trackingSpeed;
     public float trackingRange;
@@ -38,7 +40,15 @@ public class Tracking : ProjectileComponent, ICast
             spell.spells[i].Cast(start, end, direction, spell.owner);
         }
     }
+    private void Awake()
+    {
+        if (rb2D == null || rb == null)
+        {
+            TryGetComponent<Rigidbody>(out rb);
+            TryGetComponent<Rigidbody2D>(out rb2D);
+        }
 
+    }
     public override void Init(Spell spell)
     {
         this.spell = spell;
@@ -57,10 +67,12 @@ public class Tracking : ProjectileComponent, ICast
             quaternion quaternion = Quaternion.AngleAxis(angle, Vector3.forward);
             transform.right = Vector3.Slerp(transform.right, direction, rotateSpeed / Vector2.Distance(transform.position, hits[0].collider.transform.position));
             // transform.rotation = Quaternion.RotateTowards(transform.rotation, quaternion, rotateSpeed * Time.deltaTime);
-            rb = transform.GetComponent<Rigidbody2D>();
             //改变子弹的方向但不改变速度;
             //让方向转变更平滑
-            rb.velocity = transform.right * rb.velocity.magnitude;
+            if (rb2D != null)
+                rb2D.velocity = transform.right * rb2D.velocity.magnitude;
+            else if (rb != null)
+                rb.velocity = transform.right * rb.velocity.magnitude;
 
         }
     }

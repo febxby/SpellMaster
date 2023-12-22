@@ -27,6 +27,7 @@ public class TerrainGenerator : MonoBehaviour
     Mesh mesh;
     public bool canTouch;
     public TileMapTest tileMapTest;
+    float baseTerrainHeight = 1 + 0.5f;
     private void Awake()
     {
         if (canTouch)
@@ -61,65 +62,124 @@ public class TerrainGenerator : MonoBehaviour
     {
 
     }
-    private void OnCollisionEnter(Collision other)
-    {
-        Debug.Log("collider" + other.gameObject.name);
-    }
 
     void OnTriggerEnter(Collider other)
     {
         Debug.Log("trigger" + other.name);
 
     }
+    public float GetVoxelVolumeForSphere(Vector2Int voxelPosition, Vector2Int sphereOrigin, float sphereRadius)
+    {
+        // Vector3 vector3 = new Vector3(voxelPosition.x, voxelPosition.y, 0);
+        float t = (voxelPosition - sphereOrigin).sqrMagnitude / (sphereRadius * sphereRadius);
+        float value = Mathf.Lerp(1f, 0f, t);
+        return Mathf.Clamp01(value);
+    }
+    public void LerpData(Vector2Int worldPos, float to, float time)
+    {
+        // Vector2Int currentGridPosition = GetGridPositionFromWorldPosition(worldPos);
+        // NimbatusTerrainData? data = GetData(worldPos);
+        // if (data.HasValue)
+        float volume = grid[worldPos.x, worldPos.y];
+        float value = Mathf.Lerp(volume, to, time);
+        grid[worldPos.x, worldPos.y] = value;
+        // }
+    }
     private void ColliderCallback(Vector3 worldPosition, int radius)
     {
+        float time = 3;
         worldPosition.z = 0;
         worldPosition = transform.InverseTransformPoint(worldPosition);
         Vector2Int gridPosition = GetGridPositionFromWorldPosition(worldPosition);
 
         bool canGenerate = false;
-        for (int y = gridPosition.y - radius; y <= gridPosition.y + radius; y++)
-        {
-            for (int x = gridPosition.x - radius; x <= gridPosition.x + radius; x++)
-            {
-                Vector2Int currentGridPosition = new(x, y);
-                if (!isValidGridPosition(currentGridPosition))
-                {
-                    Debug.Log("Out of range");
-                    continue;
-                }
-                float distance = Vector2.Distance(gridPosition, currentGridPosition);
-                float factor = brushStrength * Mathf.Exp(-distance * brushFallback / radius);
-                grid[currentGridPosition.x, currentGridPosition.y] -= factor;
-                canGenerate = true;
-            }
-        }
+        // for (int y = gridPosition.y - radius; y <= gridPosition.y + radius; y++)
+        // {
+        //     for (int x = gridPosition.x - radius; x <= gridPosition.x + radius; x++)
+        //     {
+        //         Vector2Int currentGridPosition = new(x, y);
+        //         if (!isValidGridPosition(currentGridPosition))
+        //         {
+        //             Debug.Log("Out of range");
+        //             continue;
+        //         }
+        //         float distance = Vector2.Distance(gridPosition, currentGridPosition);
+        //         float factor = brushStrength * Mathf.Exp(-distance * brushFallback / radius);
+        //         grid[currentGridPosition.x, currentGridPosition.y] -= factor;
+        //         canGenerate = true;
+        //     }
+        // }
         if (canGenerate)
             GenerateMesh();
     }
-    public void TouchingCallback(Vector3 worldPosition)
+    // private void OnCollisionEnter(Collision collision)
+    // {
+    //     Debug.Log("collision" + collision.gameObject.name);
+    //     TouchingCallback(collision.GetContact(0).point, brushStrength);
+    // }
+
+    public void TouchingCallback(Vector3 worldPosition, int radius, float strength)
     {
         worldPosition.z = 0;
         worldPosition = transform.InverseTransformPoint(worldPosition);
         Vector2Int gridPosition = GetGridPositionFromWorldPosition(worldPosition);
 
         bool canGenerate = false;
-        for (int y = gridPosition.y - brushRadius; y <= gridPosition.y + brushRadius; y++)
+        // for (int y = gridPosition.y; y <= gridPosition.y + radius; y++)
         {
-            for (int x = gridPosition.x - brushRadius; x <= gridPosition.x + brushRadius; x++)
+            for (int x = gridPosition.x; x <= gridPosition.x + radius; x++)
             {
-                Vector2Int currentGridPosition = new(x, y);
+                Vector2Int currentGridPosition = new(x, gridPosition.y);
                 if (!isValidGridPosition(currentGridPosition))
                 {
                     // Debug.Log("Out of range");
                     continue;
                 }
-                float distance = Vector2.Distance(gridPosition, currentGridPosition);
-                float factor = brushStrength * Mathf.Exp(-distance * brushFallback / brushRadius);
-                grid[currentGridPosition.x, currentGridPosition.y] -= factor;
-                canGenerate = true;
+                // gridPosition = GetGridPositionFromWorldPosition(vector);
+                // Vector2Int currentGridPosition = new(gridPosition.x + i, gridPosition.y + j);
+                float volume = grid[currentGridPosition.x, currentGridPosition.y];
+                float num = 1f - GetVoxelVolumeForSphere(currentGridPosition, gridPosition, (float)radius * 1.2f);
+
+                float num2 = strength;
+                num2 = strength / 10f;
+                if (volume >= num)
+                {
+                    // if (num2 > 0f)
+                    {
+                        LerpData(currentGridPosition, Mathf.Clamp01(num), num2);
+                    }
+                    // else
+                    {
+                        // grid[currentGridPosition.x, currentGridPosition.y] = Mathf.Clamp01(num);
+
+                    }
+                    canGenerate = true;
+
+                }
+
             }
         }
+        // worldPosition.z = 0;
+        // worldPosition = transform.InverseTransformPoint(worldPosition);
+        // Vector2Int gridPosition = GetGridPositionFromWorldPosition(worldPosition);
+
+        // bool canGenerate = false;
+        // for (int y = gridPosition.y - brushRadius; y <= gridPosition.y + brushRadius; y++)
+        // {
+        //     for (int x = gridPosition.x - brushRadius; x <= gridPosition.x + brushRadius; x++)
+        //     {
+        //         Vector2Int currentGridPosition = new(x, y);
+        //         if (!isValidGridPosition(currentGridPosition))
+        //         {
+        //             // Debug.Log("Out of range");
+        //             continue;
+        //         }
+        //         float distance = Vector2.Distance(gridPosition, currentGridPosition);
+        //         float factor = brushStrength * Mathf.Exp(-distance * brushFallback / brushRadius);
+        //         grid[currentGridPosition.x, currentGridPosition.y] -= factor;
+        //         canGenerate = true;
+        //     }
+        // }
         if (canGenerate)
             GenerateMesh();
     }

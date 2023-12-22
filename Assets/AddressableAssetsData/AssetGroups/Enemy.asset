@@ -17,11 +17,29 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 3ff0cc72c8fff49418086cc19d889c53
   m_SerializeEntries:
-  - m_GUID: d44bfc2d864507643b3f25bc0a401452
-    m_Address: Assets/SOData/Enemy
+  - m_GUID: a463487e3c8f28d4db3668dcea0b7627
+    m_Address: Assets/SOData/Enemy/Enemy.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - EnemyData
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 020f5f6c1ddfdfd4b9c3b6b8e8df989a
+    m_Address: Assets/SOData/Enemy/TopDownEnemyData.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - TopDownEnemyData
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0465e120379565542b897f3797eb1a7c
+    m_Address: Assets/Prefabs/Enemy/Mobs
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Mobs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e16f024db69630469e9d43061ea0840
+    m_Address: Assets/Prefabs/Enemy/Boss
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Boss
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 86e816c329b5c1b42937099787a8a6c4, type: 2}

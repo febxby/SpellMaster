@@ -4,7 +4,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New EnemyData", menuName = "StateMachine/EnemyData")]
 public class EnemyData : ScriptableObject
 {
-    public int MaxHealth = 100;
     public float GroundPatrolSpeed = 5f;
     public float GroundPursuitSpeed = 8f;
     public float GroundRayLength = 1f;

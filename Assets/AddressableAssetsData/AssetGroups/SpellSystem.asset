@@ -23,11 +23,23 @@ MonoBehaviour:
     m_SerializedLabels:
     - Spell
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 081f0104f43adc047b73bae482696f9c
-    m_Address: "Assets/Prefabs/\u6CD5\u6756"
+  - m_GUID: b405e863e59d4fb4cbb6f5a01fb99ab8
+    m_Address: "Assets/Prefabs/\u6CD5\u6756/Boss"
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Wand
+    - BossWands
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ed2c79979578454a87972abaee93749
+    m_Address: "Assets/Prefabs/\u6CD5\u6756/Mobs"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MobsWands
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0cb5fbbe24e193c46a66b1155dcd58a6
+    m_Address: "Assets/Prefabs/\u6CD5\u6756/Player"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PlayerWands
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 86e816c329b5c1b42937099787a8a6c4, type: 2}
