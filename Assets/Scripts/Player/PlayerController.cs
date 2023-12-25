@@ -49,6 +49,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] IPickUpable pickUpable;
     // [SerializeField] float pickUpCooldown = 0.5f;
     [SerializeField] bool Test = false;
+    Animator animator;
+    SpriteRenderer spriteRenderer;
     // float lastPickUpTime = -1f;
     bool isPickingUp;
     InventoryModel inventoryModel;
@@ -59,6 +61,8 @@ public class PlayerController : MonoBehaviour
     RaycastHit2D[] hits = new RaycastHit2D[1];
     private void Awake()
     {
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         inventoryModel = IOCContainer.Instance.Get<InventoryModel>();
         rb = GetComponent<Rigidbody2D>();
         // wands = GetComponentsInChildren<Wand>(true).ToList();
@@ -116,6 +120,15 @@ public class PlayerController : MonoBehaviour
         {
             currentWand.transform.right = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - (Vector2)currentWand.transform.position;
         }
+        //spriteRenderer.flipX跟随鼠标翻转方向
+        if (Camera.main.ScreenToWorldPoint(Input.mousePosition).x > transform.position.x)
+        {
+            spriteRenderer.flipX = false;
+        }
+        else
+        {
+            spriteRenderer.flipX = true;
+        }
     }
     private void FixedUpdate()
     {
@@ -124,7 +137,9 @@ public class PlayerController : MonoBehaviour
     }
     public void MoveInput(Vector2 direction)
     {
+
         moveDirection = direction;
+        animator.SetBool("Run", true);
         // if (direction.y > 0)
         // {
         //     canFly = true;
@@ -140,6 +155,10 @@ public class PlayerController : MonoBehaviour
     }
     public void Move()
     {
+        if (moveDirection == Vector2.zero)
+        {
+            animator.SetBool("Run", false);
+        }
         currentSpeed = Mathf.MoveTowards(currentSpeed, speed, Time.deltaTime * acceleration);
         rb.velocity = new Vector2(moveDirection.x * currentSpeed, moveDirection.y * currentSpeed);
     }
@@ -184,6 +203,20 @@ public class PlayerController : MonoBehaviour
     }
     public void PickUp()
     {
+        if (TryGetComponent<ISaleable>(out var saleable))
+        {
+            var price = saleable.Sell(inventoryModel.Coin);
+            if (price != -1)
+            {
+                inventoryModel.Coin = price;
+                Debug.Log("卖出成功");
+            }
+            else
+            {
+                Debug.Log("卖出失败");
+                return;
+            }
+        }
         if (pickUpable is null || isPickingUp) return;
         isPickingUp = true;
         if (pickUpable.CanPickUp(gameObject))
@@ -212,6 +245,11 @@ public class PlayerController : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Coin"))
+        {
+            inventoryModel.Coin += 5;
+            GameObjectPool.Instance.PushObject(other.gameObject);
+        }
         if (other.gameObject.layer == LayerMask.NameToLayer("Wand"))
             return;
         if (!other.TryGetComponent<IPickUpable>(out var obj))

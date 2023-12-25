@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 
 public class DropItem : MonoBehaviour, IPickUpable
@@ -15,6 +16,19 @@ public class DropItem : MonoBehaviour, IPickUpable
     {
 
     }
+    public void Init(Spell spell)
+    {
+        if (spell == null)
+        {
+            int index = Random.Range(0, GameManger.Instance.spellCount);
+            spell = GameManger.Instance.Get<Spell>(index);
+        }
+        else
+        {
+            this.spell = spell;
+        }
+        spriteRenderer.sprite = spell.sprite;
+    }
     void Start()
     {
         if (isRandom)
@@ -23,5 +37,9 @@ public class DropItem : MonoBehaviour, IPickUpable
             spell = GameManger.Instance.Get<Spell>(index);
         }
         spriteRenderer.sprite = spell.sprite;
+    }
+    private void OnDisable()
+    {
+        GameObjectPool.Instance.PushObject(gameObject);
     }
 }

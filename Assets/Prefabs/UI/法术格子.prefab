@@ -92,9 +92,8 @@ MonoBehaviour:
   image: {fileID: 2615600134643527619}
   infoPrefab: {fileID: 5115832173063340572, guid: 111339c9794d0774fb0fb0c6af4e1850, type: 3}
   lastParent: {fileID: 0}
-  parentTag: 
   infoPanel: {fileID: 0}
-  ownerList: []
+  dropItemPrefab: {fileID: 6220769634304408206, guid: 2ebcb2496316cc44ebb65ccb5e488105, type: 3}
 --- !u!1 &6220769634304408206
 GameObject:
   m_ObjectHideFlags: 0

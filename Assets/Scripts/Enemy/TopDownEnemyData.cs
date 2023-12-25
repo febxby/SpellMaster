@@ -6,4 +6,5 @@ using UnityEngine;
 public class TopDownEnemyData : EnemyData
 {
     public float PatrolRadius = 5f;
+    public float IdleTime = 1.5f;
 }

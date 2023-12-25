@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-public struct EnemyDeath { };
+public struct EnemyDeath
+{
+    public Vector3 pos;
+};
 public struct ChangeRoom
 {
     public RoomType roomType;
@@ -32,16 +35,16 @@ public class LevelController : MonoBehaviour
             switch (e.roomType)
             {
                 case RoomType.Shop:
-                    room = Instantiate(shopPrefab).GetComponent<Room>();
+                    room = GameObjectPool.Instance.GetObject(shopPrefab).GetComponent<Room>();
                     break;
                 case RoomType.Enhancement:
-                    room = Instantiate(enhancementShopPrefab).GetComponent<Room>();
+                    room = GameObjectPool.Instance.GetObject(enhancementShopPrefab).GetComponent<Room>();
                     break;
                 case RoomType.Combat:
-                    room = Instantiate(roomPrefab).GetComponent<Room>();
+                    room = GameObjectPool.Instance.GetObject(roomPrefab).GetComponent<Room>();
                     break;
                 case RoomType.Boss:
-                    room = Instantiate(bossRoomPrefab).GetComponent<Room>();
+                    room = GameObjectPool.Instance.GetObject(bossRoomPrefab).GetComponent<Room>();
                     break;
             }
             if (e.roomType == RoomType.Shop || e.roomType == RoomType.Enhancement)
@@ -53,7 +56,7 @@ public class LevelController : MonoBehaviour
         });
         enemies = GameManger.Instance.allEnemies;
         bosses = GameManger.Instance.allBoss;
-        room = Instantiate(roomPrefab).GetComponent<Room>();
+        room = GameObjectPool.Instance.GetObject(roomPrefab).GetComponent<Room>();
         room.Init(RoomType.Combat, 4, 1);
 
     }

@@ -8,6 +8,18 @@ public class InventoryModel : ScriptableObject
 {
     [SerializeField] private int maxWandCount = 4;
     [SerializeField] private int maxSpellCount = 24;
+    [SerializeField] private int coin = 0;
+    public int Coin
+    {
+        get
+        {
+            return coin;
+        }
+        set
+        {
+            coin = value;
+        }
+    }
     public int wandCount => maxWandCount;
     public int spellCount => maxSpellCount;
     public List<Wand> wands;

@@ -17,6 +17,7 @@ public class Room : MonoBehaviour
     [SerializeField] int bossSpawnFrequency = 6;
     [SerializeField] GameObject spellPrefab;
     [SerializeField] GameObject healthPrefab;
+    [SerializeField] GameObject coinPrefab;
     public GameObject player;
     public Tilemap floorTilemap;
     public Tilemap wallTilemap;
@@ -29,13 +30,34 @@ public class Room : MonoBehaviour
     [SerializeField] RoomType rightRoomType;
     int spawnEnemyCount;
     [SerializeField] int enemyCount;
-
     private void Awake()
     {
         player = FindFirstObjectByType<PlayerController>().gameObject;
         enemyCount = 1;
-        MEventSystem.Instance.Register<EnemyDeath>((EnemyDeath death) =>
+        MEventSystem.Instance.Register<EnemyDeath>((EnemyDeath e) =>
         {
+            if (roomType == RoomType.Boss)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    GameObjectPool.Instance.GetObject(coinPrefab).
+                    SetPositionAndRotation(e.pos + new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0), Quaternion.identity).
+                    SetParent(transform);
+                }
+            }
+            else if (roomType == RoomType.Health)
+            {
+                GameObjectPool.Instance.GetObject(healthPrefab)
+                .SetPositionAndRotation(e.pos + new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0), Quaternion.identity).
+                SetParent(transform);
+            }
+            else
+            {
+                GameObjectPool.Instance.GetObject(coinPrefab).
+                SetPositionAndRotation(e.pos + new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0), Quaternion.identity).
+                SetParent(transform);
+            }
+
             enemyCount--;
         });
 
@@ -56,7 +78,10 @@ public class Room : MonoBehaviour
                 {
                     int index = Random.Range(0, GameManger.Instance.allEnemies.Count);
                     Vector3 randomPosition = GetRandomPosition();
-                    Instantiate(GameManger.Instance.allEnemies[index], randomPosition, Quaternion.identity, enemyParent);
+
+                    GameObjectPool.Instance.GetObject(GameManger.Instance.allEnemies[index]).
+                    SetPositionAndRotation(randomPosition, Quaternion.identity).
+                    SetParent(enemyParent);
                 }
                 break;
             case RoomType.Boss:
@@ -64,8 +89,9 @@ public class Room : MonoBehaviour
                 {
                     int index = roomLevel / bossSpawnFrequency;
                     Vector3 centerPosition = GetCenterPosition();
-                    //TODO：测试
-                    Instantiate(GameManger.Instance.allBoss[0], centerPosition, Quaternion.identity, enemyParent);
+                    GameObjectPool.Instance.GetObject(GameManger.Instance.allBoss[index]).
+                    SetPositionAndRotation(centerPosition, Quaternion.identity).
+                    SetParent(enemyParent);
                 }
                 break;
         }
@@ -129,12 +155,12 @@ public class Room : MonoBehaviour
     {
         if (leftRoomType == RoomType.Boss)
         {
-            door[0].Init(leftRoomType, () => this.gameObject.SetActive(false)).gameObject.SetActive(true);
+            door[0].Init(leftRoomType, () => GameObjectPool.Instance.PushObject(this.gameObject)).gameObject.SetActive(true);
         }
         else
         {
-            door[0].Init(leftRoomType, () => this.gameObject.SetActive(false)).gameObject.SetActive(true);
-            door[1].Init(rightRoomType, () => this.gameObject.SetActive(false)).gameObject.SetActive(true);
+            door[0].Init(leftRoomType, () => GameObjectPool.Instance.PushObject(this.gameObject)).gameObject.SetActive(true);
+            door[1].Init(rightRoomType, () => GameObjectPool.Instance.PushObject(this.gameObject)).gameObject.SetActive(true);
         }
     }
     void DropItem()
@@ -142,17 +168,23 @@ public class Room : MonoBehaviour
         if (roomType == RoomType.Combat)
         {
             //在中心位置随机掉落一个法术
-            Instantiate(spellPrefab, GetCenterPosition(), Quaternion.identity);
+            GameObjectPool.Instance.GetObject(spellPrefab).
+            SetPositionAndRotation(GetCenterPosition(), Quaternion.identity).
+            SetParent(transform);
         }
         else if (roomType == RoomType.Health)
         {
             //在中心位置随机掉落一个法术
-            Instantiate(healthPrefab, GetCenterPosition(), Quaternion.identity);
+            GameObjectPool.Instance.GetObject(healthPrefab).
+            SetPositionAndRotation(GetCenterPosition(), Quaternion.identity).
+            SetParent(transform);
         }
         else if (roomType == RoomType.Boss)
         {
             int index = Random.Range(0, GameManger.Instance.playerWands.Count);
-            Instantiate(GameManger.Instance.playerWands[index], GetCenterPosition(), Quaternion.identity);
+            GameObjectPool.Instance.GetObject(GameManger.Instance.playerWands[index]).
+            SetPositionAndRotation(GetCenterPosition(), Quaternion.identity).
+            SetParent(transform);
         }
     }
     private Vector3 GetCenterPosition()
@@ -160,7 +192,8 @@ public class Room : MonoBehaviour
         BoundsInt bounds = floorTilemap.cellBounds;
         Vector3Int minPosition = bounds.min;
         Vector3Int maxPosition = bounds.max;
-        Vector3Int centerPosition = new Vector3Int((minPosition.x + maxPosition.x) / 2, (minPosition.y + maxPosition.y) / 3, 0);
+        Vector3Int centerPosition;
+        centerPosition = new Vector3Int(minPosition.x + (maxPosition.x - minPosition.x) / 2, maxPosition.y - (maxPosition.y - minPosition.y) / 3, 0);
         return floorTilemap.CellToWorld(centerPosition);
     }
     private Vector3 GetRandomPosition()
@@ -168,7 +201,15 @@ public class Room : MonoBehaviour
         BoundsInt bounds = floorTilemap.cellBounds;
         Vector3Int minPosition = bounds.min;
         Vector3Int maxPosition = bounds.max;
-        Vector3Int randomPosition = new Vector3Int(Random.Range(minPosition.x, maxPosition.x), Random.Range(minPosition.y, maxPosition.y), 0);
+        Vector3Int randomPosition;
+        do
+        {
+            randomPosition = new Vector3Int(
+                Random.Range(minPosition.x, maxPosition.x),
+                Random.Range(minPosition.y + (maxPosition.y - minPosition.y) / 2, maxPosition.y),
+                0
+            );
+        } while (floorTilemap.GetTile(randomPosition) == null); // 如果这个位置没有瓦片，那么重新生成位置
         return floorTilemap.CellToWorld(randomPosition);
     }
     void Start()
@@ -185,6 +226,15 @@ public class Room : MonoBehaviour
             DropItem();
             SetNextRoomType();
             CheckEnemyDeath();
+        }
+    }
+    private void OnDisable()
+    {
+        // 将当前场景所有DropItem组件的游戏对象都放回对象池
+        DropItem[] dropItems = FindObjectsOfType<DropItem>();
+        foreach (DropItem dropItem in dropItems)
+        {
+            GameObjectPool.Instance.PushObject(dropItem.gameObject);
         }
     }
 }

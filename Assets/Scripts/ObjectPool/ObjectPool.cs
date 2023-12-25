@@ -2,13 +2,6 @@ using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-public interface IPool
-{
-}
-public interface IPoolable
-{
-}
-
 public class ObjectPool<T> where T : class, new()
 {
     private readonly Queue<T> objectPool = new();

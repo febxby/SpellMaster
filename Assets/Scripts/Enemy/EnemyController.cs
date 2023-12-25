@@ -124,7 +124,7 @@ public class EnemyController : RuleFSM<TopDownEnemyData, EnemyController>, ICanP
     }
     public void Die()
     {
-        MEventSystem.Instance.Send(new EnemyDeath());
+        MEventSystem.Instance.Send(new EnemyDeath() { pos = transform.position });
         // Drop();
         Destroy(gameObject);
     }
@@ -141,12 +141,12 @@ public class EnemyStateBuilder : IStateBuilder<E_StateLife>
     }
     Dictionary<string, State<E_StateLife>> IStateBuilder<E_StateLife>.Create(out string firstStateName)
     {
-        firstStateName = StateName.Patrol;
+        firstStateName = StateName.Idle;
 
 
         return new Dictionary<string, State<E_StateLife>>()
             {
-
+                { StateName.Idle ,new EnemyIdleState().SetAnim(StateName.GroundIdle)},
                 { StateName.Observe ,new EnemyObserveState().SetAnim(StateName.GroundIdle) },
                 { StateName.Patrol ,new EnemyPatrolState().SetAnim(StateName.GroundMove)},
                 { StateName.Pursuit ,new EnemyPursuitState().SetAnim(StateName.GroundMove)},
@@ -157,7 +157,31 @@ public class EnemyStateBuilder : IStateBuilder<E_StateLife>
     }
 }
 
+//待机状态
+public class EnemyIdleState : AnimState<EnemyController, TopDownEnemyData>
+{
 
+    private float idleStartTime;
+    private float idleDuration;
+    protected override string CheckCondition()
+    {
+        if (Time.time - idleStartTime >= idleDuration)
+            return StateName.Patrol;
+        return null;
+    }
+    protected override void Execute(E_StateLife life)
+    {
+        base.Execute(life);
+        switch (life)
+        {
+            case E_StateLife.Enter:
+                Machine.XSpeed = 0;
+                idleStartTime = Time.time;
+                idleDuration = Data.IdleTime;
+                break;
+        }
+    }
+}
 
 // 追击状态
 public class EnemyPursuitState : AnimState<EnemyController, TopDownEnemyData>
@@ -165,7 +189,8 @@ public class EnemyPursuitState : AnimState<EnemyController, TopDownEnemyData>
     private Transform target;
     protected override string CheckCondition()
     {
-        if ((!Machine.PursuitCheck && !Machine.ObserveCheck)) return StateName.Observe;
+        if (Machine.IsDie) return StateName.Die;
+        else if (!Machine.PursuitCheck && !Machine.ObserveCheck) return StateName.Observe;
         else if (Machine.AttackCheck) return StateName.Attack;
         return null;
     }
@@ -194,6 +219,8 @@ public class EnemyObserveState : AnimState<EnemyController, TopDownEnemyData>
     private float observeDuration;
     protected override string CheckCondition()
     {
+        if (Machine.IsDie) return StateName.Die;
+        else
         if (Machine.ObserveCheck || Machine.PursuitCheck)
         {
             return StateName.Pursuit;
@@ -225,8 +252,9 @@ public class EnemyPatrolState : AnimState<EnemyController, TopDownEnemyData>
 
     protected override string CheckCondition()
     {
+        if (Machine.IsDie) return StateName.Die;
+        else
         if (Machine.PursuitCheck) return StateName.Pursuit;
-        else if (Machine.IsDie) return StateName.Die;
         return null;
     }
     void SetPatrolPosition()
@@ -275,8 +303,9 @@ public class EnemyAttackState : AnimState<EnemyController, TopDownEnemyData>
 {
     protected override string CheckCondition()
     {
+        if (Machine.IsDie) return StateName.Die;
+        else
         if (!Machine.AttackCheck) return StateName.Pursuit;
-        else if (Machine.IsDie) return StateName.Die;
         return null;
     }
     protected override void Execute(E_StateLife life)

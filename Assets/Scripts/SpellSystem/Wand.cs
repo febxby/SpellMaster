@@ -378,7 +378,7 @@ public class Wand : MonoBehaviour, IPickUpable
         {
             currentMagic = maxMagic;
         }
-        if (transform.parent != null)
+        if (transform.parent.CompareTag("Player"))
         {
             gameObject.layer = LayerMask.NameToLayer("Wand");
             rb.isKinematic = true;

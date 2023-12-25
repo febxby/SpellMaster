@@ -15264,6 +15264,18 @@ PrefabInstance:
       propertyPath: pickUpPanel
       value: 
       objectReference: {fileID: 1554704453}
+    - target: {fileID: 7402608742430222763, guid: 54f5d8f1b17af9c448864eb1fedd27d1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7402608742430222763, guid: 54f5d8f1b17af9c448864eb1fedd27d1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.26
+      objectReference: {fileID: 0}
+    - target: {fileID: 7774324937219382531, guid: 54f5d8f1b17af9c448864eb1fedd27d1, type: 3}
+      propertyPath: m_FlipX
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9081185703628841927, guid: 54f5d8f1b17af9c448864eb1fedd27d1, type: 3}
       propertyPath: blockPanel
       value: 
@@ -15282,11 +15294,11 @@ PrefabInstance:
       objectReference: {fileID: 954887899}
     - target: {fileID: 9098210381787941604, guid: 54f5d8f1b17af9c448864eb1fedd27d1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.06
+      value: -0.99
       objectReference: {fileID: 0}
     - target: {fileID: 9098210381787941604, guid: 54f5d8f1b17af9c448864eb1fedd27d1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.87
+      value: 1.06
       objectReference: {fileID: 0}
     - target: {fileID: 9098210381787941604, guid: 54f5d8f1b17af9c448864eb1fedd27d1, type: 3}
       propertyPath: m_LocalPosition.z

@@ -29,4 +29,12 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         // TODO: Implement death logic here
         Debug.Log("Player has died");
     }
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Health"))
+        {
+            currentHealth += 10;
+            GameObjectPool.Instance.PushObject(other.gameObject);
+        }
+    }
 }

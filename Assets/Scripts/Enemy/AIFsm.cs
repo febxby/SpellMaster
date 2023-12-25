@@ -19,6 +19,7 @@ public class StateName
 
     public const string Attack = "Attack";
     public const string Die = "Die";
+    public const string Idle="Idle";
 }
 // 使用状态机实现平台类AI
 public class AIFsm : RuleFSM<EnemyData, AIFsm>, ICanPlayAnim, IDamageable

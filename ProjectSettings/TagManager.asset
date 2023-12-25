@@ -32,8 +32,8 @@ TagManager:
   - BlockMask
   - Wall
   - Floor
-  - 
-  - 
+  - Coin
+  - Health
   - 
   - 
   - 

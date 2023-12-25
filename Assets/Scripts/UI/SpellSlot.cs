@@ -29,6 +29,7 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
     public Transform lastParent;
     public GameObject infoPanel;
     public bool canDrag => SetFunc != null;
+    public GameObject dropItemPrefab;
     RectTransform rectTransform;
     Canvas canvas;
     GraphicRaycaster graphicRaycaster;
@@ -148,6 +149,14 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
                 rectTransform.SetParent(lastParent, false);
                 rectTransform.offsetMax = Vector2.zero;
                 rectTransform.offsetMin = Vector2.zero;
+                //屏幕中间位置
+                Vector3 pos = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+                pos.z = 0;
+                GameObjectPool.Instance.GetObject(dropItemPrefab).
+                SetPositionAndRotation(pos, Quaternion.identity).
+                GetComponent<DropItem>().Init(spell);
+                SetFunc(transform.parent.GetSiblingIndex(), null);
+                Init(null);
             }
         }
         else
@@ -155,6 +164,14 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
             rectTransform.SetParent(lastParent, false);
             rectTransform.offsetMax = Vector2.zero;
             rectTransform.offsetMin = Vector2.zero;
+            //屏幕中间位置
+            Vector3 pos = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+            pos.z = 0;
+            GameObjectPool.Instance.GetObject(dropItemPrefab).
+            SetPositionAndRotation(pos, Quaternion.identity).
+            GetComponent<DropItem>().Init(spell);
+            SetFunc(transform.parent.GetSiblingIndex(), null);
+            Init(null);
         }
         lastParent = transform.parent;
         raycastResults.Clear();
