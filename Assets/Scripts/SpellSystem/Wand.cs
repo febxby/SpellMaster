@@ -57,6 +57,11 @@ public class Wand : MonoBehaviour, IPickUpable
             currentSpellIndex = 0;
             usedSpellCount = 0;
             deck[index] = value;
+            MEventSystem.Instance.Send<UpdateCurrentWandPanel>(new UpdateCurrentWandPanel
+            {
+                wand = this,
+                isChange = false
+            });
             // LoadSpell();
         }
     }
@@ -94,6 +99,7 @@ public class Wand : MonoBehaviour, IPickUpable
     Rigidbody2D rb;
     int usedSpellCount = 0;
     int nonNullSpellCount = 0;
+    string owner;
     // Queue<Spell> spellQueue = new Queue<Spell>();
     private void Awake()
     {
@@ -143,6 +149,7 @@ public class Wand : MonoBehaviour, IPickUpable
     // }
     public void Cast(Vector2 pos, string owner)
     {
+        this.owner = owner;
         if (deck.Count == 0)
         {
             return;
@@ -366,6 +373,11 @@ public class Wand : MonoBehaviour, IPickUpable
     void Start()
     {
         length = deck.Count;
+        if (transform.parent.CompareTag("Player"))
+        {
+            MEventSystem.Instance.Send(new MagicChange { value = 1 });
+            MEventSystem.Instance.Send(new ChargeChange { value = 1 });
+        }
     }
 
     // Update is called once per frame
@@ -373,10 +385,20 @@ public class Wand : MonoBehaviour, IPickUpable
     {
 
         if (currentMagic < maxMagic)
+        {
             currentMagic += magicRestoreRate * Time.deltaTime;
+            MEventSystem.Instance.Send<MagicChange>(new MagicChange
+            {
+                value = currentMagic / maxMagic
+            });
+        }
         else
         {
             currentMagic = maxMagic;
+            MEventSystem.Instance.Send<MagicChange>(new MagicChange
+            {
+                value = currentMagic / maxMagic
+            });
         }
         if (transform.parent.CompareTag("Player"))
         {
@@ -403,11 +425,19 @@ public class Wand : MonoBehaviour, IPickUpable
         {
             if (currentChargeProgress < currentChargeTime)
             {
-                chargeEvent?.Invoke(currentChargeProgress / currentChargeTime);
+                if (owner == "Player")
+                    MEventSystem.Instance.Send<ChargeChange>(new ChargeChange
+                    {
+                        value = currentChargeProgress / currentChargeTime < 0 ? 0 : currentChargeProgress / currentChargeTime
+                    });
             }
             else
             {
-                chargeEvent?.Invoke(0);
+                if (owner == "Player")
+                    MEventSystem.Instance.Send<ChargeChange>(new ChargeChange
+                    {
+                        value = 1
+                    });
                 isCharging = false;
                 currentChargeTime = 0;
             }

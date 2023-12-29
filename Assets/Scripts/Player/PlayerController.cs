@@ -6,7 +6,7 @@ using UnityEngine;
 public struct ChangeCastWand
 {
     public int index;
-    // public Wand wand;
+    public Wand wand;
 }
 /// <summary>
 /// 添加法杖
@@ -28,6 +28,7 @@ public struct AddSpell
     /// </summary>
     public Spell spell;
 }
+
 public interface IPickUpable
 {
     bool CanPickUp(GameObject gameObject);
@@ -37,7 +38,7 @@ public interface IPickUp
     void PickUp();
 }
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamageable
 {
     // [SerializeField] List<Wand> wands;
     [SerializeField] Transform wandParent;
@@ -53,7 +54,7 @@ public class PlayerController : MonoBehaviour
     SpriteRenderer spriteRenderer;
     // float lastPickUpTime = -1f;
     bool isPickingUp;
-    InventoryModel inventoryModel;
+    PlayerModel playerModel;
     Rigidbody2D rb;
     Vector2 moveDirection;
     bool canFly;
@@ -63,7 +64,7 @@ public class PlayerController : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        inventoryModel = IOCContainer.Instance.Get<InventoryModel>();
+        playerModel = IOCContainer.Instance.Get<PlayerModel>();
         rb = GetComponent<Rigidbody2D>();
         // wands = GetComponentsInChildren<Wand>(true).ToList();
         MEventSystem.Instance.Register<AddWand>(
@@ -83,25 +84,30 @@ public class PlayerController : MonoBehaviour
     }
     public void ChangeCastWand(int index)
     {
-        if (index < 0 || index >= inventoryModel.wands.Count)
+        if (index < 0 || index >= playerModel.wands.Count)
         {
             currentWand = null;
             return;
         }
-        if (currentWand != null && currentWand != inventoryModel.wands[index])
+        if (currentWand != null && currentWand != playerModel.wands[index])
         {
             currentWand.gameObject.SetActive(false);
         }
-        currentWand = inventoryModel.wands[index];
+        currentWand = playerModel.wands[index];
         if (currentWand != null)
         {
             currentWand.gameObject.SetActive(true);
         }
+        MEventSystem.Instance.Send<UpdateCurrentWandPanel>(new UpdateCurrentWandPanel
+        {
+            wand = currentWand,
+            isChange = true
+        });
     }
     void Start()
     {
-        if (inventoryModel != null)
-            currentWand = inventoryModel.wands[0];
+        if (playerModel != null)
+            currentWand = playerModel.wands[0];
         else
             currentWand = wandParent.GetComponentInChildren<Wand>();
 
@@ -170,7 +176,7 @@ public class PlayerController : MonoBehaviour
     private void AddWandToInventory(Wand wand)
     {
         if (wand == null) return;
-        if (!inventoryModel.Add(wand))
+        if (!playerModel.Add(wand))
         {
             Wand temp = wand;
             pickUpPanel.SetActive(true);
@@ -178,10 +184,10 @@ public class PlayerController : MonoBehaviour
             (e, index) =>
             {
                 if (e == null) return;
-                inventoryModel.Add(temp, index);
+                playerModel.Add(temp, index);
                 MEventSystem.Instance.Send<AddWand>();
                 MEventSystem.Instance.Send<ChangeCastWand>(
-                new ChangeCastWand { index = inventoryModel.wands.IndexOf(temp) });
+                new ChangeCastWand { index = playerModel.wands.IndexOf(temp) });
                 e.gameObject.layer = LayerMask.NameToLayer("PickUpable");
                 e.transform.SetParent(null);
                 e.gameObject.SetActive(true);
@@ -195,7 +201,7 @@ public class PlayerController : MonoBehaviour
         {
             MEventSystem.Instance.Send<AddWand>();
             MEventSystem.Instance.Send<ChangeCastWand>(
-                new ChangeCastWand { index = inventoryModel.wands.IndexOf(wand) });
+                new ChangeCastWand { index = playerModel.wands.IndexOf(wand) });
             wand.gameObject.layer = LayerMask.NameToLayer("Wand");
             wand.transform.SetParent(wandParent);
             wand.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
@@ -203,31 +209,40 @@ public class PlayerController : MonoBehaviour
     }
     public void PickUp()
     {
-        if (TryGetComponent<ISaleable>(out var saleable))
-        {
-            var price = saleable.Sell(inventoryModel.Coin);
-            if (price != -1)
-            {
-                inventoryModel.Coin = price;
-                Debug.Log("卖出成功");
-            }
-            else
-            {
-                Debug.Log("卖出失败");
-                return;
-            }
-        }
         if (pickUpable is null || isPickingUp) return;
         isPickingUp = true;
         if (pickUpable.CanPickUp(gameObject))
         {
+            if (pickUpable is Saleable saleable)
+            {
+                if (!playerModel.Add(obj: saleable.spell))
+                {
+                }
+                else
+                {
+                    var price = saleable.Sell(playerModel.Coin);
+                    if (price != -1)
+                    {
+                        playerModel.Coin = price;
+                        MEventSystem.Instance.Send<AddSpell>(new AddSpell { spell = saleable.spell });
+                        GameObjectPool.Instance.PushObject(saleable.gameObject);
+                        Debug.Log("卖出成功");
+                    }
+                    else
+                    {
+                        Debug.Log("卖出失败");
+                    }
+                }
+
+            }
+            else
             if (pickUpable is Wand wand)
             {
                 AddWandToInventory(wand);
             }
             else if (pickUpable is DropItem item)
             {
-                if (!inventoryModel.Add(obj: item.spell))
+                if (!playerModel.Add(obj: item.spell))
                 {
 
                     // pickUpPanel.SetActive(true);
@@ -235,8 +250,9 @@ public class PlayerController : MonoBehaviour
                 else
                 {
                     MEventSystem.Instance.Send<AddSpell>(new AddSpell { spell = item.spell });
+                    GameObjectPool.Instance.PushObject(item.gameObject);
                 }
-                GameObjectPool.Instance.PushObject(item.gameObject);
+
 
             }
         }
@@ -247,7 +263,12 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Coin"))
         {
-            inventoryModel.Coin += 5;
+            playerModel.Coin += 5;
+            GameObjectPool.Instance.PushObject(other.gameObject);
+        }
+        if (other.gameObject.layer == LayerMask.NameToLayer("Health"))
+        {
+            playerModel.CurrentHealth += 10;
             GameObjectPool.Instance.PushObject(other.gameObject);
         }
         if (other.gameObject.layer == LayerMask.NameToLayer("Wand"))
@@ -271,6 +292,19 @@ public class PlayerController : MonoBehaviour
         if (!other.TryGetComponent<IPickUpable>(out var obj))
             return;
         pickUpable = null;
+    }
+    public void TakeDamage(int damageAmount)
+    {
+        playerModel.CurrentHealth -= damageAmount;
+        if (playerModel.CurrentHealth <= 0)
+        {
+            Die();
+        }
+    }
+    private void Die()
+    {
+        // TODO: Implement death logic here
+        Debug.Log("Player has died");
     }
     // private void OnGUI()
     // {

@@ -15,11 +15,13 @@ public class SpellInfoPanel : MonoBehaviour
     [SerializeField] RectTransform rectTransform;
     [SerializeField] GameObject attributeNames;
     [SerializeField] GameObject attributeValues;
-    public void Init(Spell spell, PointerEventData eventData)
+    [SerializeField] bool isFollowMouse = true;
+    public void Init(Spell spell, PointerEventData eventData, bool isFollowMouse = true)
     {
         // attributeNamesList = attributeNames.transform.GetComponentsInChildren<Text>().ToList();
         // attributeValuesList = attributeValues.transform.GetComponentsInChildren<Text>().ToList();
         // var sr = spell.prefab.GetComponent<SpriteRenderer>();
+        this.isFollowMouse = isFollowMouse;
         SetPosition(eventData.position);
         foreach (Text text in attributeValuesList)
         {
@@ -92,7 +94,7 @@ public class SpellInfoPanel : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (gameObject.activeSelf)
+        if (gameObject.activeSelf && isFollowMouse)
         {
             SetPosition(Input.mousePosition);
         }

@@ -50,11 +50,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wandName: "\u5927\u5BB9\u91CF\u9B54\u6756"
   castDelay: 0.15
-  maxMagic: 80
+  maxMagic: 100
   magicRestoreRate: 25
   chargeTime: 0.33
   spread: 0
-  capacity: 3
+  capacity: 7
   drawCount: 1
   castPoint: {fileID: 4458703945821622774}
   chargeEvent:

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class WandPanel : MonoBehaviour, IShowable, IPointerMoveHandler
+public class WandPanel : MonoBehaviour, IShowable, IPointerMoveHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] Image image;
     [SerializeField] GameObject spells;

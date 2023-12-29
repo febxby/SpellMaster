@@ -15,7 +15,7 @@ public struct SwitchWandPos
 /// <summary>
 /// 法杖槽
 /// </summary>
-public class WandSlot : MonoBehaviour, IDragable, IShowable
+public class WandSlot : MonoBehaviour, IDragable, IShowable, IPointerEnterHandler, IPointerExitHandler
 {
     public Wand wand;
     public Image image;

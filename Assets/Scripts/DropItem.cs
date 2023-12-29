@@ -1,12 +1,15 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 
-public class DropItem : MonoBehaviour, IPickUpable
+public class DropItem : MonoBehaviour, IPickUpable, IShowable
 {
     public bool isRandom = true;
     public Spell spell;
     [SerializeField] SpriteRenderer spriteRenderer;
+    public GameObject infoPanel;
+
 
     public bool CanPickUp(GameObject gameObject)
     {
@@ -29,6 +32,15 @@ public class DropItem : MonoBehaviour, IPickUpable
         }
         spriteRenderer.sprite = spell.sprite;
     }
+    private void OnEnable()
+    {
+        if (isRandom && spell != null)
+        {
+            int index = Random.Range(0, GameManger.Instance.spellCount);
+            spell = GameManger.Instance.Get<Spell>(index);
+        }
+        spriteRenderer.sprite = spell.sprite;
+    }
     void Start()
     {
         if (isRandom)
@@ -41,5 +53,26 @@ public class DropItem : MonoBehaviour, IPickUpable
     private void OnDisable()
     {
         GameObjectPool.Instance.PushObject(gameObject);
+    }
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        MEventSystem.Instance.Send<ShowInfoPanel>(new ShowInfoPanel
+        {
+            showable = this,
+            eventData = new PointerEventData(EventSystem.current)
+            {
+                // 使用当前对象的上方的位置
+                position = RectTransformUtility.WorldToScreenPoint(Camera.main, transform.position + Vector3.up * 2)
+            }
+        });
+    }
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (infoPanel != null)
+        {
+            GameObjectPool.Instance.PushObject(infoPanel);
+            infoPanel = null;
+            // infoPanel.SetActive(false);
+        }
     }
 }

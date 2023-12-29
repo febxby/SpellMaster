@@ -26,7 +26,7 @@ public class GameManger : MonoSingleton<GameManger>
 {
     // Start is called before the first frame update
     IOCContainer container;
-    [SerializeField] InventoryModel inventoryModel;
+    [SerializeField] PlayerModel inventoryModel;
     [SerializeField] GameObject initialWand;
     public List<Spell> allSpells = new();
     public List<GameObject> playerWands = new();
@@ -73,7 +73,7 @@ public class GameManger : MonoSingleton<GameManger>
 
 
         container = IOCContainer.Instance;
-        container.Register<InventoryModel>(inventoryModel);
+        container.Register<PlayerModel>(inventoryModel);
         //仓库初始化
         inventoryModel.Init();
         Addressables.LoadAssetsAsync<GameObject>(LabelName.Mobs,

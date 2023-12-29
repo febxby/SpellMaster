@@ -19,7 +19,7 @@ MonoBehaviour:
   magicCost: 30
   burstRadius: 6
   damage: 12
-  speed: 12
+  speed: 7
   spread: 2.9
   lifeTime: 2
   gravity: 0

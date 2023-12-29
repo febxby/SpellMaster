@@ -10,6 +10,7 @@ public class WandInventory : MonoBehaviour
     // Start is called before the first frame update
     public List<WandSlot> slots;
     public List<WandPanel> wandPanels;
+    public CurrentWandPanel currentWandPanel;
     private void Awake()
     {
         slots = GetComponentsInChildren<WandSlot>(true).ToList();

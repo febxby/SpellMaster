@@ -8,7 +8,7 @@ public class PickUpPanel : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] WandInfoPanel target;
     [SerializeField] List<WandInfoPanel> current;
-    InventoryModel inventoryModel;
+    PlayerModel inventoryModel;
     Canvas canvas;
     GraphicRaycaster graphicRaycaster;
     List<RaycastResult> raycastResults = new List<RaycastResult>();
@@ -21,7 +21,7 @@ public class PickUpPanel : MonoBehaviour, IPointerClickHandler
     {
         canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         graphicRaycaster = canvas.GetComponent<GraphicRaycaster>();
-        inventoryModel = IOCContainer.Instance.Get<InventoryModel>();
+        inventoryModel = IOCContainer.Instance.Get<PlayerModel>();
         gameObject.SetActive(false);
     }
     public void Init(Wand wand, Action<Wand, int> action)
@@ -48,7 +48,8 @@ public class PickUpPanel : MonoBehaviour, IPointerClickHandler
     {
         Time.timeScale = 1;
     }
-    private void Update() {
+    private void Update()
+    {
         //按Esc键调用action
         if (Input.GetKeyDown(KeyCode.Escape))
         {

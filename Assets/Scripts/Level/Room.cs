@@ -89,7 +89,7 @@ public class Room : MonoBehaviour
                 {
                     int index = roomLevel / bossSpawnFrequency;
                     Vector3 centerPosition = GetCenterPosition();
-                    GameObjectPool.Instance.GetObject(GameManger.Instance.allBoss[index]).
+                    GameObjectPool.Instance.GetObject(GameManger.Instance.allBoss[index - 1]).
                     SetPositionAndRotation(centerPosition, Quaternion.identity).
                     SetParent(enemyParent);
                 }
@@ -113,10 +113,14 @@ public class Room : MonoBehaviour
             }
             else
             {
-                // leftRoomType = RoomType.Enhancement;
                 leftRoomType = RoomType.Shop;
-
             }
+            rightRoomType = RoomType.Combat;
+        }
+        else
+        if (roomLevel % healthSpawnFrequency == 0)
+        {
+            leftRoomType = RoomType.Health;
             rightRoomType = RoomType.Combat;
         }
         else
@@ -231,6 +235,8 @@ public class Room : MonoBehaviour
     private void OnDisable()
     {
         // 将当前场景所有DropItem组件的游戏对象都放回对象池
+        door[0].gameObject.SetActive(false);
+        door[1].gameObject.SetActive(false);
         DropItem[] dropItems = FindObjectsOfType<DropItem>();
         foreach (DropItem dropItem in dropItems)
         {

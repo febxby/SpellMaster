@@ -1,14 +1,43 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
-[CreateAssetMenu(fileName = "New Bag", menuName = "Inventory/bag")]
-public class InventoryModel : ScriptableObject
+[CreateAssetMenu(fileName = "New PlayerModel", menuName = "Model/PlayerModel")]
+public class PlayerModel : ScriptableObject
 {
     [SerializeField] private int maxWandCount = 4;
     [SerializeField] private int maxSpellCount = 24;
     [SerializeField] private int coin = 0;
+    [SerializeField] private int maxHealth = 100;
+    [SerializeField] private int currentHealth;
+    public int CurrentHealth
+    {
+        get
+        {
+            return currentHealth;
+        }
+        set
+        {
+            currentHealth = Mathf.Clamp(value, 0, maxHealth);
+            MEventSystem.Instance.Send<HealthChange>(new HealthChange
+            {
+                value = CurrentHealth / MaxHealth < 0 ? 0 : CurrentHealth / MaxHealth
+            });
+        }
+    }
+    public int MaxHealth
+    {
+        get
+        {
+            return maxHealth;
+        }
+        set
+        {
+            maxHealth = value;
+        }
+    }
     public int Coin
     {
         get
@@ -18,6 +47,10 @@ public class InventoryModel : ScriptableObject
         set
         {
             coin = value;
+            MEventSystem.Instance.Send<CoinChange>(new CoinChange
+            {
+                value = coin
+            });
         }
     }
     public int wandCount => maxWandCount;
@@ -37,6 +70,7 @@ public class InventoryModel : ScriptableObject
         spells = new List<Spell>(maxSpellCount);
         nullSpellIndices = new PriorityQueue<int>();
         nullWandIndices = new PriorityQueue<int>();
+        currentHealth = maxHealth;
         for (int i = 0; i < maxWandCount; i++)
         {
             wands.Add(null);

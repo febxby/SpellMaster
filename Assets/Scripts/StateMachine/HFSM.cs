@@ -164,7 +164,7 @@ public abstract class HFSM<T> : MonoBehaviour where T : Enum
     protected virtual void Update()
     {
         if (mCurState == null) return;
-        Debug.Log(mCurState.GetType());
+        // Debug.Log(mCurState.GetType());
         // 执行当前所有状态动作
         mCurState.Trigger(Life);
         // 转换状态生命周期

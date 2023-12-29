@@ -49,11 +49,14 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Default
-    uniqueID: 0
-    locked: 0
   - name: Floor
     uniqueID: 4214579167
+    locked: 0
+  - name: Object
+    uniqueID: 1048712341
+    locked: 0
+  - name: Default
+    uniqueID: 0
     locked: 0
   - name: Wall
     uniqueID: 2512906255

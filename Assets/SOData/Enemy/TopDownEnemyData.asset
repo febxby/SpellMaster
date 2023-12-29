@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 837104da2bde7224d8e0a9999ce00fd2, type: 3}
   m_Name: TopDownEnemyData
   m_EditorClassIdentifier: 
-  MaxHealth: 100
   GroundPatrolSpeed: 1
   GroundPursuitSpeed: 2
   GroundRayLength: 1
@@ -22,9 +21,9 @@ MonoBehaviour:
   GroundCheckBoxSize: {x: 2, y: 2}
   ObserveCheckBoxSize: {x: 5, y: 5}
   ObserveCheckOffset: {x: 0, y: 0, z: 0}
-  PursuitCheckBoxSize: {x: 8, y: 8}
+  PursuitCheckBoxSize: {x: 10, y: 10}
   PursuitCheckOffset: {x: 0, y: 0}
-  AttackCheckBoxSize: {x: 6, y: 6}
+  AttackCheckBoxSize: {x: 7, y: 7}
   AttackCheckOffset: {x: 0, y: 0}
   TriggerJumpRange: {x: 1, y: 0.75}
   GroundLayer:
@@ -34,3 +33,4 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   PatrolRadius: 5
+  IdleTime: 0.7

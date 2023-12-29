@@ -205,7 +205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9484578598ceee4199600902d401f39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 6
+  maxHealth: 200
   wand: {fileID: 6160597875714909208}
   MoveVel: {x: 0, y: 0}
 --- !u!1 &8049970747962883994

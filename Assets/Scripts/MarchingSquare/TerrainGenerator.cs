@@ -87,7 +87,7 @@ public class TerrainGenerator : MonoBehaviour
     }
     private void ColliderCallback(Vector3 worldPosition, int radius)
     {
-        float time = 3;
+        // float time = 3;
         worldPosition.z = 0;
         worldPosition = transform.InverseTransformPoint(worldPosition);
         Vector2Int gridPosition = GetGridPositionFromWorldPosition(worldPosition);

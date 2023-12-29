@@ -21,7 +21,7 @@ public interface ISlot<T>
 /// <summary>
 /// 法术槽
 /// </summary>
-public class SpellSlot : MonoBehaviour, IDragable, IShowable
+public class SpellSlot : MonoBehaviour, IDragable, IShowable, IPointerEnterHandler, IPointerExitHandler
 {
     public Spell spell;
     public Image image;
@@ -115,9 +115,10 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
     {
         if (!canDrag)
             return;
-        infoPanel?.SetActive(true);
+        // infoPanel?.SetActive(true);
         isDraging = false;
         graphicRaycaster.Raycast(eventData, raycastResults);
+        //BUG:当拖拽后放在原地会直接扔掉法术
         if (raycastResults.Count > 0)
         {
             var idx = 0;
@@ -218,4 +219,5 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable
         }
 
     }
+
 }

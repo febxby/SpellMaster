@@ -1,13 +1,13 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements.Experimental;
 public interface IDragable : IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
 
 }
 
-public interface IShowable : IPointerEnterHandler, IPointerExitHandler
+public interface IShowable
 {
-
 }
 // public struct ChangeCastWand
 // {
@@ -26,20 +26,20 @@ public class EditorPanelController : MonoBehaviour
     [SerializeField] GameObject editorPanel;
     //挡住点击事件
     [SerializeField] GameObject blockPanel;
-    InventoryModel inventoryModel;
+    PlayerModel playerModel;
     private void Awake()
     {
-        inventoryModel = IOCContainer.Instance.Get<InventoryModel>();
+        playerModel = IOCContainer.Instance.Get<PlayerModel>();
         // editorPanel.SetActive(false);
         MEventSystem.Instance.Register<SwitchWandPos>(
             e =>
             {
-                (inventoryModel.wands[e.current], inventoryModel.wands[e.target]) =
-                (inventoryModel.wands[e.target], inventoryModel.wands[e.current]);
+                (playerModel.wands[e.current], playerModel.wands[e.target]) =
+                (playerModel.wands[e.target], playerModel.wands[e.current]);
                 (wandInventory.slots[e.current], wandInventory.slots[e.target]) =
                 (wandInventory.slots[e.target], wandInventory.slots[e.current]);
-                MEventSystem.Instance.Send(new ChangeCastWand { index = e.current });
-                wandInventory.UpdateUI(inventoryModel.wands);
+                MEventSystem.Instance.Send(new ChangeCastWand { index = e.current});
+                wandInventory.UpdateUI(playerModel.wands);
             }
         ).UnRegisterWhenGameObjectDestroy(gameObject);
         // MEventSystem.Instance.Register<SwitchSpellPos>(
@@ -71,24 +71,26 @@ public class EditorPanelController : MonoBehaviour
     }
     void Start()
     {
-        wandInventory.Init(inventoryModel.wands);
-        spellInventory.Init(inventoryModel.spells,
-        (index, spell) => inventoryModel.Add<Spell>(spell, index),
-        (index) => inventoryModel.GetSpell(index));
+        wandInventory.Init(playerModel.wands);
+        spellInventory.Init(playerModel.spells,
+        (index, spell) => playerModel.Add<Spell>(spell, index),
+        (index) => playerModel.GetSpell(index));
         MEventSystem.Instance.Register<AddWand>(
         e =>
         {
-            wandInventory.UpdateUI(inventoryModel.wands);
+            wandInventory.UpdateUI(playerModel.wands);
         }
         ).UnRegisterWhenGameObjectDestroy(gameObject);
         MEventSystem.Instance.Register<AddSpell>(
         e =>
         {
-            spellInventory.UpdateUI(inventoryModel.spells,
-            (index, spell) => inventoryModel.Add<Spell>(spell, index),
-            (index) => inventoryModel.GetSpell(index));
+            spellInventory.UpdateUI(playerModel.spells,
+            (index, spell) => playerModel.Add<Spell>(spell, index),
+            (index) => playerModel.GetSpell(index));
         }
         ).UnRegisterWhenGameObjectDestroy(gameObject);
+        MEventSystem.Instance.Send(new HealthChange { value = playerModel.CurrentHealth / playerModel.MaxHealth });
+        MEventSystem.Instance.Send(new CoinChange { value = playerModel.Coin });
     }
 
     // Update is called once per frame
