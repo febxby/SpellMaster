@@ -274,6 +274,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 090a946fd208c9b458e3511531d947af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isRandom: 1
+  isRandom: 0
   spell: {fileID: 0}
   spriteRenderer: {fileID: 5631147819615594120}
+  infoPanel: {fileID: 0}

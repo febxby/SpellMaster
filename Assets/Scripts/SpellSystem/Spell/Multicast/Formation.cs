@@ -5,7 +5,7 @@ using UnityEngine;
 public class Formation : ICast
 {
     // [SerializeField] float angle = 360;
-    public void Cast(Vector2 start, Vector2 end, Vector2 direction, Spell spell)
+    public void Cast(Vector2 start, Vector2 end, Vector2 direction, Spell spell, string uniqueId)
     {
         Quaternion quaternion;
         for (int i = 0; i < spell.spells.Count; i++)
@@ -31,7 +31,7 @@ public class Formation : ICast
                     quaternion = Quaternion.AngleAxis(spell.spread / (spell.spells.Count - 1) * (i - spell.spells.Count / 2) + (spell.spread / (spell.spells.Count - 1) / 2), Vector3.forward);
                 }
             }
-            spell.spells[i].Cast(start, end, quaternion * direction, spell.owner);
+            spell.spells[i].Cast(start, end, quaternion * direction, spell.owner, uniqueId);
         }
         ObjectPoolFactory.Instance.Push(GetType(), this);
 

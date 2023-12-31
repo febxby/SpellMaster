@@ -4560,6 +4560,7 @@ Transform:
   - {fileID: 8419313167493011683}
   - {fileID: 1645875997967910133}
   - {fileID: 9123842880588433704}
+  - {fileID: 8447296168450267802}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!156049354 &8810363752522836053
@@ -4587,7 +4588,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shopSpawnFrequency: 3
-  healthSpawnFrequency: 3
+  healthSpawnFrequency: 4
   bossSpawnFrequency: 6
   spellPrefab: {fileID: 6220769634304408206, guid: 2ebcb2496316cc44ebb65ccb5e488105, type: 3}
   healthPrefab: {fileID: 6733144213770030515, guid: 7cb3a507d28a5d74d84f9e62bca7b2d7, type: 3}
@@ -4597,6 +4598,7 @@ MonoBehaviour:
   wallTilemap: {fileID: 4946783729691317908}
   playerSpawn: {fileID: 2388770989461675259}
   enemyParent: {fileID: 1645875997967910133}
+  dropItemParent: {fileID: 8447296168450267802}
   door:
   - {fileID: 5571674338053641290}
   - {fileID: 8338606959766699927}
@@ -7795,3 +7797,34 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!1 &8763881807909229609
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8447296168450267802}
+  m_Layer: 0
+  m_Name: DropItem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8447296168450267802
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8763881807909229609}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.18937019, y: 3.2191691, z: -0.43876487}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7926659285011167789}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

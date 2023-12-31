@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 [System.Serializable]
 public class AssetLoadData
 {
@@ -43,8 +44,10 @@ public class GameManger : MonoSingleton<GameManger>
     // 进度条UI
     public UnityEngine.UI.Slider progressBar;
 
-
-
+    public GameObject damageText;
+    public Button startGame;
+    public Button enterLab;
+    public Button exitGame;
     // // 计算总体进度的方法
     // float CalculateTotalProgress(float currentProgress, float newProgress)
     // {
@@ -122,11 +125,16 @@ public class GameManger : MonoSingleton<GameManger>
         ObjectPoolFactory.Instance.Init<Formation>(10);
         ObjectPoolFactory.Instance.Init<DivideModifier>(10);
     }
-
+    public void LoadScene(string sceneName)
+    {
+        sceneLoadHandle = SceneManager.LoadSceneAsync(sceneName);
+        sceneLoadHandle.completed += OnSceneLoadComplete;
+    }
     private void OnWandLoadComplete(AsyncOperationHandle<IList<GameObject>> handle)
     {
-        sceneLoadHandle = SceneManager.LoadSceneAsync("Demo");
-        sceneLoadHandle.completed += OnSceneLoadComplete;
+        startGame.gameObject.SetActive(true);
+        enterLab.gameObject.SetActive(true);
+        exitGame.gameObject.SetActive(true);
     }
 
     // void Start()
@@ -159,6 +167,12 @@ public class GameManger : MonoSingleton<GameManger>
     {
         Addressables.Release(wandHandle);
         inventoryModel.Clear();
+    }
+    public void DamageText(Vector3 position, int damage)
+    {
+        GameObjectPool.Instance.GetObject(damageText).
+        SetPositionAndRotation(Camera.main.WorldToScreenPoint(position), Quaternion.identity).
+        GetComponent<DamageText>().Init(damage);
     }
     /// <summary>
     /// 获取法术或者法杖

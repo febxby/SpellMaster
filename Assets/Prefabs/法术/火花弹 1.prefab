@@ -109,7 +109,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 7809440da77036944818b1a8f9eaf12d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -161,8 +161,8 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 0, b: 0, a: 1}
-      key1: {r: 0.764151, g: 0.1686899, b: 0.21717231, a: 0.61960787}
+      key0: {r: 1, g: 0, b: 0, a: 0.5176471}
+      key1: {r: 1, g: 0, b: 0, a: 0.5686275}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -213,6 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d86f5e5df06a6845b35ea9b12cd4464, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uniqueId: 
   spell: {fileID: 0}
 --- !u!50 &1948349484743433646
 Rigidbody2D:
@@ -250,7 +251,7 @@ CircleCollider2D:
   m_GameObject: {fileID: 7645362088134616454}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: d1fcaae2f3108ee4599c8ed169ce33c7, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

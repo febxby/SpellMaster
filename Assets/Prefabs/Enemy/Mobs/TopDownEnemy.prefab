@@ -61,8 +61,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   deck:
-  - {fileID: 11400000, guid: c97a1dffe12eaca4bab5e1144466d1a7, type: 2}
-  - {fileID: 11400000, guid: 6f4159e3bb050164e951fe9019c87a8d, type: 2}
+  - {fileID: 11400000, guid: 9bbf0b7ca837a6643ad66a91a763e926, type: 2}
+  - {fileID: 11400000, guid: 7c4e6cba4053e1545a85cad04e9ae26a, type: 2}
+  - {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
   spriteRenderer: {fileID: 3365551982579753431}
   isCharging: 0
 --- !u!212 &3365551982579753431
@@ -394,7 +395,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9484578598ceee4199600902d401f39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 70
+  maxHealth: 12
   wand: {fileID: 6160597875714909208}
   MoveVel: {x: 0, y: 0}
 --- !u!1 &6598530713844262809

@@ -46,7 +46,7 @@ public class Projectile3D : MonoBehaviour, ICast
         return this;
     }
 
-    public virtual void Cast(Vector2 start, Vector2 end, Vector2 direction, Spell spell)
+    public virtual void Cast(Vector2 start, Vector2 end, Vector2 direction, Spell spell, string uniqueId)
     {
         GameObject spellObj = GameObjectPool.Instance.GetObject(spell.prefab);
         spellObj.transform.SetPositionAndRotation(start, Quaternion.identity);
@@ -146,11 +146,12 @@ public class Projectile3D : MonoBehaviour, ICast
         {
             for (int i = 0; i < spell.spells.Count; i++)
             {
+                string uniqueId = System.Guid.NewGuid().ToString();
                 Vector2 newPosition = (Vector2)transform.position + Vector2.Reflect(direction, hit[0].normal) * 0.1f;
                 if (!isNatural)
-                    spell.spells[i].Cast(newPosition, transform.position, Vector2.Reflect(direction, hit[0].normal), spell.owner);
+                    spell.spells[i].Cast(newPosition, transform.position, Vector2.Reflect(direction, hit[0].normal), spell.owner, uniqueId);
                 else
-                    spell.spells[i].Cast(newPosition, transform.position, rb.velocity.normalized, spell.owner);
+                    spell.spells[i].Cast(newPosition, transform.position, rb.velocity.normalized, spell.owner, uniqueId);
             }
         }
         if (spell.casts.Count > 0)

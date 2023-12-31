@@ -205,7 +205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9484578598ceee4199600902d401f39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 200
+  maxHealth: 60
   wand: {fileID: 6160597875714909208}
   MoveVel: {x: 0, y: 0}
 --- !u!1 &8049970747962883994
@@ -247,6 +247,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2155482105967946918}
     m_Modifications:
+    - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
+      propertyPath: deck.Array.data[10]
+      value: 
+      objectReference: {fileID: 11400000, guid: eeaad7f00b8415f4d8c1e3c67d091564, type: 2}
     - target: {fileID: 3315421366518159752, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

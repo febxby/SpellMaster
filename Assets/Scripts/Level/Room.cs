@@ -23,6 +23,7 @@ public class Room : MonoBehaviour
     public Tilemap wallTilemap;
     public Transform playerSpawn;
     public Transform enemyParent;
+    public Transform dropItemParent;
     public Door[] door;
     [SerializeField] int roomLevel;
     RoomType roomType;
@@ -42,20 +43,20 @@ public class Room : MonoBehaviour
                 {
                     GameObjectPool.Instance.GetObject(coinPrefab).
                     SetPositionAndRotation(e.pos + new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0), Quaternion.identity).
-                    SetParent(transform);
+                    SetParent(dropItemParent);
                 }
             }
             else if (roomType == RoomType.Health)
             {
                 GameObjectPool.Instance.GetObject(healthPrefab)
                 .SetPositionAndRotation(e.pos + new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0), Quaternion.identity).
-                SetParent(transform);
+                SetParent(dropItemParent);
             }
             else
             {
                 GameObjectPool.Instance.GetObject(coinPrefab).
                 SetPositionAndRotation(e.pos + new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0), Quaternion.identity).
-                SetParent(transform);
+                SetParent(dropItemParent);
             }
 
             enemyCount--;
@@ -169,26 +170,28 @@ public class Room : MonoBehaviour
     }
     void DropItem()
     {
+
         if (roomType == RoomType.Combat)
         {
             //在中心位置随机掉落一个法术
+            int index = Random.Range(0, GameManger.Instance.spellCount);
             GameObjectPool.Instance.GetObject(spellPrefab).
             SetPositionAndRotation(GetCenterPosition(), Quaternion.identity).
-            SetParent(transform);
+            SetParent(dropItemParent).GetComponent<DropItem>().Init(GameManger.Instance.Get<Spell>(index));
         }
         else if (roomType == RoomType.Health)
         {
             //在中心位置随机掉落一个法术
             GameObjectPool.Instance.GetObject(healthPrefab).
             SetPositionAndRotation(GetCenterPosition(), Quaternion.identity).
-            SetParent(transform);
+            SetParent(dropItemParent);
         }
         else if (roomType == RoomType.Boss)
         {
             int index = Random.Range(0, GameManger.Instance.playerWands.Count);
             GameObjectPool.Instance.GetObject(GameManger.Instance.playerWands[index]).
             SetPositionAndRotation(GetCenterPosition(), Quaternion.identity).
-            SetParent(transform);
+            SetParent(dropItemParent);
         }
     }
     private Vector3 GetCenterPosition()
@@ -237,10 +240,17 @@ public class Room : MonoBehaviour
         // 将当前场景所有DropItem组件的游戏对象都放回对象池
         door[0].gameObject.SetActive(false);
         door[1].gameObject.SetActive(false);
-        DropItem[] dropItems = FindObjectsOfType<DropItem>();
-        foreach (DropItem dropItem in dropItems)
+        // DropItem[] dropItems = FindObjectsOfType<DropItem>();
+        // foreach (DropItem dropItem in dropItems)
+        // {
+        //     GameObjectPool.Instance.PushObject(dropItem.gameObject);
+        // }
+        foreach (Transform chilid in dropItemParent)
         {
-            GameObjectPool.Instance.PushObject(dropItem.gameObject);
+            GameObjectPool.Instance.PushObject(chilid.gameObject);
         }
+        //TODO:房间关闭后将所有对象放入对象池
+        GameObjectPool.Instance.PushObjects("火花弹");
+        //TODO：统一管理掉落物品
     }
 }

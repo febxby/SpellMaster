@@ -37,7 +37,7 @@ public class LevelController : MonoBehaviour
                 case RoomType.Shop:
                     room = GameObjectPool.Instance.GetObject(shopPrefab).GetComponent<Room>();
                     break;
-                case RoomType.Enhancement:
+                case RoomType.Health:
                     room = GameObjectPool.Instance.GetObject(enhancementShopPrefab).GetComponent<Room>();
                     break;
                 case RoomType.Combat:

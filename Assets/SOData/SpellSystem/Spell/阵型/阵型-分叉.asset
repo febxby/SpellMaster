@@ -20,7 +20,7 @@ MonoBehaviour:
   burstRadius: 0
   damage: 0
   speed: 0
-  spread: 90
+  spread: 30
   lifeTime: 0
   gravity: 0
   bounce: 0
@@ -35,4 +35,6 @@ MonoBehaviour:
   lifeTimeModifier: 0
   prefab: {fileID: 0}
   scriptType: 0
+  casts: []
+  attaches: []
   spells: []

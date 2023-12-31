@@ -86,7 +86,13 @@ public class GameObjectPool : Singleton<GameObjectPool>
     {
         objectPool.Clear();
     }
-
+    public void PushObjects(string name)
+    {
+        for (int i = 0; i < pool.transform.Find(name).childCount; i++)
+        {
+            PushObject(pool.transform.Find(name).GetChild(i).gameObject);
+        }
+    }
 
 
 }

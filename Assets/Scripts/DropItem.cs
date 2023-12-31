@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class DropItem : MonoBehaviour, IPickUpable, IShowable
 {
-    public bool isRandom = true;
+    public bool isRandom = false;
     public Spell spell;
     [SerializeField] SpriteRenderer spriteRenderer;
     public GameObject infoPanel;
@@ -34,22 +34,22 @@ public class DropItem : MonoBehaviour, IPickUpable, IShowable
     }
     private void OnEnable()
     {
-        if (isRandom && spell != null)
+        if (isRandom && spell == null)
         {
             int index = Random.Range(0, GameManger.Instance.spellCount);
             spell = GameManger.Instance.Get<Spell>(index);
+            spriteRenderer.sprite = spell.sprite;
         }
-        spriteRenderer.sprite = spell.sprite;
     }
-    void Start()
-    {
-        if (isRandom)
-        {
-            int index = Random.Range(0, GameManger.Instance.spellCount);
-            spell = GameManger.Instance.Get<Spell>(index);
-        }
-        spriteRenderer.sprite = spell.sprite;
-    }
+    // void Start()
+    // {
+    //     if (isRandom)
+    //     {
+    //         int index = Random.Range(0, GameManger.Instance.spellCount);
+    //         spell = GameManger.Instance.Get<Spell>(index);
+    //     }
+    //     spriteRenderer.sprite = spell.sprite;
+    // }
     private void OnDisable()
     {
         GameObjectPool.Instance.PushObject(gameObject);

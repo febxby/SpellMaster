@@ -91,18 +91,18 @@ public class Spell : ScriptableObject
     /// <param name="end">发射目标位置</param>
     /// <param name="direction">方向</param>
     /// <param name="owner">发射者</param>
-    public virtual void Cast(Vector2 start, Vector2 end, Vector2 direction, string owner)
+    public virtual void Cast(Vector2 start, Vector2 end, Vector2 direction, string owner,string uniqueId)
     {
         // Debug.Log(spellName+"-"+casts.Count);
         this.owner = owner;
         if (prefab)
         {
-            prefab.GetComponent<ICast>().Cast(start, end, direction, this);
+            prefab.GetComponent<ICast>().Cast(start, end, direction, this, uniqueId);
         }
         else
         {
             dynamic spell = ObjectPoolFactory.Instance.Get(mType);
-            spell?.Cast(start, end, direction, this);
+            spell?.Cast(start, end, direction, this, uniqueId);
         }
     }
 

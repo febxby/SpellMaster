@@ -54,13 +54,17 @@ MonoBehaviour:
   magicRestoreRate: 25
   chargeTime: 0.33
   spread: 0
-  capacity: 3
+  capacity: 5
   drawCount: 1
   castPoint: {fileID: 4458703945821622774}
   chargeEvent:
     m_PersistentCalls:
       m_Calls: []
   deck:
+  - {fileID: 11400000, guid: d22b80936e86579478a487ea8d770757, type: 2}
+  - {fileID: 11400000, guid: 528b2070a32578d479d2f75397d5d5df, type: 2}
+  - {fileID: 11400000, guid: e55248699fb664b4c9685e2cc2a121e9, type: 2}
+  - {fileID: 11400000, guid: 722d8b7c77418f7439538aec4fea9e9b, type: 2}
   - {fileID: 11400000, guid: 722d8b7c77418f7439538aec4fea9e9b, type: 2}
   spriteRenderer: {fileID: 4646031957637054758}
   isCharging: 0

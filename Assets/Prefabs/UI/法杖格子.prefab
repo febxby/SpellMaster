@@ -169,7 +169,7 @@ MonoBehaviour:
   image: {fileID: 5760562226250138488}
   infoPrefab: {fileID: 5115832173063340572, guid: 058fd82bef6faf844b693876ef2961ed, type: 3}
   lastParent: {fileID: 0}
-  selectable: {fileID: 0}
+  selectable: {fileID: 504111949254163126}
   toggle: {fileID: 0}
   infoPanel: {fileID: 0}
 --- !u!114 &504111949254163126

@@ -118,7 +118,6 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable, IPointerEnterHandl
         // infoPanel?.SetActive(true);
         isDraging = false;
         graphicRaycaster.Raycast(eventData, raycastResults);
-        //BUG:当拖拽后放在原地会直接扔掉法术
         if (raycastResults.Count > 0)
         {
             var idx = 0;
@@ -144,6 +143,12 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable, IPointerEnterHandl
                 SetFunc(tempIndex, spell);
                 (SetFunc, temp.SetFunc) = (temp.SetFunc, SetFunc);
                 (GetFunc, temp.GetFunc) = (temp.GetFunc, GetFunc);
+            }
+            else if (raycastResults[idx].gameObject.CompareTag("SpellParentSlot"))
+            {
+                rectTransform.SetParent(lastParent, false);
+                rectTransform.offsetMax = Vector2.zero;
+                rectTransform.offsetMin = Vector2.zero;
             }
             else
             {

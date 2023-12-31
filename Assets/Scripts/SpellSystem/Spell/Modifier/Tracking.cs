@@ -7,7 +7,17 @@ using Unity.VisualScripting;
 using UnityEngine;
 public class ProjectileComponent : MonoBehaviour
 {
-    public virtual void Init(Spell spell) { }
+    public Spell spell;
+    public string uniqueId;
+    public virtual void Init(Spell spell)
+    {
+        this.spell = spell;
+    }
+    public virtual void Init(Spell spell, string uniqueId)
+    {
+        this.spell = spell;
+        this.uniqueId = uniqueId;
+    }
 }
 public class Tracking : ProjectileComponent, ICast
 {
@@ -16,7 +26,6 @@ public class Tracking : ProjectileComponent, ICast
     //     Target,
     //     Direction
     // }
-    Spell spell;
     RaycastHit2D[] hits = new RaycastHit2D[1];
     Rigidbody2D rb2D;
     Rigidbody rb;
@@ -25,7 +34,7 @@ public class Tracking : ProjectileComponent, ICast
     // public float trackingSpeed;
     public float trackingRange;
     public float rotateSpeed;
-    public void Cast(Vector2 start, Vector2 end, Vector2 direction, Spell spell)
+    public void Cast(Vector2 start, Vector2 end, Vector2 direction, Spell spell, string uniqueId)
     {
         for (int i = 0; i < spell.spells.Count; i++)
         {
@@ -37,7 +46,7 @@ public class Tracking : ProjectileComponent, ICast
             }
             spell.spells[i].attaches = spell.attaches;
             // spell.spells[i].castDict.Add(typeof(Tracking), this);
-            spell.spells[i].Cast(start, end, direction, spell.owner);
+            spell.spells[i].Cast(start, end, direction, spell.owner, uniqueId);
         }
     }
     private void Awake()
@@ -48,10 +57,6 @@ public class Tracking : ProjectileComponent, ICast
             TryGetComponent<Rigidbody2D>(out rb2D);
         }
 
-    }
-    public override void Init(Spell spell)
-    {
-        this.spell = spell;
     }
 
     // Update is called once per frame
@@ -82,6 +87,6 @@ public class Tracking : ProjectileComponent, ICast
     }
     private void OnDisable()
     {
-        hits = new RaycastHit2D[1];
+        Array.Clear(hits, 0, hits.Length);
     }
 }

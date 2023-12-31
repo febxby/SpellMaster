@@ -6,35 +6,17 @@ public interface IDamageable
 
 public class PlayerHealth : MonoBehaviour, IDamageable
 {
-    public int maxHealth = 100;
-    public int currentHealth;
+    // public int maxHealth = 100;
 
     private void Start()
     {
-        currentHealth = maxHealth;
+        // currentHealth = maxHealth;
     }
 
     public void TakeDamage(int damageAmount)
     {
-        currentHealth -= damageAmount;
+        GameManger.Instance.DamageText(transform.position + Vector3.up, damageAmount);
 
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
     }
 
-    private void Die()
-    {
-        // TODO: Implement death logic here
-        Debug.Log("Player has died");
-    }
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Health"))
-        {
-            currentHealth += 10;
-            GameObjectPool.Instance.PushObject(other.gameObject);
-        }
-    }
 }

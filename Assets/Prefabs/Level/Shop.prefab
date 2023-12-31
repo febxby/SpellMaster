@@ -3409,6 +3409,37 @@ MonoBehaviour:
   text: {fileID: 5233193920822707919}
   doorType: 0
   room: {fileID: 0}
+--- !u!1 &3800056229944858186
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4954291398041587371}
+  m_Layer: 0
+  m_Name: DropItem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4954291398041587371
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3800056229944858186}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -4.5095224, y: 1.2548976, z: -0.007565815}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4385540431173814920}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4012158331760685615
 GameObject:
   m_ObjectHideFlags: 0
@@ -3775,6 +3806,7 @@ Transform:
   - {fileID: 5390875375042364207}
   - {fileID: 8453058139773140204}
   - {fileID: 5515993528637411505}
+  - {fileID: 4954291398041587371}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!156049354 &1715216768694364139
@@ -3802,7 +3834,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shopSpawnFrequency: 3
-  healthSpawnFrequency: 3
+  healthSpawnFrequency: 4
   bossSpawnFrequency: 6
   spellPrefab: {fileID: 6220769634304408206, guid: 2ebcb2496316cc44ebb65ccb5e488105, type: 3}
   healthPrefab: {fileID: 6733144213770030515, guid: 7cb3a507d28a5d74d84f9e62bca7b2d7, type: 3}
@@ -3812,6 +3844,7 @@ MonoBehaviour:
   wallTilemap: {fileID: 7178048305179779745}
   playerSpawn: {fileID: 8009410464106502206}
   enemyParent: {fileID: 4847989194317295506}
+  dropItemParent: {fileID: 4954291398041587371}
   door:
   - {fileID: 86948757030074492}
   - {fileID: 5667415778100913101}

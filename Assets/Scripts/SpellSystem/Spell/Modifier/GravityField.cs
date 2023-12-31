@@ -13,7 +13,7 @@ public class GravityField : AttachComponent, ICast
 {
     public int force;
     [SerializeField] Spell spell;
-    public void Cast(Vector2 start, Vector2 end, Vector2 direction, Spell spell)
+    public void Cast(Vector2 start, Vector2 end, Vector2 direction, Spell spell, string uniqueId)
     {
         for (int i = 0; i < spell.spells.Count; i++)
         {
@@ -25,7 +25,7 @@ public class GravityField : AttachComponent, ICast
             // }
             spell.spells[i].casts = spell.casts;
             // spell.spells[i].castDict.Add(typeof(Tracking), this);
-            spell.spells[i].Cast(start, end, direction, spell.owner);
+            spell.spells[i].Cast(start, end, direction, spell.owner, uniqueId);
         }
     }
     public override void Init(Spell spell)

@@ -100,6 +100,7 @@ public class Wand : MonoBehaviour, IPickUpable
     int usedSpellCount = 0;
     int nonNullSpellCount = 0;
     string owner;
+    string uniqueId;
     // Queue<Spell> spellQueue = new Queue<Spell>();
     private void Awake()
     {
@@ -174,7 +175,8 @@ public class Wand : MonoBehaviour, IPickUpable
         {
             //修改法术属性
             Modify(castSpell, ref modify);
-            castSpell.Cast(castPoint.position, pos, (pos - (Vector2)castPoint.position).normalized, owner);
+            uniqueId = System.Guid.NewGuid().ToString();
+            castSpell.Cast(castPoint.position, transform.right * 10, transform.right, owner, uniqueId);
         }
 
         //每次施法后设置施法延迟
@@ -260,6 +262,7 @@ public class Wand : MonoBehaviour, IPickUpable
             }
             return Draw(ref modify);
         }
+        //法术消耗大于当前魔力值，跳过
         if (deck[currentSpellIndex].magicCost > currentMagic)
         {
             currentSpellIndex++;
@@ -373,11 +376,12 @@ public class Wand : MonoBehaviour, IPickUpable
     void Start()
     {
         length = deck.Count;
-        if (transform.parent.CompareTag("Player"))
-        {
-            MEventSystem.Instance.Send(new MagicChange { value = 1 });
-            MEventSystem.Instance.Send(new ChargeChange { value = 1 });
-        }
+        if (transform.parent != null)
+            if (transform.parent.CompareTag("Player"))
+            {
+                MEventSystem.Instance.Send(new MagicChange { value = 1 });
+                MEventSystem.Instance.Send(new ChargeChange { value = 1 });
+            }
     }
 
     // Update is called once per frame
@@ -400,20 +404,21 @@ public class Wand : MonoBehaviour, IPickUpable
                 value = currentMagic / maxMagic
             });
         }
-        if (transform.parent.CompareTag("Player"))
-        {
-            gameObject.layer = LayerMask.NameToLayer("Wand");
-            rb.isKinematic = true;
-            rb.velocity = Vector2.zero;
-            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        if (transform.parent != null)
+            if (transform.parent.CompareTag("Player"))
+            {
+                gameObject.layer = LayerMask.NameToLayer("Wand");
+                rb.isKinematic = true;
+                rb.velocity = Vector2.zero;
+                rb.constraints = RigidbodyConstraints2D.FreezeAll;
 
-        }
-        else
-        {
-            gameObject.layer = LayerMask.NameToLayer("PickUpable");
-            // rb.isKinematic = false;
-            // rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-        }
+            }
+            else
+            {
+                gameObject.layer = LayerMask.NameToLayer("PickUpable");
+                // rb.isKinematic = false;
+                // rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            }
         //牌库数量发生变化时重置牌库
         if (deck.Count != length)
         {

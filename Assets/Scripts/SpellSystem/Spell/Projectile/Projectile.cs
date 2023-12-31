@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 public interface ICast
 {
-    void Cast(Vector2 start, Vector2 end, Vector2 direction, Spell spell);
+    void Cast(Vector2 start, Vector2 end, Vector2 direction, Spell spell, string uniqueId);
 }
 public class MCast : ICast
 {
@@ -13,11 +13,17 @@ public class MCast : ICast
     {
         throw new System.NotImplementedException();
     }
+
+    public void Cast(Vector2 start, Vector2 end, Vector2 direction, Spell spell, string uniqueId)
+    {
+        throw new System.NotImplementedException();
+    }
 }
 [RequireComponent(typeof(Rigidbody2D))]
 public class Projectile : MonoBehaviour, ICast
 {
     public static UnityAction<Vector3, int> OnCollider;
+    public string uniqueId;
     public Spell spell;
     Vector2 direction;
     RaycastHit2D hit;
@@ -26,10 +32,11 @@ public class Projectile : MonoBehaviour, ICast
     protected int bounce;
     Vector3 lastPos;
     protected WaitForSeconds seconds;
-    public Projectile Initialized(Spell spell)
+    public Projectile Initialized(Spell spell, string uniqueId)
     {
         // this.spell = Instantiate(spell);
         this.spell = spell;
+        this.uniqueId = uniqueId;
         bounce = spell.bounce;
         seconds = new WaitForSeconds(spell.lifeTime);
         if (rb == null)
@@ -41,24 +48,24 @@ public class Projectile : MonoBehaviour, ICast
                 if (gameObject.transform.TryGetComponent(cast.GetType(), out Component component))
                 {
                     (component as Behaviour).enabled = true;
-                    (component as ProjectileComponent).Init(this.spell);
+                    (component as ProjectileComponent).Init(this.spell, uniqueId);
                     continue;
                 }
                 component = gameObject.AddComponent(cast.GetType());
                 JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(cast), component);
-                (component as ProjectileComponent).Init(this.spell);
+                (component as ProjectileComponent).Init(this.spell, uniqueId);
             }
 
         StartCoroutine(Disable());
         return this;
     }
 
-    public void Cast(Vector2 start, Vector2 end, Vector2 direction, Spell spell)
+    public void Cast(Vector2 start, Vector2 end, Vector2 direction, Spell spell, string uniqueId)
     {
         GameObject spellObj = GameObjectPool.Instance.GetObject(spell.prefab);
         spellObj.transform.SetPositionAndRotation(start, Quaternion.identity);
         // GameObject spellObj = Instantiate(spell.prefab, start, Quaternion.identity);
-        Projectile projectile = spellObj.GetComponent<Projectile>().Initialized(spell);
+        Projectile projectile = spellObj.GetComponent<Projectile>().Initialized(spell, uniqueId);
         float angle = Random.Range(-spell.spread, spell.spread);
         Quaternion quaternion = Quaternion.AngleAxis(angle, Vector3.forward);
         projectile.direction = (quaternion * direction).normalized;
@@ -92,7 +99,7 @@ public class Projectile : MonoBehaviour, ICast
             DestroyObject();
             return;
         }
-        other.TryGetComponent<IDamageable>(out IDamageable damageable);
+        other.gameObject.TryGetComponent<IDamageable>(out IDamageable damageable);
         if (damageable != null)
         {
             if (spell.attaches.Count > 0)
@@ -122,9 +129,15 @@ public class Projectile : MonoBehaviour, ICast
             if (bounce > 0)
             {
                 bounce--;
-                transform.right = Vector2.Reflect(direction, other.GetContact(0).normal);
-                rb.velocity = transform.right * spell.speed;
-                direction = rb.velocity.normalized;
+                Vector2 reflectDirection = Vector2.Reflect(direction, other.GetContact(0).normal);
+                Debug.DrawLine(other.GetContact(0).point, other.GetContact(0).point + (Vector2)other.GetContact(0).normal, Color.red, 10f);
+                // 添加一个小的随机扰动
+                // reflectDirection += new Vector2(Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f));
+                reflectDirection.Normalize();
+                // direction = reflectDirection;
+                transform.right = reflectDirection;
+                rb.velocity = reflectDirection * spell.speed;
+                direction = reflectDirection;
                 return;
             }
             DestroyObject();
@@ -153,10 +166,11 @@ public class Projectile : MonoBehaviour, ICast
             for (int i = 0; i < spell.spells.Count; i++)
             {
                 Vector2 newPosition = (Vector2)transform.position + Vector2.Reflect(direction, hit.normal) * 0.1f;
+                string uniqueId = System.Guid.NewGuid().ToString();
                 if (!isNatural)
-                    spell.spells[i].Cast(newPosition, transform.position, Vector2.Reflect(direction, hit.normal), spell.owner);
+                    spell.spells[i].Cast(newPosition, transform.position, Vector2.Reflect(direction, hit.normal), spell.owner, uniqueId);
                 else
-                    spell.spells[i].Cast(newPosition, transform.position, rb.velocity.normalized, spell.owner);
+                    spell.spells[i].Cast(newPosition, transform.position, rb.velocity.normalized, spell.owner, uniqueId);
             }
         }
         if (spell.casts.Count > 0)

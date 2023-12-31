@@ -22,7 +22,6 @@ public class EditorPanelController : MonoBehaviour
     // [SerializeField] List<Spell> inventoryModel.spells;
     [SerializeField] WandInventory wandInventory;
     [SerializeField] SpellInventory spellInventory;
-    [SerializeField] WandPanel wandPanel;
     [SerializeField] GameObject editorPanel;
     //挡住点击事件
     [SerializeField] GameObject blockPanel;
