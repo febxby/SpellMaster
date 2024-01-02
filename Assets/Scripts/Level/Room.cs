@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 public enum RoomType
@@ -31,6 +32,7 @@ public class Room : MonoBehaviour
     [SerializeField] RoomType rightRoomType;
     int spawnEnemyCount;
     [SerializeField] int enemyCount;
+    [SerializeField] Transform spellParent;
     private void Awake()
     {
         player = FindFirstObjectByType<PlayerController>().gameObject;
@@ -48,7 +50,7 @@ public class Room : MonoBehaviour
             }
             else if (roomType == RoomType.Health)
             {
-                GameObjectPool.Instance.GetObject(healthPrefab)
+                GameObjectPool.Instance.GetObject(coinPrefab)
                 .SetPositionAndRotation(e.pos + new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0), Quaternion.identity).
                 SetParent(dropItemParent);
             }
@@ -60,6 +62,7 @@ public class Room : MonoBehaviour
             }
 
             enemyCount--;
+
         });
 
 
@@ -73,6 +76,12 @@ public class Room : MonoBehaviour
         player.transform.position = transform.TransformPoint(playerSpawn.position);
         switch (roomType)
         {
+            case RoomType.Shop:
+                for (int i = 0; i < spellParent.childCount; i++)
+                {
+                    spellParent.GetChild(i).gameObject.SetActive(true);
+                }
+                break;
             case RoomType.Combat:
             case RoomType.Health:
                 for (int i = 0; i < spawnEnemyCount; i++)
@@ -130,6 +139,16 @@ public class Room : MonoBehaviour
             rightRoomType = RoomType.Combat;
         }
     }
+    private void Update()
+    {
+        if (enemyCount == 0)
+        {
+            enemyCount = -1;
+            DropItem();
+            SetNextRoomType();
+            CheckEnemyDeath();
+        }
+    }
     private void OnEnable()
     {
         // roomLevel++;
@@ -160,13 +179,17 @@ public class Room : MonoBehaviour
     {
         if (leftRoomType == RoomType.Boss)
         {
-            door[0].Init(leftRoomType, () => GameObjectPool.Instance.PushObject(this.gameObject)).gameObject.SetActive(true);
+            door[0].Init(leftRoomType, () => DisableCallBack()).gameObject.SetActive(true);
         }
         else
         {
-            door[0].Init(leftRoomType, () => GameObjectPool.Instance.PushObject(this.gameObject)).gameObject.SetActive(true);
-            door[1].Init(rightRoomType, () => GameObjectPool.Instance.PushObject(this.gameObject)).gameObject.SetActive(true);
+            door[0].Init(leftRoomType, () => DisableCallBack()).gameObject.SetActive(true);
+            door[1].Init(rightRoomType, () => DisableCallBack()).gameObject.SetActive(true);
         }
+    }
+    void DisableCallBack()
+    {
+        StartCoroutine(nameof(Recycle));
     }
     void DropItem()
     {
@@ -219,22 +242,6 @@ public class Room : MonoBehaviour
         } while (floorTilemap.GetTile(randomPosition) == null); // 如果这个位置没有瓦片，那么重新生成位置
         return floorTilemap.CellToWorld(randomPosition);
     }
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (enemyCount == 0)
-        {
-            enemyCount = -1;
-            DropItem();
-            SetNextRoomType();
-            CheckEnemyDeath();
-        }
-    }
     private void OnDisable()
     {
         // 将当前场景所有DropItem组件的游戏对象都放回对象池
@@ -245,12 +252,31 @@ public class Room : MonoBehaviour
         // {
         //     GameObjectPool.Instance.PushObject(dropItem.gameObject);
         // }
-        foreach (Transform chilid in dropItemParent)
-        {
-            GameObjectPool.Instance.PushObject(chilid.gameObject);
-        }
+
         //TODO:房间关闭后将所有对象放入对象池
-        GameObjectPool.Instance.PushObjects("火花弹");
+
+        // await Recycle();
         //TODO：统一管理掉落物品
     }
+    IEnumerator Recycle()
+    {
+        Time.timeScale = 0;
+        //遍历dropItemParent的子物体
+        for (int i = 0; i < dropItemParent.childCount; i++)
+        {
+            GameObjectPool.Instance.PushObject(dropItemParent.GetChild(i).gameObject);
+        }
+        GameManger.Instance.EnterLoading();
+        yield return StartCoroutine(GameObjectPool.Instance.RecycleAllCoroutine());
+        Debug.Log("success");
+        GameManger.Instance.ExitLoading();
+        Time.timeScale = 1;
+        GameObjectPool.Instance.PushObject(this.gameObject);
+    }
+    // async Task Recycle()
+    // {
+    //     Time.timeScale = 0;
+    //     await Task.Run(() => GameObjectPool.Instance.RecycleAll());
+    //     Time.timeScale = 1;
+    // }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -42,12 +43,20 @@ public class GameManger : MonoSingleton<GameManger>
     AsyncOperationHandle<IList<GameObject>> wandHandle;
     AsyncOperation sceneLoadHandle;
     // 进度条UI
-    public UnityEngine.UI.Slider progressBar;
+    List<GameObject> activePoolObjects = new List<GameObject>();
 
     public GameObject damageText;
     public Button startGame;
     public Button enterLab;
     public Button exitGame;
+    public Image blackScreen;
+    public Text loadingIcon;
+
+    public float duration = 1f;
+    private Tweener breatheTween;
+    public GameObject loadingPage;
+    GameObject page;
+
     // // 计算总体进度的方法
     // float CalculateTotalProgress(float currentProgress, float newProgress)
     // {
@@ -69,8 +78,18 @@ public class GameManger : MonoSingleton<GameManger>
     // }
     private void Awake()
     {
-
+        // SceneManager.LoadSceneAsync("LoadingScene", LoadSceneMode.Additive).completed += (e) =>
+        {
+            // blackScreen = GameObject.Find("BlackScreen").GetComponent<Image>();
+            // loadingIcon = GameObject.Find("LoadingIcon").GetComponent<Text>();
+            // blackScreen.gameObject.SetActive(false);
+            // loadingIcon.gameObject.SetActive(false);
+        };
         DontDestroyOnLoad(gameObject);
+        // DontDestroyOnLoad(blackScreen.gameObject);
+        // DontDestroyOnLoad(loadingIcon.gameObject);
+        // blackScreen.gameObject.SetActive(false);
+        // loadingIcon.gameObject.SetActive(false);
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("PickUpable"));
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Wand"));
 
@@ -174,6 +193,7 @@ public class GameManger : MonoSingleton<GameManger>
         SetPositionAndRotation(Camera.main.WorldToScreenPoint(position), Quaternion.identity).
         GetComponent<DamageText>().Init(damage);
     }
+
     /// <summary>
     /// 获取法术或者法杖
     /// </summary>
@@ -198,5 +218,13 @@ public class GameManger : MonoSingleton<GameManger>
             return Instantiate(playerWands[index]).GetComponent<Wand>() as T;
         }
         return allSpells[index] as T;
+    }
+    public void EnterLoading()
+    {
+        page = GameObjectPool.Instance.GetObject(loadingPage);
+    }
+    public void ExitLoading()
+    {
+        GameObjectPool.Instance.PushObject(page);
     }
 }

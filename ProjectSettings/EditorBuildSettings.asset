@@ -14,5 +14,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Lab.unity
     guid: e6944342d626aa04993ca4b0a9c7f2e9
+  - enabled: 1
+    path: Assets/Scenes/LoadingScene.unity
+    guid: 3fd4a62461fb8bc458de9ab59009b572
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: e8de3a0ccbcf2e445929621c5ab21a19, type: 2}

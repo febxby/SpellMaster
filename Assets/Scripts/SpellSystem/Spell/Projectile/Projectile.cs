@@ -62,7 +62,7 @@ public class Projectile : MonoBehaviour, ICast
 
     public void Cast(Vector2 start, Vector2 end, Vector2 direction, Spell spell, string uniqueId)
     {
-        GameObject spellObj = GameObjectPool.Instance.GetObject(spell.prefab);
+        GameObject spellObj = GameObjectPool.Instance.GetObject(spell.prefab, true);
         spellObj.transform.SetPositionAndRotation(start, Quaternion.identity);
         // GameObject spellObj = Instantiate(spell.prefab, start, Quaternion.identity);
         Projectile projectile = spellObj.GetComponent<Projectile>().Initialized(spell, uniqueId);

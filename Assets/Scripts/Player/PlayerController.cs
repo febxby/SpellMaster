@@ -191,6 +191,7 @@ public class PlayerController : MonoBehaviour, IDamageable
                 e.gameObject.layer = LayerMask.NameToLayer("PickUpable");
                 e.transform.SetParent(null);
                 e.gameObject.SetActive(true);
+                GameObjectPool.Instance.AddRecycleObject(e.gameObject);
                 temp.gameObject.layer = LayerMask.NameToLayer("Wand");
                 temp.transform.SetParent(wandParent);
                 temp.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
@@ -205,6 +206,7 @@ public class PlayerController : MonoBehaviour, IDamageable
             wand.gameObject.layer = LayerMask.NameToLayer("Wand");
             wand.transform.SetParent(wandParent);
             wand.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            GameObjectPool.Instance.RemoveRecycleObject(wand.gameObject);
         }
     }
     public void PickUp()

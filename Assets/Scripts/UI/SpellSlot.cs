@@ -158,7 +158,7 @@ public class SpellSlot : MonoBehaviour, IDragable, IShowable, IPointerEnterHandl
                 //屏幕中间位置
                 Vector3 pos = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, 0));
                 pos.z = 0;
-                GameObjectPool.Instance.GetObject(dropItemPrefab).
+                GameObjectPool.Instance.GetObject(dropItemPrefab, true).
                 SetPositionAndRotation(pos, Quaternion.identity).
                 GetComponent<DropItem>().Init(spell);
                 SetFunc(transform.parent.GetSiblingIndex(), null);

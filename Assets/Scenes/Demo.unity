@@ -8673,10 +8673,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shopPrefab: {fileID: 5201764834056920017, guid: add9effa3c2601f419a2b6516e4cac2f, type: 3}
-  enhancementShopPrefab: {fileID: 5201764834056920017, guid: add9effa3c2601f419a2b6516e4cac2f, type: 3}
+  enhancementShopPrefab: {fileID: 4022526304358559770, guid: 8796e1b5b66047f46b7765985cdf4efe, type: 3}
   roomPrefab: {fileID: 4022526304358559770, guid: 8796e1b5b66047f46b7765985cdf4efe, type: 3}
   bossRoomPrefab: {fileID: 4022526304358559770, guid: 8796e1b5b66047f46b7765985cdf4efe, type: 3}
   door: []
+  shopSpawnFrequency: 3
+  healthSpawnFrequency: 5
+  bossSpawnFrequency: 6
   Level: 1
   enemyIncreaseInterval: 6
   initialEnemiesCount: 4
