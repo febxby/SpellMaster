@@ -19,7 +19,7 @@ MonoBehaviour:
   JumpForce: 12
   InAirMoveSpeed: 7
   GroundCheckBoxSize: {x: 2, y: 2}
-  ObserveCheckBoxSize: {x: 5, y: 5}
+  ObserveCheckBoxSize: {x: 12, y: 12}
   ObserveCheckOffset: {x: 0, y: 0, z: 0}
   PursuitCheckBoxSize: {x: 10, y: 10}
   PursuitCheckOffset: {x: 0, y: 0}

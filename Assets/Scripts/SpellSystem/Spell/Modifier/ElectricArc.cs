@@ -112,11 +112,13 @@ public class ElectricArc : ProjectileComponent, ICast
                     // dict.Remove(item.Key);
                     continue;
                 }
-                Vector2 direction = item.Value.Item2.transform.position - item.Value.Item1.transform.position;
+                Vector2 distance = item.Value.Item2.transform.position - item.Value.Item1.transform.position;
+                lineRenderer.material.SetFloat("_Tiling",
+                Vector3.Distance(item.Value.Item2.transform.position, item.Value.Item1.transform.position) / 5);
                 length = Physics2D.RaycastNonAlloc(
                     item.Value.Item1.transform.position,
-                    direction.normalized,
-                    hits, direction.magnitude);
+                    distance.normalized,
+                    hits, distance.magnitude);
                 lineRenderer.SetPosition(item.Key.Item1, item.Value.Item1.transform.position);
                 lineRenderer.SetPosition(item.Key.Item2, item.Value.Item2.transform.position);
             }

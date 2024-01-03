@@ -21,6 +21,7 @@ public class GameObjectPool : Singleton<GameObjectPool>
     private readonly Dictionary<string, Queue<GameObject>> objectPool = new();
     private readonly List<GameObject> activePoolObjects = new();
     private GameObject pool;
+    private WaitForSecondsRealtime waitForSecondsRealtime = new(0f);
     public GameObject GetObject(GameObject prefab, bool recycle = false)
     {
         GameObject _obj;
@@ -137,7 +138,7 @@ public class GameObjectPool : Singleton<GameObjectPool>
             PushObject(activePoolObjects[i]);
         }
         activePoolObjects.Clear();
-        yield return new WaitForSecondsRealtime(1f);
+        yield return waitForSecondsRealtime;
     }
 
 }

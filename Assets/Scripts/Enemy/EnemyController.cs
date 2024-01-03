@@ -117,7 +117,10 @@ public class EnemyController : RuleFSM<TopDownEnemyData, EnemyController>, ICanP
             wand.gameObject.SetActive(true);
         }
     }
-
+    public void UpdateWandDirection(Vector3 dir)
+    {
+        wand.transform.right = dir;
+    }
     public void TakeDamage(int damageAmount)
     {
         currentHealth -= damageAmount;
@@ -314,11 +317,17 @@ public class EnemyAttackState : AnimState<EnemyController, TopDownEnemyData>
         switch (life)
         {
             case E_StateLife.Enter:
-                Vector2 pos = Machine.GetColliderTarget("Player").position;
+                Machine.XSpeed = 0;
+                Machine.YSpeed = 1;
+                Vector3 pos = Machine.GetColliderTarget("Player").position;
+                Machine.UpdateWandDirection((pos - Machine.transform.position).normalized);
                 Machine.Cast(pos);
                 break;
             case E_StateLife.Update:
+                Machine.XSpeed = 0;
+                Machine.YSpeed = 1;
                 pos = Machine.GetColliderTarget("Player").position;
+                Machine.UpdateWandDirection((pos - Machine.transform.position).normalized);
                 Machine.Cast(pos);
                 break;
         }

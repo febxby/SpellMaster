@@ -10,30 +10,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42656eeeca3c227479f62723c3088673, type: 3}
-  m_Name: "\u9B54\u6CD5\u7BAD"
+  m_Name: "\u6FC0\u5149"
   m_EditorClassIdentifier: 
-  spellName: "\u9B54\u6CD5\u7BAD"
+  spellName: "\u6FC0\u5149"
   info: 
-  sprite: {fileID: 227152660, guid: 4c5dc235f71f0e045b4e661562fd5e61, type: 3}
+  sprite: {fileID: -455186581, guid: 4c5dc235f71f0e045b4e661562fd5e61, type: 3}
   spellType: 0
-  magicCost: 20
-  burstRadius: 2
-  damage: 10
-  speed: 10
-  spread: 0.6
-  lifeTime: 10
-  gravity: 0.2
+  magicCost: 1
+  burstRadius: 3
+  damage: 1
+  speed: 5
+  spread: 0
+  lifeTime: 0.01
+  gravity: 0
   bounce: 0
   drawCount: 0
   isTrigger: 0
   canHurtSelf: 0
   owner: 
-  castDelay: 0.07
+  castDelay: -0.17
   chargeTime: 0
   speedModifier: 1
-  spreadModifier: 2
+  spreadModifier: 6
   lifeTimeModifier: 0
-  prefab: {fileID: 7645362088134616454, guid: 75bdb2920d801094e8a1d5f158198fe0, type: 3}
+  prefab: {fileID: 7645362088134616454, guid: b6399670c50f1284a8ac02a1c1f3cf86, type: 3}
   scriptType: 0
   casts: []
   attaches: []

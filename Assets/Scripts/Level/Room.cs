@@ -39,27 +39,28 @@ public class Room : MonoBehaviour
         enemyCount = 1;
         MEventSystem.Instance.Register<EnemyDeath>((EnemyDeath e) =>
         {
-            if (roomType == RoomType.Boss)
-            {
-                for (int i = 0; i < 10; i++)
+            if (gameObject.activeSelf)
+                if (roomType == RoomType.Boss)
+                {
+                    for (int i = 0; i < 10; i++)
+                    {
+                        GameObjectPool.Instance.GetObject(coinPrefab).
+                        SetPositionAndRotation(e.pos + new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0), Quaternion.identity).
+                        SetParent(dropItemParent);
+                    }
+                }
+                else if (roomType == RoomType.Health)
+                {
+                    GameObjectPool.Instance.GetObject(coinPrefab)
+                    .SetPositionAndRotation(e.pos + new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0), Quaternion.identity).
+                    SetParent(dropItemParent);
+                }
+                else
                 {
                     GameObjectPool.Instance.GetObject(coinPrefab).
                     SetPositionAndRotation(e.pos + new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0), Quaternion.identity).
                     SetParent(dropItemParent);
                 }
-            }
-            else if (roomType == RoomType.Health)
-            {
-                GameObjectPool.Instance.GetObject(coinPrefab)
-                .SetPositionAndRotation(e.pos + new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0), Quaternion.identity).
-                SetParent(dropItemParent);
-            }
-            else
-            {
-                GameObjectPool.Instance.GetObject(coinPrefab).
-                SetPositionAndRotation(e.pos + new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0), Quaternion.identity).
-                SetParent(dropItemParent);
-            }
 
             enemyCount--;
 
@@ -262,13 +263,16 @@ public class Room : MonoBehaviour
     {
         Time.timeScale = 0;
         //遍历dropItemParent的子物体
-        for (int i = 0; i < dropItemParent.childCount; i++)
+        foreach (Transform child in dropItemParent)
         {
-            GameObjectPool.Instance.PushObject(dropItemParent.GetChild(i).gameObject);
+            GameObjectPool.Instance.PushObject(child.gameObject);
         }
+        // for (int i = 0; i < dropItemParent.childCount; i++)
+        // {
+        //     GameObjectPool.Instance.PushObject(dropItemParent.GetChild(i).gameObject);
+        // }
         GameManger.Instance.EnterLoading();
         yield return StartCoroutine(GameObjectPool.Instance.RecycleAllCoroutine());
-        Debug.Log("success");
         GameManger.Instance.ExitLoading();
         Time.timeScale = 1;
         GameObjectPool.Instance.PushObject(this.gameObject);

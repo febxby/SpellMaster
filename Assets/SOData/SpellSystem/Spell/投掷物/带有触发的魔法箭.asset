@@ -21,7 +21,7 @@ MonoBehaviour:
   damage: 10
   speed: 10
   spread: 0.6
-  lifeTime: 5
+  lifeTime: 10
   gravity: 0.5
   bounce: 0
   drawCount: 1
