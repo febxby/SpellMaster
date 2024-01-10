@@ -205,6 +205,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9484578598ceee4199600902d401f39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemydata: {fileID: 11400000, guid: 020f5f6c1ddfdfd4b9c3b6b8e8df989a, type: 2}
+  DataLabel: 
   maxHealth: 60
   wand: {fileID: 6160597875714909208}
   MoveVel: {x: 0, y: 0}

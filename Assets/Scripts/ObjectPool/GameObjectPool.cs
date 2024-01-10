@@ -15,6 +15,36 @@ public static class PoolObjectExtension
         poolObject.transform.SetParent(parent);
         return poolObject;
     }
+    public static GameObject DisableWhenGameObjectDisable(this GameObject source, GameObject gameObject)
+    {
+        var trigger = gameObject.GetComponent<DisableOnDisableTrigger>();
+        if (!trigger)
+        {
+            trigger = gameObject.AddComponent<DisableOnDisableTrigger>();
+        }
+        trigger.AddGameObject(source);
+        return source;
+    }
+}
+public class DisableOnDisableTrigger : MonoBehaviour
+{
+    private readonly List<GameObject> mDisable = new();
+    public void AddGameObject(GameObject obj)
+    {
+        mDisable.Add(obj);
+    }
+    public void RemoveGameObject(GameObject obj)
+    {
+        mDisable.Remove(obj);
+    }
+    private void OnDisable()
+    {
+        foreach (var obj in mDisable)
+        {
+            GameObjectPool.Instance.PushObject(obj);
+        }
+        mDisable.Clear();
+    }
 }
 public class GameObjectPool : Singleton<GameObjectPool>
 {
@@ -48,6 +78,7 @@ public class GameObjectPool : Singleton<GameObjectPool>
         if (queue == null)
             objectPool.Add(prefab.name, new Queue<GameObject>());
         _obj = GameObject.Instantiate(prefab);
+        _obj.SetActive(true);
         _obj.transform.SetParent(child.transform);
         if (recycle)
             activePoolObjects.Add(_obj);

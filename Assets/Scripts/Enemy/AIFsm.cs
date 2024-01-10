@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class StateName
 {
     public const string Patrol = "Patrol";
@@ -19,7 +18,7 @@ public class StateName
 
     public const string Attack = "Attack";
     public const string Die = "Die";
-    public const string Idle="Idle";
+    public const string Idle = "Idle";
 }
 // 使用状态机实现平台类AI
 public class AIFsm : RuleFSM<EnemyData, AIFsm>, ICanPlayAnim, IDamageable
@@ -121,8 +120,8 @@ public class AIFsm : RuleFSM<EnemyData, AIFsm>, ICanPlayAnim, IDamageable
         // Debug.Log("更新" + Data?.GetType().Name);
     }
 
-    public override string DataLabel => "EnemyData";
     protected override IStateBuilder<E_StateLife> Builder => new AIStateBuilder(this, Data);
+
 
     // 显式实现 播放动画接口
     void ICanPlayAnim.PlayAnim(int animHash) { }

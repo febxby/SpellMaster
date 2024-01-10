@@ -14,8 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxWandCount: 4
   maxSpellCount: 21
-  coin: 140
+  coin: 455
   maxHealth: 100
-  currentHealth: 0
+  currentHealth: 22
   wands: []
   spells: []
+  nullSpellIndices:
+    heap: 
+  nullWandIndices:
+    heap: 

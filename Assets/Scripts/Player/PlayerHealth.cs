@@ -15,7 +15,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     public void TakeDamage(int damageAmount)
     {
-        GameManger.Instance.DamageText(transform.position + Vector3.up, damageAmount);
+        GameManger.Instance.DamageText(transform.position, damageAmount);
 
     }
 

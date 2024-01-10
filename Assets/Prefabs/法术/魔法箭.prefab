@@ -215,6 +215,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uniqueId: 
   spell: {fileID: 0}
+  burstEffect: {fileID: 7042377612862134983, guid: 14a0032834024c342ba24edbdcf98e32, type: 3}
 --- !u!50 &1948349484743433646
 Rigidbody2D:
   serializedVersion: 4

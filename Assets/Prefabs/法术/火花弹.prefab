@@ -109,7 +109,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7809440da77036944818b1a8f9eaf12d, type: 2}
+  - {fileID: 2100000, guid: 5333d1270dae98746b7399685b20397f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -215,6 +215,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uniqueId: 
   spell: {fileID: 0}
+  burstEffect: {fileID: 7042377612862134983, guid: 14a0032834024c342ba24edbdcf98e32, type: 3}
 --- !u!50 &1948349484743433646
 Rigidbody2D:
   serializedVersion: 4

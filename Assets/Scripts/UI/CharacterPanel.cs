@@ -27,10 +27,10 @@ public class CharacterPanel : MonoBehaviour
     [SerializeField] Text coinText;
     void Awake()
     {
-        MEventSystem.Instance.Register<HealthChange>(e => UpdateHealthBar(e.value));
-        MEventSystem.Instance.Register<MagicChange>(e => UpdateMagicBar(e.value));
-        MEventSystem.Instance.Register<ChargeChange>(e => UpdateChargeBar(e.value));
-        MEventSystem.Instance.Register<CoinChange>(e => UpdateCoinText(e.value));
+        MEventSystem.Instance.Register<HealthChange>(e => UpdateHealthBar(e.value)).UnRegisterWhenGameObjectDestroy(gameObject);
+        MEventSystem.Instance.Register<MagicChange>(e => UpdateMagicBar(e.value)).UnRegisterWhenGameObjectDestroy(gameObject);
+        MEventSystem.Instance.Register<ChargeChange>(e => UpdateChargeBar(e.value)).UnRegisterWhenGameObjectDestroy(gameObject);
+        MEventSystem.Instance.Register<CoinChange>(e => UpdateCoinText(e.value)).UnRegisterWhenGameObjectDestroy(gameObject);
     }
     public void UpdateChargeBar(float progress)
     {

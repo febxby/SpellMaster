@@ -34,7 +34,6 @@ public class SpellInfoPanel : MonoBehaviour
         DisplayAttribute(() => spell.spellType, "spellType");
         DisplayAttribute(() => spell.magicCost, "magicCost");
         DisplayAttribute(() => spell.damage, "damage");
-        DisplayAttribute(() => spell.burstRadius, "burstRadius");
         DisplayAttribute(() => spell.spread, "spread");
         DisplayAttribute(() => spell.speed, "speed");
         DisplayAttribute(() => spell.lifeTime, "lifeTime");
@@ -56,7 +55,7 @@ public class SpellInfoPanel : MonoBehaviour
             if (text.name == attributeName)
             {
                 T value = getValue();
-                if (value is float val && val <= 0 || value is int i && i <= 0)
+                if (value is float val && (val == 0 || val <= -99) || value is int i && i <= 0)
                 {
                     return;
                 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
-[CreateAssetMenu(fileName = "New PlayerModel", menuName = "Model/PlayerModel")]
+[CreateAssetMenu(fileName = "New PlayerModel", menuName = "Model/PlayerModel"), Serializable]
 public class PlayerModel : ScriptableObject
 {
     [SerializeField] private int maxWandCount = 4;
@@ -12,6 +12,19 @@ public class PlayerModel : ScriptableObject
     [SerializeField] private int coin = 0;
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private int currentHealth;
+    public PlayerModel(int maxWandCount, int maxSpellCount, int coin, int maxHealth,
+    int currentHealth, List<Wand> wands, List<Spell> spells, PriorityQueue<int> nullSpellIndices, PriorityQueue<int> nullWandIndices)
+    {
+        this.maxWandCount = maxWandCount;
+        this.maxSpellCount = maxSpellCount;
+        this.coin = coin;
+        this.maxHealth = maxHealth;
+        this.currentHealth = currentHealth;
+        this.wands = wands;
+        this.spells = spells;
+        this.nullSpellIndices = nullSpellIndices;
+        this.nullWandIndices = nullWandIndices;
+    }
     public int CurrentHealth
     {
         get
@@ -23,7 +36,7 @@ public class PlayerModel : ScriptableObject
             currentHealth = Mathf.Clamp(value, 0, maxHealth);
             MEventSystem.Instance.Send<HealthChange>(new HealthChange
             {
-                value = CurrentHealth / MaxHealth < 0 ? 0 : CurrentHealth / MaxHealth
+                value = (float)currentHealth / (float)maxHealth <= 0f ? 0f : (float)currentHealth / (float)maxHealth
             });
         }
     }
@@ -58,30 +71,116 @@ public class PlayerModel : ScriptableObject
     public List<Wand> wands;
     public List<Spell> spells;
     //存放空位索引的数组
-    PriorityQueue<int> nullSpellIndices;
-    PriorityQueue<int> nullWandIndices;
+    public PriorityQueue<int> nullSpellIndices;
+    public PriorityQueue<int> nullWandIndices;
     // private void OnEnable()
     // {
 
     // }
+
     public void Init()
     {
-        wands = new List<Wand>(maxWandCount);
-        spells = new List<Spell>(maxSpellCount);
+        MEventSystem.Instance.Register<SaveData>(e =>
+        {
+            SaveData();
+        });
+        MEventSystem.Instance.Register<PlayerDeath>(e =>
+        {
+            Clear();
+        });
+        wands ??= new List<Wand>(maxWandCount);
+        spells ??= new List<Spell>(maxSpellCount);
         nullSpellIndices = new PriorityQueue<int>();
         nullWandIndices = new PriorityQueue<int>();
         currentHealth = maxHealth;
         for (int i = 0; i < maxWandCount; i++)
         {
+            if (i < wands.Count)
+                if (wands[i] != null)
+                    continue;
+                else
+                {
+                    nullWandIndices.Enqueue(i);
+                    continue;
+                }
             wands.Add(null);
             nullWandIndices.Enqueue(i);
         }
         for (int i = 0; i < maxSpellCount; i++)
         {
+            if (i < spells.Count)
+                if (spells[i] != null)
+                    continue;
+                else
+                {
+                    nullSpellIndices.Enqueue(i);
+                    continue;
+                }
             spells.Add(null);
             nullSpellIndices.Enqueue(i);
         }
+
+        // InitializeList(wands, nullWandIndices, maxWandCount);
+        // InitializeList(spells, nullSpellIndices, maxSpellCount);
     }
+    // private void InitializeList<T>(List<T> list, PriorityQueue<int> nullIndices, int maxCount)
+    // {
+    //     for (int i = 0; i < maxCount; i++)
+    //     {
+    //         if (i >= list.Count || list[i] == null)
+    //         {
+    //             if (i >= list.Count)
+    //             {
+    //                 list.Add(default(T));
+    //             }
+    //             nullIndices.Enqueue(i);
+    //         }
+    //     }
+    // }
+    public void SaveData()
+    {
+        SaveSystem.SaveByJson("Player", this);
+        List<WandData> wandDatas = new List<WandData>();
+        foreach (var wand in wands)
+        {
+            if (wand != null)
+            {
+                wandDatas.Add(wand.GetWandData());
+            }
+            else
+            {
+                wandDatas.Add(null);
+            }
+        }
+        SaveSystem.SaveByJson("Wands", new SerializationList<WandData>(wandDatas));
+    }
+    // public void LoadData()
+    // {
+    //     PlayerModel data = SaveSystem.LoadFromJson<PlayerModel>("Player", this);
+    //     List<WandData> gameObjects = SaveSystem.LoadListFromJson<WandData>("Wands");
+    //     if (data != null || wands != null)
+    //     {
+    //         Coin = data.Coin;
+    //         MaxHealth = data.MaxHealth;
+    //         CurrentHealth = data.CurrentHealth;
+    //         foreach (var wandData in gameObjects)
+    //         {
+    //             if (wandData != null)
+    //             {
+    //                 var wand = GameObjectPool.Instance.GetObject(wandData.prefab).GetComponent<Wand>();
+    //                 wand.Init(wandData);
+    //                 AddWand(wand, -1);
+    //             }
+    //             else
+    //             {
+    //                 AddWand(null, -1);
+    //             }
+    //         }
+    //         spells = data.spells;
+    //         nullSpellIndices = data.nullSpellIndices;
+    //         nullWandIndices = data.nullWandIndices;
+    //     }
+    // }
     /// <summary>
     /// 往最近的一个空位添加
     /// </summary>
@@ -204,18 +303,19 @@ public class PlayerModel : ScriptableObject
         spells.Clear();
         nullSpellIndices.Clear();
         nullWandIndices.Clear();
+        coin = 0;
     }
 
     private void OnDisable()
     {
-        wands.Clear();
-        spells.Clear();
+        // wands.Clear();
+        // spells.Clear();
     }
     private void OnDestroy()
     {
-        //TODO:测试
-        wands.Clear();
-        spells.Clear();
+        //TODO：存档
+        // wands.Clear();
+        // spells.Clear();
 
     }
 }

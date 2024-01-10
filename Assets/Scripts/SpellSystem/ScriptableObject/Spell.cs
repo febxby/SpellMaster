@@ -50,7 +50,7 @@ public class Spell : ScriptableObject
     public int damage;
     public float speed;
     public float spread;
-    public float lifeTime;
+    public int lifeTime;
     public float gravity;
     public int bounce;
     public int drawCount;
@@ -62,7 +62,7 @@ public class Spell : ScriptableObject
     public float chargeTime;
     public float speedModifier = 1;
     public float spreadModifier = 0;
-    public float lifeTimeModifier = 0;
+    public int lifeTimeModifier = 0;
     [Header("脚本类型")]
     [PnShowSprite] public GameObject prefab;
     public ScriptType scriptType;
@@ -71,7 +71,7 @@ public class Spell : ScriptableObject
     [HideInInspector] public List<Spell> spells;
     private Type mType => Type.GetType(scriptType.ToString());
 
-    public float LifeTime => lifeTime / 60;
+    public float LifeTime => lifeTime / 60f;
     // public Dictionary<Type,ICast> castDict = new();
     protected virtual void Awake()
     {
@@ -91,7 +91,7 @@ public class Spell : ScriptableObject
     /// <param name="end">发射目标位置</param>
     /// <param name="direction">方向</param>
     /// <param name="owner">发射者</param>
-    public virtual void Cast(Vector2 start, Vector2 end, Vector2 direction, string owner,string uniqueId)
+    public virtual void Cast(Vector2 start, Vector2 end, Vector2 direction, string owner, string uniqueId)
     {
         // Debug.Log(spellName+"-"+casts.Count);
         this.owner = owner;

@@ -1,0 +1,19 @@
+{
+    "roomType": 3,
+    "leftRoomType": 3,
+    "rightRoomType": 3,
+    "enemyCount": -1,
+    "level": 1,
+    "propDatas": [],
+    "dropItems": [
+        {
+            "instanceID": -531132
+        },
+        {
+            "instanceID": -532292
+        },
+        {
+            "instanceID": -532308
+        }
+    ]
+}

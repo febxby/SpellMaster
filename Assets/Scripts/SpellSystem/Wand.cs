@@ -14,7 +14,8 @@ public struct Modify
     public float spread;
     public float gravity;
     public int bounce;
-    public Modify(float castDelay = 0, int damage = 0, float speed = 1, float spread = 0, float gravity = 0, int bounce = 0)
+    public int lifeTime;
+    public Modify(float castDelay = 0, int damage = 0, float speed = 1, float spread = 0, float gravity = 0, int bounce = 0, int lifeTime = 0)
     {
         this.castDelay = castDelay;
         this.damage = damage;
@@ -22,12 +23,59 @@ public struct Modify
         this.spread = spread;
         this.gravity = gravity;
         this.bounce = bounce;
+        this.lifeTime = lifeTime;
+    }
+}
+[Serializable]
+public class WandData
+{
+    public string wandName;
+    public float castDelay;
+    public float maxMagic;
+    public float magicRestoreRate;
+    public float chargeTime;
+    public float spread;
+    public int capacity;
+    public int drawCount;
+    public List<Spell> spells;
+
+    public WandData(string wandName, float castDelay, float maxMagic, float magicRestoreRate, float chargeTime, float spread, int capacity, int drawCount, List<Spell> spells)
+    {
+        this.wandName = wandName;
+        this.castDelay = castDelay;
+        this.maxMagic = maxMagic;
+        this.magicRestoreRate = magicRestoreRate;
+        this.chargeTime = chargeTime;
+        this.spread = spread;
+        this.capacity = capacity;
+        this.drawCount = drawCount;
+        this.spells = spells;
     }
 }
 [Serializable]
 public class Wand : MonoBehaviour, IPickUpable
 {
     // Start is called before the first frame update
+    public Wand(List<Spell> spells)
+    {
+        deck = spells;
+    }
+    public WandData GetWandData()
+    {
+        return new WandData(wandName, castDelay, maxMagic, magicRestoreRate, chargeTime, spread, capacity, drawCount, deck);
+    }
+    public void SetWandData(WandData wandData)
+    {
+        wandName = wandData.wandName;
+        castDelay = wandData.castDelay;
+        maxMagic = wandData.maxMagic;
+        magicRestoreRate = wandData.magicRestoreRate;
+        chargeTime = wandData.chargeTime;
+        spread = wandData.spread;
+        capacity = wandData.capacity;
+        drawCount = wandData.drawCount;
+        deck = wandData.spells;
+    }
     Dictionary<string, Spell> spellDict;
     [SerializeField] string wandName;
     [SerializeField] float castDelay;
@@ -102,6 +150,7 @@ public class Wand : MonoBehaviour, IPickUpable
     string owner;
     string uniqueId;
     // Queue<Spell> spellQueue = new Queue<Spell>();
+    public AudioClip shootClip;
     private void Awake()
     {
         currentMagic = maxMagic;
@@ -176,6 +225,7 @@ public class Wand : MonoBehaviour, IPickUpable
             //修改法术属性
             Modify(castSpell, ref modify);
             uniqueId = System.Guid.NewGuid().ToString();
+            // AudioManager.Instance.PlayOneShot(shootClip);
             castSpell.Cast(castPoint.position, transform.right * 10, transform.right, owner, uniqueId);
         }
 
@@ -215,8 +265,9 @@ public class Wand : MonoBehaviour, IPickUpable
         modify.speed *= (spell.speedModifier == 0 ? 1 : spell.speedModifier);
         modify.spread += spell.spreadModifier;
         modify.castDelay += spell.castDelay;
-        // modify.gravity += spell.gravity;
+        modify.gravity += spell.gravity;
         modify.bounce += spell.bounce;
+        modify.lifeTime += spell.lifeTimeModifier;
         currentCastDelay += spell.castDelay;
         currentChargeTime += spell.chargeTime;
         for (int i = 0; i < spell.drawCount; i++)
@@ -303,8 +354,9 @@ public class Wand : MonoBehaviour, IPickUpable
                 spell.damage += modify.damage;
                 spell.speed *= modify.speed;
                 spell.spread += Math.Clamp(spell.spread + modify.spread, 0, float.MaxValue);
-                // spell.gravity += modify.gravity;
+                spell.gravity += modify.gravity;
                 spell.bounce += modify.bounce;
+                spell.lifeTime += modify.lifeTime;
                 break;
             case SpellType.Modifier:
             case SpellType.Multicast:

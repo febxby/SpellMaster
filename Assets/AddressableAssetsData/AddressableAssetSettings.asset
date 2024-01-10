@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 0fb3dfb02edc1a94a838de0c74f04ee5
   m_currentHash:
     serializedVersion: 2
-    Hash: 488994e96850208b0e70ebf6599a69eb
+    Hash: 00000000000000000000000000000000
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -97,6 +97,7 @@ MonoBehaviour:
     - BossWands
     - MobsWands
     - PlayerWands
+    - DefaultWand
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 47760cf84383d6048b382ee7b406f6a7, type: 2}

@@ -30,7 +30,7 @@ MonoBehaviour:
   owner: 
   castDelay: 0
   chargeTime: 0
-  speedModifier: 2
+  speedModifier: 1.5
   spreadModifier: 0
   lifeTimeModifier: 0
   prefab: {fileID: 0}

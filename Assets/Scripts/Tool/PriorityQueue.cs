@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
-
+using UnityEngine;
+[Serializable]
 public class PriorityQueue<T> where T : IComparable<T>
 {
-    private List<T> heap = new List<T>();
+    [SerializeField] private List<T> heap = new List<T>();
 
     // 获取队列元素数量
     public int Count

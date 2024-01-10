@@ -18,10 +18,10 @@ MonoBehaviour:
   spellType: 0
   magicCost: 30
   burstRadius: 6
-  damage: 12
+  damage: 1
   speed: 7
   spread: 2.9
-  lifeTime: 10
+  lifeTime: 240
   gravity: 0
   bounce: 0
   drawCount: 0

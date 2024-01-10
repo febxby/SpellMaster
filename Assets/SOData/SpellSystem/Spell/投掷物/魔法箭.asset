@@ -19,10 +19,10 @@ MonoBehaviour:
   magicCost: 20
   burstRadius: 2
   damage: 10
-  speed: 10
+  speed: 15.625
   spread: 0.6
-  lifeTime: 10
-  gravity: 0.2
+  lifeTime: 40
+  gravity: 0.01
   bounce: 0
   drawCount: 0
   isTrigger: 0

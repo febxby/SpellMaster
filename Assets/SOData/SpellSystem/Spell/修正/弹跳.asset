@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "\u5F39\u8DF3"
   m_EditorClassIdentifier: 
   spellName: "\u5F39\u8DF3"
-  info: "\u589E\u52A010\u6B21\u5F39\u8DF3\u6B21\u6570"
+  info: "\u589E\u52A0\u5F39\u8DF3\u6B21\u6570"
   sprite: {fileID: 2072277702, guid: 4c5dc235f71f0e045b4e661562fd5e61, type: 3}
   spellType: 1
   magicCost: 0
@@ -35,4 +35,6 @@ MonoBehaviour:
   lifeTimeModifier: 0
   prefab: {fileID: 0}
   scriptType: 1
+  casts: []
+  attaches: []
   spells: []

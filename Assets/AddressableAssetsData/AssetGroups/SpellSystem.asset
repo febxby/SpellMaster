@@ -41,6 +41,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - PlayerWands
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1cd954b27dd8304eb8d562f784dac4a
+    m_Address: "Assets/Prefabs/\u6CD5\u6756/Default"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DefaultWand
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 86e816c329b5c1b42937099787a8a6c4, type: 2}
   m_SchemaSet:

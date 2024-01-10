@@ -94,6 +94,8 @@ public abstract class RuleFSM<T, K> : HFSM<E_StateLife> where T : ScriptableObje
     {
         get
         {
+            if (enemydata != null)
+                return enemydata;
             if (mData == null)
             {
                 mData = Addressables.LoadAssetAsync<T>(DataLabel).WaitForCompletion();
@@ -101,7 +103,8 @@ public abstract class RuleFSM<T, K> : HFSM<E_StateLife> where T : ScriptableObje
             return mData;
         }
     }
-    public abstract string DataLabel { get; }
+    public T enemydata;
+    public string DataLabel;
     protected override E_StateLife FirstLife => E_StateLife.Enter;
     protected override void SwitchState(State<E_StateLife> nextState)
     {

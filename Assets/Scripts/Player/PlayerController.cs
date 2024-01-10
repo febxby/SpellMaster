@@ -1,5 +1,8 @@
 using System;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 /// <summary>
 /// 切换使用的法杖
 /// </summary>
@@ -28,6 +31,7 @@ public struct AddSpell
     /// </summary>
     public Spell spell;
 }
+public struct PlayerDeath { }
 
 public interface IPickUpable
 {
@@ -41,6 +45,7 @@ public interface IPickUp
 public class PlayerController : MonoBehaviour, IDamageable
 {
     // [SerializeField] List<Wand> wands;
+    [SerializeField] GameObject setting;
     [SerializeField] Transform wandParent;
     [SerializeField] Wand currentWand;
     [SerializeField] float speed = 5f;
@@ -122,6 +127,11 @@ public class PlayerController : MonoBehaviour, IDamageable
     // Update is called once per frame
     void Update()
     {
+        // if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        // {
+        //     setting.SetActive(!setting.activeSelf);
+        //     Time.timeScale = setting.activeSelf ? 0 : 1;
+        // }
         if (currentWand != null)
         {
             currentWand.transform.right = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - (Vector2)currentWand.transform.position;
@@ -172,6 +182,14 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         if (!canFly) return;
         rb.velocity = new Vector2(rb.velocity.x, flySPeed);
+    }
+    public void SaveData()
+    {
+        // MEventSystem.Instance.Send<SaveData>(new SaveData());
+    }
+    public void ExitGame()
+    {
+        Application.Quit();
     }
     private void AddWandToInventory(Wand wand)
     {
@@ -305,8 +323,9 @@ public class PlayerController : MonoBehaviour, IDamageable
     }
     private void Die()
     {
-        // TODO: Implement death logic here
-        Debug.Log("Player has died");
+        MEventSystem.Instance.Send<PlayerDeath>(new PlayerDeath());
+        // Time.timeScale = 0;
+        GameManger.Instance.LoadScene("Demo");
     }
     // private void OnGUI()
     // {

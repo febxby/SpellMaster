@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "\u91CD\u529B\u573A"
   m_EditorClassIdentifier: 
   spellName: "\u91CD\u529B\u573A"
-  info: "\u5438\u5F15\u6295\u63B7\u7269"
+  info: "\u4E3A\u547D\u4E2D\u7684\u654C\u4EBA\u6DFB\u52A0\u5438\u5F15\u6295\u63B7\u7269\u7684\u529B\u573A"
   sprite: {fileID: 1502380719, guid: 4c5dc235f71f0e045b4e661562fd5e61, type: 3}
   spellType: 1
   magicCost: 110

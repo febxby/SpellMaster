@@ -14,26 +14,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spellName: "\u6FC0\u5149"
   info: 
-  sprite: {fileID: -455186581, guid: 4c5dc235f71f0e045b4e661562fd5e61, type: 3}
+  sprite: {fileID: -1922222991, guid: 4c5dc235f71f0e045b4e661562fd5e61, type: 3}
   spellType: 0
-  magicCost: 1
-  burstRadius: 3
-  damage: 1
-  speed: 5
+  magicCost: 30
+  burstRadius: 2
+  damage: 10
+  speed: 40
   spread: 0
-  lifeTime: 0.01
+  lifeTime: 30
   gravity: 0
-  bounce: 0
+  bounce: 5
   drawCount: 0
   isTrigger: 0
   canHurtSelf: 0
   owner: 
-  castDelay: -0.17
+  castDelay: -0.37
   chargeTime: 0
   speedModifier: 1
-  spreadModifier: 6
+  spreadModifier: 0
   lifeTimeModifier: 0
-  prefab: {fileID: 7645362088134616454, guid: b6399670c50f1284a8ac02a1c1f3cf86, type: 3}
+  prefab: {fileID: 7645362088134616454, guid: b561a4d89d728fa4aa92ab66fe2acd4e, type: 3}
   scriptType: 0
   casts: []
   attaches: []

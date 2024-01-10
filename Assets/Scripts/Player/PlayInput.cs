@@ -26,7 +26,7 @@ public class PlayInput : MonoBehaviour, GameControls.IPlayActions
     public UnityEvent OnOpenEditorEvent;
     [Header("按E拾取物品")]
     public UnityEvent OnPickUpEvent;
-
+    public UnityEvent OpenSettingEvent;
     bool isLeftButtonPressed = false;
     private void Awake()
     {

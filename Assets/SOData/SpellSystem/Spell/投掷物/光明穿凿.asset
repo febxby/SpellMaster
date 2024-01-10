@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42656eeeca3c227479f62723c3088673, type: 3}
+  m_Name: "\u5149\u660E\u7A7F\u51FF"
+  m_EditorClassIdentifier: 
+  spellName: "\u5149\u660E\u7A7F\u51FF"
+  info: 
+  sprite: {fileID: -455186581, guid: 4c5dc235f71f0e045b4e661562fd5e61, type: 3}
+  spellType: 0
+  magicCost: 10
+  burstRadius: 3
+  damage: 1
+  speed: 35
+  spread: 0
+  lifeTime: 2
+  gravity: 0
+  bounce: 0
+  drawCount: 0
+  isTrigger: 0
+  canHurtSelf: 0
+  owner: 
+  castDelay: -0.17
+  chargeTime: -0.58
+  speedModifier: 1
+  spreadModifier: 0
+  lifeTimeModifier: 0
+  prefab: {fileID: 7645362088134616454, guid: b6399670c50f1284a8ac02a1c1f3cf86, type: 3}
+  scriptType: 0
+  casts: []
+  attaches: []
+  spells: []

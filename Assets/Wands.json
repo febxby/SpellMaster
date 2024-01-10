@@ -1,0 +1,70 @@
+{
+    "target": [
+        {
+            "wandName": "实验性魔杖",
+            "castDelay": 0.12999999523162843,
+            "maxMagic": 390.0,
+            "magicRestoreRate": 101.0,
+            "chargeTime": 0.3799999952316284,
+            "spread": -2.0,
+            "capacity": 7,
+            "drawCount": 1,
+            "spells": [
+                {
+                    "instanceID": 30734
+                },
+                {
+                    "instanceID": 30608
+                },
+                {
+                    "instanceID": 30802
+                },
+                {
+                    "instanceID": 30650
+                },
+                {
+                    "instanceID": 0
+                },
+                {
+                    "instanceID": 0
+                },
+                {
+                    "instanceID": 0
+                }
+            ]
+        },
+        {
+            "wandName": "",
+            "castDelay": 0.0,
+            "maxMagic": 0.0,
+            "magicRestoreRate": 0.0,
+            "chargeTime": 0.0,
+            "spread": 0.0,
+            "capacity": 0,
+            "drawCount": 0,
+            "spells": []
+        },
+        {
+            "wandName": "",
+            "castDelay": 0.0,
+            "maxMagic": 0.0,
+            "magicRestoreRate": 0.0,
+            "chargeTime": 0.0,
+            "spread": 0.0,
+            "capacity": 0,
+            "drawCount": 0,
+            "spells": []
+        },
+        {
+            "wandName": "",
+            "castDelay": 0.0,
+            "maxMagic": 0.0,
+            "magicRestoreRate": 0.0,
+            "chargeTime": 0.0,
+            "spread": 0.0,
+            "capacity": 0,
+            "drawCount": 0,
+            "spells": []
+        }
+    ]
+}

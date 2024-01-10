@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 public interface ICast
@@ -32,13 +31,15 @@ public class Projectile : MonoBehaviour, ICast
     protected int bounce;
     Vector3 lastPos;
     protected WaitForSeconds seconds;
+    public GameObject burstEffect;
+    public GameObject effect;
     public Projectile Initialized(Spell spell, string uniqueId)
     {
         // this.spell = Instantiate(spell);
         this.spell = spell;
         this.uniqueId = uniqueId;
         bounce = spell.bounce;
-        seconds = new WaitForSeconds(spell.lifeTime);
+        seconds = new WaitForSeconds(spell.LifeTime);
         if (rb == null)
             rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = this.spell.gravity;
@@ -56,7 +57,7 @@ public class Projectile : MonoBehaviour, ICast
                 (component as ProjectileComponent).Init(this.spell, uniqueId);
             }
 
-        StartCoroutine(Disable());
+        StartCoroutine(nameof(Disable));
         return this;
     }
 
@@ -91,6 +92,8 @@ public class Projectile : MonoBehaviour, ICast
             if (bounce > 0)
             {
                 bounce--;
+                StopCoroutine(Disable());
+                StartCoroutine(Disable());
                 transform.right = Vector2.Reflect(direction, hit.normal);
                 rb.velocity = transform.right * rb.velocity.magnitude;
                 direction = rb.velocity.normalized;
@@ -129,6 +132,8 @@ public class Projectile : MonoBehaviour, ICast
             if (bounce > 0)
             {
                 bounce--;
+                StopCoroutine(nameof(Disable));
+                StartCoroutine(nameof(Disable));
                 Vector2 reflectDirection = Vector2.Reflect(direction, other.GetContact(0).normal);
                 Debug.DrawLine(other.GetContact(0).point, other.GetContact(0).point + (Vector2)other.GetContact(0).normal, Color.red, 10f);
                 // 添加一个小的随机扰动
@@ -139,6 +144,11 @@ public class Projectile : MonoBehaviour, ICast
                 rb.velocity = reflectDirection * spell.speed;
                 direction = reflectDirection;
                 return;
+            }
+            if (burstEffect != null)
+            {
+                effect = GameObjectPool.Instance.GetObject(burstEffect, true).
+                SetPositionAndRotation(other.GetContact(0).point, Quaternion.identity);
             }
             DestroyObject();
             return;
@@ -155,6 +165,12 @@ public class Projectile : MonoBehaviour, ICast
                     obj.transform.localPosition = Vector3.zero;
                 }
             damageable.TakeDamage(spell.damage);
+            if (burstEffect != null)
+            {
+                effect = GameObjectPool.Instance.GetObject(burstEffect, true).
+                SetPositionAndRotation(other.GetContact(0).point, Quaternion.identity);
+            }
+
             DestroyObject();
             return;
         }
@@ -212,7 +228,7 @@ public class Projectile : MonoBehaviour, ICast
     }
     IEnumerator Disable()
     {
-        if (spell.lifeTime > -1f || spell.lifeTime < -1f)
+        if (spell.lifeTime > -1 || spell.lifeTime < -1)
         {
             yield return seconds;
             DestroyObject(true);
@@ -220,7 +236,6 @@ public class Projectile : MonoBehaviour, ICast
 
 
     }
-
     void OnDisable()
     {
         StopAllCoroutines();

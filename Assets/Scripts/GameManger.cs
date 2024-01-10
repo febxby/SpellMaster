@@ -24,12 +24,15 @@ public class LabelName
     public const string Mobs = "Mobs";
     public const string Boss = "Boss";
 }
+public struct SaveData
+{
+}
 public class GameManger : MonoSingleton<GameManger>
 {
     // Start is called before the first frame update
     IOCContainer container;
-    [SerializeField] PlayerModel inventoryModel;
-    [SerializeField] GameObject initialWand;
+    [SerializeField] PlayerModel playerModel;
+    [SerializeField] GameObject defaultWand;
     public List<Spell> allSpells = new();
     public List<GameObject> playerWands = new();
     public List<GameObject> bossWands = new();
@@ -56,6 +59,9 @@ public class GameManger : MonoSingleton<GameManger>
     private Tweener breatheTween;
     public GameObject loadingPage;
     GameObject page;
+    private DamageText currentDamageText;
+    public LevelController levelController;
+    public GameObject templateWand;
 
     // // 计算总体进度的方法
     // float CalculateTotalProgress(float currentProgress, float newProgress)
@@ -95,9 +101,8 @@ public class GameManger : MonoSingleton<GameManger>
 
 
         container = IOCContainer.Instance;
-        container.Register<PlayerModel>(inventoryModel);
+        container.Register<PlayerModel>(playerModel);
         //仓库初始化
-        inventoryModel.Init();
         Addressables.LoadAssetsAsync<GameObject>(LabelName.Mobs,
         addressable =>
         {
@@ -135,7 +140,7 @@ public class GameManger : MonoSingleton<GameManger>
         {
             playerWands.Add(addressable);
         }, true);
-
+        defaultWand = Addressables.LoadAssetAsync<GameObject>("DefaultWand").WaitForCompletion();
 
         wandHandle.Completed += OnWandLoadComplete;
         ObjectPoolFactory.Instance.Init<Spell>(10);
@@ -146,9 +151,22 @@ public class GameManger : MonoSingleton<GameManger>
     }
     public void LoadScene(string sceneName)
     {
+        playerModel.Init();
         sceneLoadHandle = SceneManager.LoadSceneAsync(sceneName);
         sceneLoadHandle.completed += OnSceneLoadComplete;
     }
+    // public void LoadSaveScene()
+    // {
+    //     // LoadData();
+    //     sceneLoadHandle = SceneManager.LoadSceneAsync("Demo");
+    //     sceneLoadHandle.completed += (e) =>
+    //     {
+    //         LoadData();
+    //         levelController.Init(true);
+    //         // Wand wand = playerModel.GetWand(0);
+    //         // MEventSystem.Instance.Send<AddWand>(new AddWand() { wand = wand });
+    //     };
+    // }
     private void OnWandLoadComplete(AsyncOperationHandle<IList<GameObject>> handle)
     {
         startGame.gameObject.SetActive(true);
@@ -179,19 +197,60 @@ public class GameManger : MonoSingleton<GameManger>
         // float num = Random.Range(0f, allSpells.Count);
         // inventoryModel.Add<Spell>(allSpells[(int)num]);
         // num = Random.Range(0f, allWands.Count);
-        Wand wand = Instantiate(initialWand).GetComponent<Wand>();
+        Wand wand = Instantiate(defaultWand).GetComponent<Wand>();
         MEventSystem.Instance.Send<AddWand>(new AddWand() { wand = wand });
+        // levelController.Init(false);
     }
     private void OnDestroy()
     {
         Addressables.Release(wandHandle);
-        inventoryModel.Clear();
+        playerModel.Clear();
+    }
+    public void LoadData()
+    {
+        PlayerModel data = SaveSystem.LoadFromJson<PlayerModel>("Player", playerModel);
+        List<WandData> gameObjects = SaveSystem.LoadListFromJson<WandData>("Wands");
+        if (data != null || playerModel.wands != null)
+        {
+            playerModel.Coin = data.Coin;
+            playerModel.MaxHealth = data.MaxHealth;
+            playerModel.CurrentHealth = data.CurrentHealth;
+            playerModel.spells = data.spells;
+            playerModel.nullSpellIndices = data.nullSpellIndices;
+            playerModel.nullWandIndices = data.nullWandIndices;
+            foreach (var wandData in gameObjects)
+            {
+                if (wandData.wandName != "")
+                {
+                    var wand = GameObjectPool.Instance.GetObject(templateWand).GetComponent<Wand>();
+                    wand.SetWandData(wandData);
+                    MEventSystem.Instance.Send<AddWand>(new AddWand() { wand = wand });
+                }
+            }
+
+        }
     }
     public void DamageText(Vector3 position, int damage)
     {
-        GameObjectPool.Instance.GetObject(damageText).
-        SetPositionAndRotation(Camera.main.WorldToScreenPoint(position), Quaternion.identity).
-        GetComponent<DamageText>().Init(damage);
+        if (currentDamageText == null)
+        {
+            var damageTextObject = GameObjectPool.Instance.GetObject(damageText);
+            damageTextObject.SetPositionAndRotation(position, Quaternion.identity);
+            currentDamageText = damageTextObject.GetComponent<DamageText>();
+            currentDamageText.Init(damage, () =>
+            {
+                currentDamageText = null;
+            });
+        }
+        else
+        {
+            currentDamageText.UpdateDamage(damage);
+        }
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 
     /// <summary>

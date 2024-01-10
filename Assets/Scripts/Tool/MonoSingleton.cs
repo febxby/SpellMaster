@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MonoSingleton<T> : MonoBehaviour where T : Component
@@ -22,4 +20,5 @@ public class MonoSingleton<T> : MonoBehaviour where T : Component
             return instance;
         }
     }
+
 }

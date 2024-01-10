@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class EnemyController : RuleFSM<TopDownEnemyData, EnemyController>, ICanPlayAnim, IDamageable
 {
     [SerializeField] float maxHealth = 6;
@@ -98,9 +97,8 @@ public class EnemyController : RuleFSM<TopDownEnemyData, EnemyController>, ICanP
         mRig.velocity = MoveVel;
         // Debug.Log("更新" + Data?.GetType().Name);
     }
-
-    public override string DataLabel => "TopDownEnemyData";
     protected override IStateBuilder<E_StateLife> Builder => new EnemyStateBuilder(this, Data);
+
 
     // 显式实现 播放动画接口
     void ICanPlayAnim.PlayAnim(int animHash) { }
@@ -123,6 +121,7 @@ public class EnemyController : RuleFSM<TopDownEnemyData, EnemyController>, ICanP
     }
     public void TakeDamage(int damageAmount)
     {
+        GameManger.Instance.DamageText(transform.position, damageAmount);
         currentHealth -= damageAmount;
     }
     public void Die()

@@ -55,12 +55,50 @@ public class LevelController : MonoBehaviour
                 room.Init(e.roomType, 1, Level);
             else
                 room.Init(e.roomType, Level / enemyIncreaseInterval * additionalEnemies + initialEnemiesCount, Level);
-        });
-        enemies = GameManger.Instance.allEnemies;
-        bosses = GameManger.Instance.allBoss;
-        room = GameObjectPool.Instance.GetObject(roomPrefab).GetComponent<Room>();
-        room.Init(RoomType.Combat, 4, 1);
+        }).UnRegisterWhenGameObjectDestroy(gameObject);
+        Init(false);
+    }
+    public void Init(bool isLoad)
+    {
+        if (!isLoad)
+        {
+            enemies = GameManger.Instance.allEnemies;
+            bosses = GameManger.Instance.allBoss;
+            room = GameObjectPool.Instance.GetObject(roomPrefab).GetComponent<Room>();
+            room.Init(RoomType.Combat, 4, 1);
+        }
+        else
+        {
+            RoomData roomData = SaveSystem.LoadFromJson<RoomData>("Room");
+            if (roomData != null)
+            {
+                Level = roomData.level;
+                switch (roomData.roomType)
+                {
+                    case RoomType.Shop:
+                        room = GameObjectPool.Instance.GetObject(shopPrefab).GetComponent<Room>();
+                        break;
+                    case RoomType.Health:
+                        room = GameObjectPool.Instance.GetObject(roomPrefab).GetComponent<Room>();
+                        break;
+                    case RoomType.Combat:
+                        room = GameObjectPool.Instance.GetObject(roomPrefab).GetComponent<Room>();
+                        break;
+                    case RoomType.Boss:
+                        room = GameObjectPool.Instance.GetObject(bossRoomPrefab).GetComponent<Room>();
+                        break;
+                }
+                room.Init(roomData.roomType, roomData.enemyCount, Level, roomData.propDatas);
+            }
+            else
+            {
+                enemies = GameManger.Instance.allEnemies;
+                bosses = GameManger.Instance.allBoss;
+                room = GameObjectPool.Instance.GetObject(roomPrefab).GetComponent<Room>();
+                room.Init(RoomType.Combat, 4, 1);
+            }
 
+        }
     }
     void Start()
     {

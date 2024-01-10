@@ -38,7 +38,7 @@ public class GravityField : AttachComponent, ICast
     }
     IEnumerator UpdateLifeTime()
     {
-        yield return new WaitForSeconds(spell.lifeTime);
+        yield return new WaitForSeconds(spell.LifeTime);
         Destroy(gameObject);
     }
     private void Update()

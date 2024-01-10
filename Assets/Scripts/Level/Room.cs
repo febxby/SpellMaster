@@ -1,8 +1,27 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.Linq;
+[Serializable]
+public class RoomData
+{
+    public RoomType roomType;
+    public RoomType leftRoomType;
+    public RoomType rightRoomType;
+    public int enemyCount;
+    public int level;
+    public List<PropData> propDatas;
+    public List<GameObject> dropItems;
+}
+[Serializable]
+public struct PropData
+{
+    public bool isActive;
+    public Spell spell;
+}
 public enum RoomType
 {
     Shop,
@@ -27,14 +46,58 @@ public class Room : MonoBehaviour
     public Transform dropItemParent;
     public Door[] door;
     [SerializeField] int roomLevel;
-    RoomType roomType;
+    [SerializeField] RoomType roomType;
     [SerializeField] RoomType leftRoomType;
     [SerializeField] RoomType rightRoomType;
     int spawnEnemyCount;
     [SerializeField] int enemyCount;
     [SerializeField] Transform spellParent;
+    List<PropData> propDatas = new List<PropData>();
+    List<GameObject> dropItems = new List<GameObject>();
     private void Awake()
     {
+        MEventSystem.Instance.Register<PlayerDeath>((e) =>
+        {
+            foreach (Transform child in enemyParent)
+            {
+                Destroy(child.gameObject);
+            }
+            DisableCallBack();
+        }).UnRegisterWhenGameObjectDestroy(gameObject);
+        MEventSystem.Instance.Register<SaveData>((e) =>
+        {
+            if (gameObject.activeSelf)
+            {
+                if (spellParent != null)
+                    for (int i = 0; i < spellParent.childCount; i++)
+                    {
+                        Transform child = spellParent.GetChild(i);
+                        this.propDatas.Add(new PropData()
+                        {
+                            isActive = child.gameObject.activeSelf,
+                            spell = child.GetComponent<DropItem>().spell
+                        });
+                    };
+                if (dropItemParent != null)
+                {
+                    for (int i = 0; i < dropItemParent.childCount; i++)
+                    {
+                        dropItems.Add(dropItemParent.GetChild(i).gameObject);
+                    }
+                }
+                SaveSystem.SaveByJson("Room", new RoomData()
+                {
+                    roomType = roomType,
+                    leftRoomType = this.leftRoomType,
+                    rightRoomType = this.rightRoomType,
+                    enemyCount = this.enemyCount,
+                    level = this.roomLevel,
+                    propDatas = this.propDatas,
+                    dropItems = this.dropItems
+                });
+            }
+
+        }).UnRegisterWhenGameObjectDestroy(gameObject);
         player = FindFirstObjectByType<PlayerController>().gameObject;
         enemyCount = 1;
         MEventSystem.Instance.Register<EnemyDeath>((EnemyDeath e) =>
@@ -45,31 +108,51 @@ public class Room : MonoBehaviour
                     for (int i = 0; i < 10; i++)
                     {
                         GameObjectPool.Instance.GetObject(coinPrefab).
-                        SetPositionAndRotation(e.pos + new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0), Quaternion.identity).
+                        SetPositionAndRotation(e.pos + new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0), Quaternion.identity).
                         SetParent(dropItemParent);
                     }
                 }
                 else if (roomType == RoomType.Health)
                 {
                     GameObjectPool.Instance.GetObject(coinPrefab)
-                    .SetPositionAndRotation(e.pos + new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0), Quaternion.identity).
+                    .SetPositionAndRotation(e.pos + new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0), Quaternion.identity).
                     SetParent(dropItemParent);
                 }
                 else
                 {
                     GameObjectPool.Instance.GetObject(coinPrefab).
-                    SetPositionAndRotation(e.pos + new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0), Quaternion.identity).
+                    SetPositionAndRotation(e.pos + new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0), Quaternion.identity).
                     SetParent(dropItemParent);
                 }
 
             enemyCount--;
 
-        });
+        }).UnRegisterWhenGameObjectDestroy(gameObject);
 
 
     }
-    public void Init(RoomType roomType, int enemyCount, int level)
+    public void LoadData()
     {
+        RoomData room = SaveSystem.LoadFromJson<RoomData>("Room");
+        if (room != null)
+        {
+            roomType = room.roomType;
+            leftRoomType = room.leftRoomType;
+            rightRoomType = room.rightRoomType;
+            enemyCount = room.enemyCount;
+            roomLevel = room.level;
+            propDatas = room.propDatas;
+            for (int i = 0; i < spellParent.childCount; i++)
+            {
+                spellParent.GetChild(i).gameObject.SetActive(propDatas[i].isActive);
+                spellParent.GetChild(i).GetComponent<DropItem>().Init(propDatas[i].spell);
+            }
+
+        }
+    }
+    public void Init(RoomType roomType, int enemyCount, int level, List<PropData> propDatas = null)
+    {
+        player = FindFirstObjectByType<PlayerController>().gameObject;
         this.spawnEnemyCount = enemyCount;
         this.enemyCount = enemyCount;
         this.roomType = roomType;
@@ -78,16 +161,25 @@ public class Room : MonoBehaviour
         switch (roomType)
         {
             case RoomType.Shop:
-                for (int i = 0; i < spellParent.childCount; i++)
+                if (propDatas != null)
+                    for (int i = 0; i < spellParent.childCount; i++)
+                    {
+                        spellParent.GetChild(i).gameObject.SetActive(propDatas[i].isActive);
+                        spellParent.GetChild(i).GetComponent<DropItem>().Init(propDatas[i].spell);
+                    }
+                else
                 {
-                    spellParent.GetChild(i).gameObject.SetActive(true);
+                    for (int i = 0; i < spellParent.childCount; i++)
+                    {
+                        spellParent.GetChild(i).gameObject.SetActive(true);
+                    }
                 }
                 break;
             case RoomType.Combat:
             case RoomType.Health:
                 for (int i = 0; i < spawnEnemyCount; i++)
                 {
-                    int index = Random.Range(0, GameManger.Instance.allEnemies.Count);
+                    int index = UnityEngine.Random.Range(0, GameManger.Instance.allEnemies.Count);
                     Vector3 randomPosition = GetRandomPosition();
 
                     GameObjectPool.Instance.GetObject(GameManger.Instance.allEnemies[index]).
@@ -117,7 +209,7 @@ public class Room : MonoBehaviour
         else
         if (roomLevel % shopSpawnFrequency == 0)
         {
-            int randomType = Random.Range(0, 2);
+            int randomType = UnityEngine.Random.Range(0, 2);
             if (randomType == 0)
             {
                 leftRoomType = RoomType.Shop;
@@ -149,9 +241,15 @@ public class Room : MonoBehaviour
             SetNextRoomType();
             CheckEnemyDeath();
         }
+        else if (enemyCount == -1)
+        {
+            CheckEnemyDeath();
+
+        }
     }
     private void OnEnable()
     {
+        transform.SetParent(null);
         // roomLevel++;
         // player.transform.position = transform.TransformPoint(playerSpawn.position);
         // switch (roomType)
@@ -190,7 +288,8 @@ public class Room : MonoBehaviour
     }
     void DisableCallBack()
     {
-        StartCoroutine(nameof(Recycle));
+        if (this.gameObject.activeSelf)
+            StartCoroutine(nameof(Recycle));
     }
     void DropItem()
     {
@@ -198,7 +297,7 @@ public class Room : MonoBehaviour
         if (roomType == RoomType.Combat)
         {
             //在中心位置随机掉落一个法术
-            int index = Random.Range(0, GameManger.Instance.spellCount);
+            int index = UnityEngine.Random.Range(0, GameManger.Instance.spellCount);
             GameObjectPool.Instance.GetObject(spellPrefab).
             SetPositionAndRotation(GetCenterPosition(), Quaternion.identity).
             SetParent(dropItemParent).GetComponent<DropItem>().Init(GameManger.Instance.Get<Spell>(index));
@@ -212,7 +311,7 @@ public class Room : MonoBehaviour
         }
         else if (roomType == RoomType.Boss)
         {
-            int index = Random.Range(0, GameManger.Instance.playerWands.Count);
+            int index = UnityEngine.Random.Range(0, GameManger.Instance.playerWands.Count);
             GameObjectPool.Instance.GetObject(GameManger.Instance.playerWands[index]).
             SetPositionAndRotation(GetCenterPosition(), Quaternion.identity).
             SetParent(dropItemParent);
@@ -236,8 +335,8 @@ public class Room : MonoBehaviour
         do
         {
             randomPosition = new Vector3Int(
-                Random.Range(minPosition.x, maxPosition.x),
-                Random.Range(minPosition.y + (maxPosition.y - minPosition.y) / 2, maxPosition.y),
+                UnityEngine.Random.Range(minPosition.x, maxPosition.x),
+                UnityEngine.Random.Range(minPosition.y + (maxPosition.y - minPosition.y) / 2, maxPosition.y),
                 0
             );
         } while (floorTilemap.GetTile(randomPosition) == null); // 如果这个位置没有瓦片，那么重新生成位置
@@ -253,6 +352,8 @@ public class Room : MonoBehaviour
         // {
         //     GameObjectPool.Instance.PushObject(dropItem.gameObject);
         // }
+        GameManger.Instance.ExitLoading();
+        Time.timeScale = 1;
 
         //TODO:房间关闭后将所有对象放入对象池
 
