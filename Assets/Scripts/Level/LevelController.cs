@@ -5,6 +5,7 @@ using UnityEngine.Tilemaps;
 public struct EnemyDeath
 {
     public Vector3 pos;
+    public Room room;
 };
 public struct ChangeRoom
 {
@@ -14,6 +15,7 @@ public struct ChangeRoom
 public class LevelController : MonoBehaviour
 {
     // Start is called before the first frame update
+    RoomGenerator roomGenerator;
     public GameObject shopPrefab;
     public GameObject enhancementShopPrefab;
     public GameObject roomPrefab;
@@ -56,7 +58,8 @@ public class LevelController : MonoBehaviour
             else
                 room.Init(e.roomType, Level / enemyIncreaseInterval * additionalEnemies + initialEnemiesCount, Level);
         }).UnRegisterWhenGameObjectDestroy(gameObject);
-        Init(false);
+        // Init(false);
+        // roomGenerator.Init();
     }
     public void Init(bool isLoad)
     {
@@ -88,7 +91,7 @@ public class LevelController : MonoBehaviour
                         room = GameObjectPool.Instance.GetObject(bossRoomPrefab).GetComponent<Room>();
                         break;
                 }
-                room.Init(roomData.roomType, roomData.enemyCount, Level, roomData.propDatas);
+                room.Init(roomData.roomType, roomData.enemyCount, Level);
             }
             else
             {

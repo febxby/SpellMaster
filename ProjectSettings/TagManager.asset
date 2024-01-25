@@ -25,7 +25,7 @@ TagManager:
   - UI
   - Player
   - Obstacle
-  - Enemy
+  - Room
   - Spell
   - InfoPanel
   - PickUpable
@@ -35,7 +35,7 @@ TagManager:
   - Floor
   - Coin
   - Health
-  - 
+  - Enemy
   - 
   - 
   - 

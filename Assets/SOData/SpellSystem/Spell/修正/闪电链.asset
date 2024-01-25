@@ -24,7 +24,7 @@ MonoBehaviour:
   lifeTime: 0
   gravity: 0
   bounce: 0
-  drawCount: 2
+  drawCount: 1
   isTrigger: 0
   canHurtSelf: 0
   owner: 

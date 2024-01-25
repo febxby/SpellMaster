@@ -169,9 +169,9 @@ public class GameManger : MonoSingleton<GameManger>
     // }
     private void OnWandLoadComplete(AsyncOperationHandle<IList<GameObject>> handle)
     {
-        startGame.gameObject.SetActive(true);
-        enterLab.gameObject.SetActive(true);
-        exitGame.gameObject.SetActive(true);
+        // startGame.gameObject.SetActive(true);
+        // enterLab.gameObject.SetActive(true);
+        // exitGame.gameObject.SetActive(true);
     }
 
     // void Start()
@@ -232,6 +232,11 @@ public class GameManger : MonoSingleton<GameManger>
     }
     public void DamageText(Vector3 position, int damage)
     {
+        if (currentDamageText != null)
+        {
+            if (Vector2.Distance(currentDamageText.transform.position, position) > 2f)
+                currentDamageText = null;
+        }
         if (currentDamageText == null)
         {
             var damageTextObject = GameObjectPool.Instance.GetObject(damageText);
@@ -284,6 +289,7 @@ public class GameManger : MonoSingleton<GameManger>
     }
     public void ExitLoading()
     {
-        GameObjectPool.Instance.PushObject(page);
+        if (page != null)
+            GameObjectPool.Instance.PushObject(page);
     }
 }

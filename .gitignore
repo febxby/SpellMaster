@@ -78,3 +78,4 @@ Assembly-CSharp-Editor.csproj
 Assembly-CSharp.csproj
 ignore.conf
 ProjectSettings/ProjectVersion.txt
+-dir

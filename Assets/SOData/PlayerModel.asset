@@ -16,7 +16,7 @@ MonoBehaviour:
   maxSpellCount: 21
   coin: 455
   maxHealth: 100
-  currentHealth: 22
+  currentHealth: 100
   wands: []
   spells: []
   nullSpellIndices:

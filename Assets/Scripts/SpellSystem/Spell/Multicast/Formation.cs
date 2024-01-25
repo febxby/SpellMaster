@@ -31,7 +31,7 @@ public class Formation : ICast
                     quaternion = Quaternion.AngleAxis(spell.spread / (spell.spells.Count - 1) * (i - spell.spells.Count / 2) + (spell.spread / (spell.spells.Count - 1) / 2), Vector3.forward);
                 }
             }
-            spell.spells[i].Cast(start, end, quaternion * direction, spell.owner, uniqueId);
+            spell.spells[i].Init(start, end, quaternion * direction, spell.owner, uniqueId);
         }
         ObjectPoolFactory.Instance.Push(GetType(), this);
 

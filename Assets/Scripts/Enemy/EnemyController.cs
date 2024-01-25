@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 public class EnemyController : RuleFSM<TopDownEnemyData, EnemyController>, ICanPlayAnim, IDamageable
 {
+    public string animPrefix = "Enemy";
+    public Animator anim;
     [SerializeField] float maxHealth = 6;
     float currentHealth;
     [SerializeField] Wand wand;
@@ -53,6 +55,7 @@ public class EnemyController : RuleFSM<TopDownEnemyData, EnemyController>, ICanP
     private void Start()
     {
         // 初始化可检测射线的个数 正常两个位置差不多
+        anim = GetComponent<Animator>();
         hits = new RaycastHit2D[1];
         collider2Ds = new Collider2D[4];
         mRig = GetComponent<Rigidbody2D>();
@@ -101,7 +104,10 @@ public class EnemyController : RuleFSM<TopDownEnemyData, EnemyController>, ICanP
 
 
     // 显式实现 播放动画接口
-    void ICanPlayAnim.PlayAnim(int animHash) { }
+    void ICanPlayAnim.PlayAnim(int animHash)
+    {
+        anim.CrossFade(animHash, 0.1f);
+    }
     public void Cast(Vector2 pos)
     {
         wand.Cast(pos, tag);
@@ -126,9 +132,15 @@ public class EnemyController : RuleFSM<TopDownEnemyData, EnemyController>, ICanP
     }
     public void Die()
     {
-        MEventSystem.Instance.Send(new EnemyDeath() { pos = transform.position });
+        MEventSystem.Instance.Send(new EnemyDeath() { pos = transform.position, room = transform.parent.parent.GetComponent<Room>() });
         // Drop();
         Destroy(gameObject);
+    }
+    public bool isActived = false;
+    public IEnumerator ActiveEnemy()
+    {
+        yield return new WaitForSeconds(0.5f);
+        isActived = true;
     }
 }
 public class EnemyStateBuilder : IStateBuilder<E_StateLife>
@@ -148,13 +160,13 @@ public class EnemyStateBuilder : IStateBuilder<E_StateLife>
 
         return new Dictionary<string, State<E_StateLife>>()
             {
-                { StateName.Idle ,new EnemyIdleState().SetAnim(StateName.GroundIdle)},
-                { StateName.Observe ,new EnemyObserveState().SetAnim(StateName.GroundIdle) },
-                { StateName.Patrol ,new EnemyPatrolState().SetAnim(StateName.GroundMove)},
-                { StateName.Pursuit ,new EnemyPursuitState().SetAnim(StateName.GroundMove)},
+                { StateName.Idle ,new EnemyIdleState().SetAnim(fsm.animPrefix+StateName.GroundIdle)},
+                { StateName.Observe ,new EnemyObserveState().SetAnim(fsm.animPrefix+StateName.GroundIdle) },
+                { StateName.Patrol ,new EnemyPatrolState().SetAnim(fsm.animPrefix+StateName.GroundMove)},
+                { StateName.Pursuit ,new EnemyPursuitState().SetAnim(fsm.animPrefix+StateName.GroundMove)},
 
-                { StateName.Attack,new EnemyAttackState().SetAnim(StateName.Attack)},
-                { StateName.Die,new EnemyDieState().SetAnim(StateName.Die)},
+                { StateName.Attack,new EnemyAttackState().SetAnim(fsm.animPrefix+StateName.Attack)},
+                { StateName.Die,new EnemyDieState().SetAnim(fsm.animPrefix+StateName.Die)},
             };
     }
 }
@@ -167,7 +179,8 @@ public class EnemyIdleState : AnimState<EnemyController, TopDownEnemyData>
     private float idleDuration;
     protected override string CheckCondition()
     {
-        if (Time.time - idleStartTime >= idleDuration)
+        // if (Time.time - idleStartTime >= idleDuration)
+        if (Machine.isActived)
             return StateName.Patrol;
         return null;
     }

@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 7279099935566213291}
   - component: {fileID: 4301600036672837344}
   - component: {fileID: 469072361082022336}
-  m_Layer: 8
+  m_Layer: 18
   m_Name: PlatformEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -205,7 +205,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6143639fb3a9fd346a8dd1df18660679, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 0
+  enemydata: {fileID: 0}
+  DataLabel: 
+  maxHealth: 6
   wand: {fileID: 0}
   MoveVel: {x: 0, y: 0}
 --- !u!1 &7599756631613558716

@@ -68,7 +68,7 @@ public class Projectile : MonoBehaviour, ICast
         // GameObject spellObj = Instantiate(spell.prefab, start, Quaternion.identity);
         Projectile projectile = spellObj.GetComponent<Projectile>().Initialized(spell, uniqueId);
         float angle = Random.Range(-spell.spread, spell.spread);
-        Quaternion quaternion = Quaternion.AngleAxis(angle, Vector3.forward);
+        Quaternion quaternion = Quaternion.AngleAxis(0, Vector3.forward);
         projectile.direction = (quaternion * direction).normalized;
         spellObj.transform.right = projectile.direction;
         if (spellObj.TryGetComponent<TrailRenderer>(out trail))
@@ -126,8 +126,8 @@ public class Projectile : MonoBehaviour, ICast
         }
         if (other.gameObject.CompareTag("Obstacle"))
         {
-            // var lastPos = (Vector2)transform.position - rb.velocity * Time.deltaTime;
-            // hit = Physics2D.Raycast(lastPos, direction, 10, LayerMask.GetMask("Obstacle"));
+            var lastPos = (Vector2)transform.position - rb.velocity * Time.deltaTime;
+            hit = Physics2D.Raycast(lastPos, direction, 10, LayerMask.GetMask("Obstacle", "Room"));
 
             if (bounce > 0)
             {
@@ -184,9 +184,9 @@ public class Projectile : MonoBehaviour, ICast
                 Vector2 newPosition = (Vector2)transform.position + Vector2.Reflect(direction, hit.normal) * 0.1f;
                 string uniqueId = System.Guid.NewGuid().ToString();
                 if (!isNatural)
-                    spell.spells[i].Cast(newPosition, transform.position, Vector2.Reflect(direction, hit.normal), spell.owner, uniqueId);
+                    spell.spells[i].Init(newPosition, transform.position, Vector2.Reflect(direction, hit.normal), spell.owner, uniqueId);
                 else
-                    spell.spells[i].Cast(newPosition, transform.position, rb.velocity.normalized, spell.owner, uniqueId);
+                    spell.spells[i].Init(newPosition, transform.position, rb.velocity.normalized, spell.owner, uniqueId);
             }
         }
         if (spell.casts.Count > 0)

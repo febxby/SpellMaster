@@ -149,9 +149,9 @@ public class Projectile3D : MonoBehaviour, ICast
                 string uniqueId = System.Guid.NewGuid().ToString();
                 Vector2 newPosition = (Vector2)transform.position + Vector2.Reflect(direction, hit[0].normal) * 0.1f;
                 if (!isNatural)
-                    spell.spells[i].Cast(newPosition, transform.position, Vector2.Reflect(direction, hit[0].normal), spell.owner, uniqueId);
+                    spell.spells[i].Init(newPosition, transform.position, Vector2.Reflect(direction, hit[0].normal), spell.owner, uniqueId);
                 else
-                    spell.spells[i].Cast(newPosition, transform.position, rb.velocity.normalized, spell.owner, uniqueId);
+                    spell.spells[i].Init(newPosition, transform.position, rb.velocity.normalized, spell.owner, uniqueId);
             }
         }
         if (spell.casts.Count > 0)

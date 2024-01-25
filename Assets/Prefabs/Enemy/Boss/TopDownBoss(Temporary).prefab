@@ -44,7 +44,8 @@ GameObject:
   - component: {fileID: 1659689654333469609}
   - component: {fileID: 2558391293505689453}
   - component: {fileID: 4733297307767201270}
-  m_Layer: 8
+  - component: {fileID: 2358930249414782387}
+  m_Layer: 18
   m_Name: TopDownBoss(Temporary)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -110,8 +111,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 2b0f8a8b4970f2d4ebe132e09d87944b, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -167,10 +168,10 @@ BoxCollider2D:
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
-    m_Bits: 65015
+    m_Bits: 64759
   m_ForceReceiveLayers:
     serializedVersion: 2
-    m_Bits: 65015
+    m_Bits: 64759
   m_ContactCaptureLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -180,18 +181,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.044311523, y: 0.066467464}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 1.5, y: 1.8125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.1277819, y: 1.6795651}
   m_EdgeRadius: 0
 --- !u!114 &4733297307767201270
 MonoBehaviour:
@@ -207,9 +208,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemydata: {fileID: 11400000, guid: 020f5f6c1ddfdfd4b9c3b6b8e8df989a, type: 2}
   DataLabel: 
-  maxHealth: 60
+  animPrefix: "\u8FDC\u7A0B"
+  anim: {fileID: 2358930249414782387}
+  maxHealth: 500
   wand: {fileID: 6160597875714909208}
   MoveVel: {x: 0, y: 0}
+--- !u!95 &2358930249414782387
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5778094681367178877}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0da21c7b440986141b393554a85b4feb, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8049970747962883994
 GameObject:
   m_ObjectHideFlags: 0
@@ -251,11 +275,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: capacity
-      value: 46
+      value: 51
       objectReference: {fileID: 0}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.size
-      value: 46
+      value: 51
       objectReference: {fileID: 0}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[10]
@@ -268,11 +292,11 @@ PrefabInstance:
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[12]
       value: 
-      objectReference: {fileID: 11400000, guid: 0f44d01cf78e1504a894fb8d63501897, type: 2}
+      objectReference: {fileID: 11400000, guid: 528b2070a32578d479d2f75397d5d5df, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[13]
       value: 
-      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
+      objectReference: {fileID: 11400000, guid: 0f44d01cf78e1504a894fb8d63501897, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[14]
       value: 
@@ -292,19 +316,19 @@ PrefabInstance:
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[18]
       value: 
-      objectReference: {fileID: 11400000, guid: 5ad8074451282614b9a4fad34214818a, type: 2}
+      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[19]
       value: 
-      objectReference: {fileID: 11400000, guid: 0f44d01cf78e1504a894fb8d63501897, type: 2}
+      objectReference: {fileID: 11400000, guid: 5ad8074451282614b9a4fad34214818a, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[20]
       value: 
-      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
+      objectReference: {fileID: 11400000, guid: 528b2070a32578d479d2f75397d5d5df, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[21]
       value: 
-      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
+      objectReference: {fileID: 11400000, guid: 0f44d01cf78e1504a894fb8d63501897, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[22]
       value: 
@@ -320,23 +344,23 @@ PrefabInstance:
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[25]
       value: 
-      objectReference: {fileID: 11400000, guid: 5ad8074451282614b9a4fad34214818a, type: 2}
+      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[26]
       value: 
-      objectReference: {fileID: 11400000, guid: 0f44d01cf78e1504a894fb8d63501897, type: 2}
+      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[27]
       value: 
-      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
+      objectReference: {fileID: 11400000, guid: 5ad8074451282614b9a4fad34214818a, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[28]
       value: 
-      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
+      objectReference: {fileID: 11400000, guid: 528b2070a32578d479d2f75397d5d5df, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[29]
       value: 
-      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
+      objectReference: {fileID: 11400000, guid: 0f44d01cf78e1504a894fb8d63501897, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[30]
       value: 
@@ -348,11 +372,11 @@ PrefabInstance:
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[32]
       value: 
-      objectReference: {fileID: 11400000, guid: 5ad8074451282614b9a4fad34214818a, type: 2}
+      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[33]
       value: 
-      objectReference: {fileID: 11400000, guid: 0f44d01cf78e1504a894fb8d63501897, type: 2}
+      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[34]
       value: 
@@ -360,15 +384,15 @@ PrefabInstance:
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[35]
       value: 
-      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
+      objectReference: {fileID: 11400000, guid: 5ad8074451282614b9a4fad34214818a, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[36]
       value: 
-      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
+      objectReference: {fileID: 11400000, guid: 528b2070a32578d479d2f75397d5d5df, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[37]
       value: 
-      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
+      objectReference: {fileID: 11400000, guid: 0f44d01cf78e1504a894fb8d63501897, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[38]
       value: 
@@ -376,11 +400,11 @@ PrefabInstance:
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[39]
       value: 
-      objectReference: {fileID: 11400000, guid: 5ad8074451282614b9a4fad34214818a, type: 2}
+      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[40]
       value: 
-      objectReference: {fileID: 11400000, guid: 0f44d01cf78e1504a894fb8d63501897, type: 2}
+      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[41]
       value: 
@@ -392,18 +416,42 @@ PrefabInstance:
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[43]
       value: 
-      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
+      objectReference: {fileID: 11400000, guid: 5ad8074451282614b9a4fad34214818a, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[44]
       value: 
-      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
+      objectReference: {fileID: 11400000, guid: 528b2070a32578d479d2f75397d5d5df, type: 2}
     - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: deck.Array.data[45]
       value: 
+      objectReference: {fileID: 11400000, guid: 0f44d01cf78e1504a894fb8d63501897, type: 2}
+    - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
+      propertyPath: deck.Array.data[46]
+      value: 
       objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
+    - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
+      propertyPath: deck.Array.data[47]
+      value: 
+      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
+    - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
+      propertyPath: deck.Array.data[48]
+      value: 
+      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
+    - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
+      propertyPath: deck.Array.data[49]
+      value: 
+      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
+    - target: {fileID: 477460650317881671, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
+      propertyPath: deck.Array.data[50]
+      value: 
+      objectReference: {fileID: 11400000, guid: 779ab4fd2f9f1894489ef34404f96f55, type: 2}
+    - target: {fileID: 786090853123724014, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.599
+      objectReference: {fileID: 0}
     - target: {fileID: 3315421366518159752, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.43
       objectReference: {fileID: 0}
     - target: {fileID: 3315421366518159752, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: m_LocalPosition.y
@@ -419,15 +467,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3315421366518159752, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3315421366518159752, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3315421366518159752, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3315421366518159752, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -444,6 +492,10 @@ PrefabInstance:
     - target: {fileID: 6488082125062690427, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
       propertyPath: m_Name
       value: "Boss\u4E13\u7528"
+      objectReference: {fileID: 0}
+    - target: {fileID: 9037114201795519624, guid: fda7f91a23ba5aa45a31a167c16c5211, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

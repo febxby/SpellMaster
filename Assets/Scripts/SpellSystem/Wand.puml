@@ -1,0 +1,31 @@
+@startuml
+struct Modify {
+    + castDelay : float
+    + damage : int
+    + speed : float
+    + spread : float
+    + gravity : float
+    + bounce : int
+    + lifeTime : int
+}
+class Wand {
+    - castDelay : float
+    - maxMagic : float
+    - magicRestoreRate : float
+    - chargeTime : float
+    - spread : float
+    - capacity : int
+    - drawCount : int
+    - deck : List<Spell>
+    - hand : bool[]
+    - discard : bool[]
+    - currentSpellIndex : int = 0
+    - usedSpellCount : int = 0
+    - nonNullSpellCount : int = 0
+    + Cast(pos:Vector2, owner:string) : void
+    + PreLoad(spell:Spell, modify:Modify) : void
+    + Draw(modify:Modify) : Spell
+    + Modify(spell:Spell, modify:Modify) : void
+}
+MonoBehaviour <|-- Wand
+@enduml

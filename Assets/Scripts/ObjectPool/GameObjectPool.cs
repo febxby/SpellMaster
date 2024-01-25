@@ -162,10 +162,10 @@ public class GameObjectPool : Singleton<GameObjectPool>
     }
     public IEnumerator RecycleAllCoroutine()
     {
-        Debug.Log(activePoolObjects.Count);
+        // Debug.Log(activePoolObjects.Count);
         for (int i = activePoolObjects.Count - 1; i >= 0; i--)
         {
-            Debug.Log(activePoolObjects[i].name);
+            // Debug.Log(activePoolObjects[i].name);
             PushObject(activePoolObjects[i]);
         }
         activePoolObjects.Clear();

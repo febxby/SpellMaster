@@ -43,7 +43,7 @@ public class Spell : ScriptableObject
     [Header("基础属性")]
     public string spellName;
     public string info;
-    [PnShowSprite] public Sprite sprite;
+    public Sprite sprite;
     public SpellType spellType;
     public float magicCost;
     public float burstRadius;
@@ -64,11 +64,11 @@ public class Spell : ScriptableObject
     public float spreadModifier = 0;
     public int lifeTimeModifier = 0;
     [Header("脚本类型")]
-    [PnShowSprite] public GameObject prefab;
+    public GameObject prefab;
     public ScriptType scriptType;
     public List<ProjectileComponent> casts = new();
     public List<GameObject> attaches = new();
-    [HideInInspector] public List<Spell> spells;
+    public List<Spell> spells;
     private Type mType => Type.GetType(scriptType.ToString());
 
     public float LifeTime => lifeTime / 60f;
@@ -91,9 +91,8 @@ public class Spell : ScriptableObject
     /// <param name="end">发射目标位置</param>
     /// <param name="direction">方向</param>
     /// <param name="owner">发射者</param>
-    public virtual void Cast(Vector2 start, Vector2 end, Vector2 direction, string owner, string uniqueId)
+    public virtual void Init(Vector2 start, Vector2 end, Vector2 direction, string owner, string uniqueId)
     {
-        // Debug.Log(spellName+"-"+casts.Count);
         this.owner = owner;
         if (prefab)
         {

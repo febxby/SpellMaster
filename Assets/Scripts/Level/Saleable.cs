@@ -16,7 +16,7 @@ public class Saleable : MonoBehaviour, ISaleable, IShowable
     public GameObject infoPanel;
     public int Sell(int price)
     {
-        if (price > this.price)
+        if (price >= this.price)
             return price - this.price;
         return -1;
     }

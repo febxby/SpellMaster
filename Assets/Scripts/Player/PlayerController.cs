@@ -1,8 +1,6 @@
 using System;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 /// <summary>
 /// 切换使用的法杖
 /// </summary>
@@ -67,6 +65,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     RaycastHit2D[] hits = new RaycastHit2D[1];
     private void Awake()
     {
+        // DontDestroyOnLoad(gameObject);
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         playerModel = IOCContainer.Instance.Get<PlayerModel>();
@@ -245,7 +244,7 @@ public class PlayerController : MonoBehaviour, IDamageable
                     {
                         playerModel.Coin = price;
                         MEventSystem.Instance.Send<AddSpell>(new AddSpell { spell = saleable.spell });
-                        GameObjectPool.Instance.PushObject(saleable.gameObject);
+                        saleable.gameObject.SetActive(false);
                         Debug.Log("卖出成功");
                     }
                     else
@@ -315,6 +314,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     }
     public void TakeDamage(int damageAmount)
     {
+        if (Test) return;
         playerModel.CurrentHealth -= damageAmount;
         if (playerModel.CurrentHealth <= 0)
         {
@@ -325,6 +325,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         MEventSystem.Instance.Send<PlayerDeath>(new PlayerDeath());
         // Time.timeScale = 0;
+        // Destroy(gameObject);
         GameManger.Instance.LoadScene("Demo");
     }
     // private void OnGUI()

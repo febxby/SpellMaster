@@ -35,7 +35,7 @@ public class SineWave : ProjectileComponent, ICast
             }
             spell.spells[i].attaches = spell.attaches;
             // spell.spells[i].castDict.Add(typeof(Tracking), this);
-            spell.spells[i].Cast(start, end, direction, spell.owner, uniqueId);
+            spell.spells[i].Init(start, end, direction, spell.owner, uniqueId);
         }
     }
     public override void Init(Spell spell, string uniqueId)

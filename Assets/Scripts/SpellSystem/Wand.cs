@@ -218,17 +218,14 @@ public class Wand : MonoBehaviour, IPickUpable
         for (int i = 0; i < drawCount; i++)
         {
             castSpell = Draw(ref modify);
-            // castSpell = spellQueue.Dequeue();
         }
         if (castSpell != null)
         {
             //修改法术属性
             Modify(castSpell, ref modify);
             uniqueId = System.Guid.NewGuid().ToString();
-            // AudioManager.Instance.PlayOneShot(shootClip);
-            castSpell.Cast(castPoint.position, transform.right * 10, transform.right, owner, uniqueId);
+            castSpell.Init(castPoint.position, transform.right * 10, transform.right, owner, uniqueId);
         }
-
         //每次施法后设置施法延迟
         currentCastDelay += castDelay;
         currentCastDelay = Mathf.Clamp(currentCastDelay, 0, float.MaxValue);
@@ -288,7 +285,6 @@ public class Wand : MonoBehaviour, IPickUpable
             spell.spells.Add(spell1);
         }
     }
-
     public Spell Draw(ref Modify modify)
     {
         //如果当前索引超过持有法术数量
@@ -321,11 +317,8 @@ public class Wand : MonoBehaviour, IPickUpable
             return Draw(ref modify);
         }
         currentMagic -= deck[currentSpellIndex].magicCost;
-        // Spell currentSpell = Instantiate(deck[currentSpellIndex]);
         Spell currentSpell = ObjectPoolFactory.Instance.Get(deck[currentSpellIndex].GetType());
         currentSpell.Copy(deck[currentSpellIndex]);
-        // Spell currentSpell = ObjectPool<Spell>.Instance.GetObject(deck[currentSpellIndex].GetType());
-        // currentSpell.Copy(deck[currentSpellIndex]);
         currentSpellIndex++;
         usedSpellCount++;
         if (currentSpell.isTrigger)
@@ -336,7 +329,6 @@ public class Wand : MonoBehaviour, IPickUpable
         {
             PreLoad(currentSpell, ref modify);
         }
-        // ObjectPoolFactory.Instance.Push(currentSpell.GetType(), currentSpell);
         return currentSpell;
     }
     public void Modify(Spell spell, ref Modify modify)

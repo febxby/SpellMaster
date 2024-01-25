@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Linq;
+using UnityEngine.UI;
 [Serializable]
 public class RoomData
 {
@@ -38,6 +39,7 @@ public class Room : MonoBehaviour
     [SerializeField] GameObject spellPrefab;
     [SerializeField] GameObject healthPrefab;
     [SerializeField] GameObject coinPrefab;
+    [SerializeField] GameObject itemPrefab;
     public GameObject player;
     public Tilemap floorTilemap;
     public Tilemap wallTilemap;
@@ -54,6 +56,67 @@ public class Room : MonoBehaviour
     [SerializeField] Transform spellParent;
     List<PropData> propDatas = new List<PropData>();
     List<GameObject> dropItems = new List<GameObject>();
+    public bool isEndRoom;
+    public GameObject doorLeft, doorRight, doorUp, doorDown;
+    public bool roomLeft, roomRight, roomUp, roomDown;
+    public int stepToStart;
+
+    public int doorNumber;
+    public Text text;
+    public bool isStartRoom;
+    bool isClosed;
+    void Start()
+    {
+        // doorLeft.SetActive(roomLeft);
+        // doorRight.SetActive(roomRight);
+        // doorUp.SetActive(roomUp);
+        // doorDown.SetActive(roomDown);
+        OpenDoor();
+    }
+
+    public void UpdateRoom(float xOffset, float yOffset)
+    {
+        stepToStart = (int)(Mathf.Abs(transform.position.x / xOffset) + Mathf.Abs(transform.position.y / yOffset));
+        text.text = stepToStart.ToString();
+
+        if (roomUp)
+            doorNumber++;
+        if (roomDown)
+            doorNumber++;
+        if (roomLeft)
+            doorNumber++;
+        if (roomRight)
+            doorNumber++;
+    }
+    public void CloseDoor()
+    {
+        isClosed = true;
+        doorLeft.SetActive(roomLeft);
+        doorRight.SetActive(roomRight);
+        doorUp.SetActive(roomUp);
+        doorDown.SetActive(roomDown);
+    }
+    public void OpenDoor()
+    {
+        doorLeft.SetActive(false);
+        doorRight.SetActive(false);
+        doorUp.SetActive(false);
+        doorDown.SetActive(false);
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+
+        if (collision.CompareTag("Player"))
+        {
+            if (!isClosed)
+                CloseDoor();
+            foreach (Transform child in enemyParent)
+            {
+                StartCoroutine(child.GetComponent<EnemyController>().ActiveEnemy());
+            }
+            CameraController.instance.ChangeTarget(transform);
+        }
+    }
     private void Awake()
     {
         MEventSystem.Instance.Register<PlayerDeath>((e) =>
@@ -102,34 +165,30 @@ public class Room : MonoBehaviour
         enemyCount = 1;
         MEventSystem.Instance.Register<EnemyDeath>((EnemyDeath e) =>
         {
-            if (gameObject.activeSelf)
+            //BUG:敌人死亡消息会被多次接收
+            if (gameObject.activeSelf && e.room == this)
+            {
+                enemyCount--;
                 if (roomType == RoomType.Boss)
                 {
                     for (int i = 0; i < 10; i++)
                     {
-                        GameObjectPool.Instance.GetObject(coinPrefab).
-                        SetPositionAndRotation(e.pos + new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0), Quaternion.identity).
-                        SetParent(dropItemParent);
+                        GameObjectPool.Instance.GetObject(coinPrefab, true).
+                        SetPositionAndRotation(e.pos + new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0), Quaternion.identity);
                     }
                 }
                 else if (roomType == RoomType.Health)
                 {
-                    GameObjectPool.Instance.GetObject(coinPrefab)
-                    .SetPositionAndRotation(e.pos + new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0), Quaternion.identity).
-                    SetParent(dropItemParent);
+                    GameObjectPool.Instance.GetObject(coinPrefab, true)
+                    .SetPositionAndRotation(e.pos + new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0), Quaternion.identity);
                 }
                 else
                 {
-                    GameObjectPool.Instance.GetObject(coinPrefab).
-                    SetPositionAndRotation(e.pos + new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0), Quaternion.identity).
-                    SetParent(dropItemParent);
+                    GameObjectPool.Instance.GetObject(coinPrefab, true).
+                    SetPositionAndRotation(e.pos + new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0), Quaternion.identity);
                 }
-
-            enemyCount--;
-
+            }
         }).UnRegisterWhenGameObjectDestroy(gameObject);
-
-
     }
     public void LoadData()
     {
@@ -150,14 +209,19 @@ public class Room : MonoBehaviour
 
         }
     }
-    public void Init(RoomType roomType, int enemyCount, int level, List<PropData> propDatas = null)
+    public void Init(RoomType roomType, int enemyCount, int level, bool isEndRoom = false, bool isStartRoom = false, List<PropData> propDatas = null)
     {
-        player = FindFirstObjectByType<PlayerController>().gameObject;
+        this.isEndRoom = isEndRoom;
+        this.isStartRoom = isStartRoom;
         this.spawnEnemyCount = enemyCount;
         this.enemyCount = enemyCount;
         this.roomType = roomType;
         roomLevel = level;
-        player.transform.position = transform.TransformPoint(playerSpawn.position);
+        if (isStartRoom)
+        {
+            player = FindFirstObjectByType<PlayerController>().gameObject;
+            player.transform.position = transform.TransformPoint(playerSpawn.position);
+        }
         switch (roomType)
         {
             case RoomType.Shop:
@@ -169,14 +233,15 @@ public class Room : MonoBehaviour
                     }
                 else
                 {
-                    for (int i = 0; i < spellParent.childCount; i++)
+                    // for (int i = 0; i < spellParent.childCount; i++)
                     {
-                        spellParent.GetChild(i).gameObject.SetActive(true);
+                        spellParent.gameObject.SetActive(true);
                     }
                 }
                 break;
             case RoomType.Combat:
             case RoomType.Health:
+                spellParent.gameObject.SetActive(false);
                 for (int i = 0; i < spawnEnemyCount; i++)
                 {
                     int index = UnityEngine.Random.Range(0, GameManger.Instance.allEnemies.Count);
@@ -188,11 +253,12 @@ public class Room : MonoBehaviour
                 }
                 break;
             case RoomType.Boss:
+                spellParent.gameObject.SetActive(false);
                 for (int i = 0; i < spawnEnemyCount; i++)
                 {
-                    int index = roomLevel / bossSpawnFrequency;
+                    int index = UnityEngine.Random.Range(0, GameManger.Instance.allBoss.Count);
                     Vector3 centerPosition = GetCenterPosition();
-                    GameObjectPool.Instance.GetObject(GameManger.Instance.allBoss[index - 1]).
+                    GameObjectPool.Instance.GetObject(GameManger.Instance.allBoss[index]).
                     SetPositionAndRotation(centerPosition, Quaternion.identity).
                     SetParent(enemyParent);
                 }
@@ -236,14 +302,22 @@ public class Room : MonoBehaviour
     {
         if (enemyCount == 0)
         {
+            OpenDoor();
             enemyCount = -1;
-            DropItem();
-            SetNextRoomType();
-            CheckEnemyDeath();
+            if (!isStartRoom)
+                DropItem();
+            if (isEndRoom)
+            {
+                StartCoroutine(GameObjectPool.Instance.RecycleAllCoroutine());
+                SetNextRoomType();
+                CheckEnemyDeath();
+            }
         }
         else if (enemyCount == -1)
         {
-            CheckEnemyDeath();
+            OpenDoor();
+            if (isEndRoom)
+                CheckEnemyDeath();
 
         }
     }
@@ -299,15 +373,15 @@ public class Room : MonoBehaviour
             //在中心位置随机掉落一个法术
             int index = UnityEngine.Random.Range(0, GameManger.Instance.spellCount);
             GameObjectPool.Instance.GetObject(spellPrefab).
-            SetPositionAndRotation(GetCenterPosition(), Quaternion.identity).
-            SetParent(dropItemParent).GetComponent<DropItem>().Init(GameManger.Instance.Get<Spell>(index));
+            SetPositionAndRotation(GetCenterPosition(), Quaternion.identity)
+            .GetComponent<DropItem>().Init(GameManger.Instance.Get<Spell>(index));
         }
         else if (roomType == RoomType.Health)
         {
             //在中心位置随机掉落一个法术
-            GameObjectPool.Instance.GetObject(healthPrefab).
-            SetPositionAndRotation(GetCenterPosition(), Quaternion.identity).
-            SetParent(dropItemParent);
+            GameObjectPool.Instance.GetObject(healthPrefab, true).
+            SetPositionAndRotation(GetCenterPosition(), Quaternion.identity);
+            // SetParent(dropItemParent);
         }
         else if (roomType == RoomType.Boss)
         {
@@ -329,14 +403,15 @@ public class Room : MonoBehaviour
     private Vector3 GetRandomPosition()
     {
         BoundsInt bounds = floorTilemap.cellBounds;
-        Vector3Int minPosition = bounds.min;
-        Vector3Int maxPosition = bounds.max;
+        Vector3Int minPosition = bounds.min + Vector3Int.one * 2;
+        Vector3Int maxPosition = bounds.max - Vector3Int.one * 2;
         Vector3Int randomPosition;
         do
         {
             randomPosition = new Vector3Int(
                 UnityEngine.Random.Range(minPosition.x, maxPosition.x),
-                UnityEngine.Random.Range(minPosition.y + (maxPosition.y - minPosition.y) / 2, maxPosition.y),
+                // UnityEngine.Random.Range(minPosition.y + (maxPosition.y - minPosition.y) / 2, maxPosition.y),
+                UnityEngine.Random.Range(minPosition.y, maxPosition.y),
                 0
             );
         } while (floorTilemap.GetTile(randomPosition) == null); // 如果这个位置没有瓦片，那么重新生成位置
@@ -352,7 +427,7 @@ public class Room : MonoBehaviour
         // {
         //     GameObjectPool.Instance.PushObject(dropItem.gameObject);
         // }
-        GameManger.Instance.ExitLoading();
+        // GameManger.Instance.ExitLoading();
         Time.timeScale = 1;
 
         //TODO:房间关闭后将所有对象放入对象池
@@ -372,9 +447,9 @@ public class Room : MonoBehaviour
         // {
         //     GameObjectPool.Instance.PushObject(dropItemParent.GetChild(i).gameObject);
         // }
-        GameManger.Instance.EnterLoading();
+        // GameManger.Instance.EnterLoading();
         yield return StartCoroutine(GameObjectPool.Instance.RecycleAllCoroutine());
-        GameManger.Instance.ExitLoading();
+        // GameManger.Instance.ExitLoading();
         Time.timeScale = 1;
         GameObjectPool.Instance.PushObject(this.gameObject);
     }

@@ -11,158 +11,79 @@ public class MapGenerator : MonoBehaviour
         Floor,
         Wall,
     }
+    public GameObject initialRoom;
     // Start is called before the first frame update
+    public int roomNumber = 8;
+    public int layOutWidth = 5;
+    public int layOutHeight = 5;
+    public int[,] roomLayout;
+    public int roomWidth = 24;
+    public int roomHeight = 13;
+    public int corridorLength = 5;
     public Grid[,] grid;
-    public int width;
-    public int height;
     public Tilemap floorTileMap;
-    public Tilemap wallTileMap;
-    public Tile floorTile;
-    public Tile wallTile;
     public RuleTile floorRuleTile;
-    public RuleTile wallRuleTile;
-    public float removePercentage;
-    public float continuousPercentage;
-
-    int xLength => grid.GetLength(0) - 2;
-    int yLength => grid.GetLength(1) - 2;
-
     void Start()
     {
-        InitializeGrid();
+        roomLayout = new int[layOutWidth, layOutHeight];
+        grid = new Grid[layOutWidth * roomWidth + corridorLength * (layOutWidth - 1), layOutHeight * roomHeight + corridorLength * (layOutHeight - 1)];
     }
-
-    [ContextMenu("InitializeGrid")]
-    public void InitializeGrid()
+    public void GenerateRoomLayout()
     {
-        grid = new Grid[width + 4, height + 4];
-        Debug.Log(grid.GetLength(0));
-        Debug.Log(grid.GetLength(1));
-        for (int x = 0; x < grid.GetLength(0); x++)
+        // Clear the existing room layout
+        for (int x = 0; x < layOutWidth; x++)
         {
-            for (int y = 0; y < grid.GetLength(1); y++)
+            for (int y = 0; y < layOutHeight; y++)
             {
-                if (x == 0 || x == grid.GetLength(0) - 1 || y == 0 || y == grid.GetLength(1) - 1 ||
-                    x == 1 || x == grid.GetLength(0) - 2 || y == 1 || y == grid.GetLength(1) - 2)
-                {
-                    grid[x, y] = Grid.Empty;
-                }
-                else
-                {
-                    grid[x, y] = Grid.Floor;
-                }
+                roomLayout[x, y] = 0;
             }
         }
 
-        RandomizeGridEdges();
-        GenerateWall();
-        DrawGrid();
-    }
-    public void GenerateWall()
-    {
-        for (int x = 0; x < grid.GetLength(0); x++)
-        {
-            for (int y = 0; y < grid.GetLength(1); y++)
-            {
-                if (grid[x, y] == Grid.Floor)
-                {
+        // Set the starting room in the middle
+        int startX = layOutWidth / 2;
+        int startY = layOutHeight / 2;
+        roomLayout[startX, startY] = 1;
 
-                    if (grid[x + 1, y] == Grid.Empty)
-                    {
-                        grid[x + 1, y] = Grid.Wall;
-                    }
-                    if (grid[x - 1, y] == Grid.Empty)
-                    {
-                        grid[x - 1, y] = Grid.Wall;
-                    }
-                    if (grid[x, y + 1] == Grid.Empty)
-                    {
-                        grid[x, y + 1] = Grid.Wall;
-                    }
-                    if (grid[x, y - 1] == Grid.Empty)
-                    {
-                        grid[x, y - 1] = Grid.Wall;
-                    }
-                    if (grid[x + 1, y + 1] == Grid.Empty)
-                    {
-                        grid[x + 1, y + 1] = Grid.Wall;
-                    }
-                    if (grid[x - 1, y - 1] == Grid.Empty)
-                    {
-                        grid[x - 1, y - 1] = Grid.Wall;
-                    }
-                    if (grid[x + 1, y - 1] == Grid.Empty)
-                    {
-                        grid[x + 1, y - 1] = Grid.Wall;
-                    }
-                    if (grid[x - 1, y + 1] == Grid.Empty)
-                    {
-                        grid[x - 1, y + 1] = Grid.Wall;
-                    }
-                }
-            }
-        }
+        // Generate additional rooms
+        int currentRoomCount = 1;
+        while (currentRoomCount < roomNumber)
+        {
+            // Get a random direction
+            int direction = Random.Range(0, 4);
 
-    }
-    public void DrawGrid()
-    {
-        floorTileMap.ClearAllTiles();
-        wallTileMap.ClearAllTiles();
-        for (int x = 0; x < grid.GetLength(0); x++)
-        {
-            for (int y = 0; y < grid.GetLength(1); ++y)
+            // Calculate the new room position based on the direction
+            int newX = startX;
+            int newY = startY;
+            switch (direction)
             {
-                switch (grid[x, y])
-                {
-                    case Grid.Floor:
-                        if (floorTile == null)
-                            floorTileMap.SetTile(new Vector3Int(x, y, 0), floorRuleTile);
-                        else
-                            floorTileMap.SetTile(new Vector3Int(x, y, 0), floorTile);
-                        break;
-                    case Grid.Wall:
-                        if (wallTile == null)
-                            wallTileMap.SetTile(new Vector3Int(x, y, 0), wallRuleTile);
-                        else
-                            wallTileMap.SetTile(new Vector3Int(x, y, 0), wallTile);
-                        break;
-                    case Grid.Empty:
-                        break;
-                }
+                case 0: // Up
+                    newY++;
+                    break;
+                case 1: // Down
+                    newY--;
+                    break;
+                case 2: // Left
+                    newX--;
+                    break;
+                case 3: // Right
+                    newX++;
+                    break;
             }
-        }
-    }
-    private void RandomizeGridEdges()
-    {
-        for (int x = 0; x < xLength; x++)
-        {
-            for (int y = 0; y < yLength; y++)
-            {
-                if (x == 0 || x == xLength - 1 || y == 0 || y == yLength - 1)
-                {
-                    if (Random.value < removePercentage)
-                    {
-                        grid[x, y] = Grid.Empty;
-                    }
-                }
-            }
-        }
-    }
 
-    private void RandomizeContinuousGrid()
-    {
-        for (int x = 1; x < xLength - 1; x++)
-        {
-            for (int y = 1; y < yLength - 1; y++)
+            // Check if the new position is within the layout bounds and not already occupied
+            if (newX >= 0 && newX < layOutWidth && newY >= 0 && newY < layOutHeight && roomLayout[newX, newY] == 0)
             {
-                if (grid[x, y] == Grid.Floor && Random.value < continuousPercentage)
-                {
-                    grid[x, y] = Grid.Empty;
-                }
+                // Set the new room in the layout
+                roomLayout[newX, newY] = 1;
+                currentRoomCount++;
+
+                // Update the current room position
+                startX = newX;
+                startY = newY;
             }
         }
     }
-    void Update()
+    public void GenerateRoomTileMap()
     {
 
     }

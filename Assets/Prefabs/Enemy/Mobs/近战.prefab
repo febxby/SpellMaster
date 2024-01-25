@@ -28,8 +28,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 708433618934141732}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.48, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -65,6 +65,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 56eb9eb29b7922d46bb31f306a2c0eea, type: 2}
   spriteRenderer: {fileID: 3365551982579753431}
   isCharging: 0
+  shootClip: {fileID: 0}
 --- !u!212 &3365551982579753431
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -233,7 +234,8 @@ GameObject:
   - component: {fileID: 1659689654333469609}
   - component: {fileID: 2558391293505689453}
   - component: {fileID: 4733297307767201270}
-  m_Layer: 8
+  - component: {fileID: 2077675368334563611}
+  m_Layer: 18
   m_Name: "\u8FD1\u6218"
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -249,7 +251,7 @@ Transform:
   m_GameObject: {fileID: 5778094681367178877}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.1, y: -0.16, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -299,8 +301,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Sprite: {fileID: 21300000, guid: d8075885ee642264b80c2c803eec47aa, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -356,10 +358,10 @@ BoxCollider2D:
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
-    m_Bits: 65015
+    m_Bits: 64759
   m_ForceReceiveLayers:
     serializedVersion: 2
-    m_Bits: 65015
+    m_Bits: 64759
   m_ContactCaptureLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -373,14 +375,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 1.6875, y: 1.3125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.6875, y: 1.3125}
   m_EdgeRadius: 0
 --- !u!114 &4733297307767201270
 MonoBehaviour:
@@ -396,9 +398,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemydata: {fileID: 11400000, guid: 9f286eddf6585d5419ec808a96eb20cd, type: 2}
   DataLabel: 
+  animPrefix: "\u8FD1\u6218"
+  anim: {fileID: 2077675368334563611}
   maxHealth: 12
   wand: {fileID: 6160597875714909208}
   MoveVel: {x: 0, y: 0}
+--- !u!95 &2077675368334563611
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5778094681367178877}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 071f47b4901452246a1128f3a6d40e9a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6598530713844262809
 GameObject:
   m_ObjectHideFlags: 0
@@ -411,7 +436,7 @@ GameObject:
   m_Layer: 11
   m_Name: CastPoint
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2488908585195742037, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -424,7 +449,7 @@ Transform:
   m_GameObject: {fileID: 6598530713844262809}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.936, y: -0.048, z: 0}
+  m_LocalPosition: {x: 1.12, y: -0.048, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -12,18 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 837104da2bde7224d8e0a9999ce00fd2, type: 3}
   m_Name: "\u8FDC\u7A0B"
   m_EditorClassIdentifier: 
-  GroundPatrolSpeed: 1
-  GroundPursuitSpeed: 2
+  GroundPatrolSpeed: 1.5
+  GroundPursuitSpeed: 2.5
   GroundRayLength: 1
   ObserveWaitTime: 1
   JumpForce: 12
   InAirMoveSpeed: 7
   GroundCheckBoxSize: {x: 2, y: 2}
-  ObserveCheckBoxSize: {x: 12, y: 12}
+  ObserveCheckBoxSize: {x: 20, y: 20}
   ObserveCheckOffset: {x: 0, y: 0, z: 0}
-  PursuitCheckBoxSize: {x: 10, y: 10}
+  PursuitCheckBoxSize: {x: 30, y: 30}
   PursuitCheckOffset: {x: 0, y: 0}
-  AttackCheckBoxSize: {x: 8, y: 8}
+  AttackCheckBoxSize: {x: 13, y: 13}
   AttackCheckOffset: {x: 0, y: 0}
   TriggerJumpRange: {x: 1, y: 0.75}
   GroundLayer:

@@ -16,7 +16,10 @@ public class Prop : MonoBehaviour
     {
 
     }
-
+    private void OnEnable()
+    {
+        player = FindFirstObjectByType<PlayerController>().gameObject;
+    }
     // Update is called once per frame
     void Update()
     {
